@@ -1,0 +1,45 @@
+{% extends 'customadmin/base.html'%}
+{% load static %}
+{% block users-active %}active {% endblock %}
+
+{% block dashboard %}
+
+<div class="col-lg-12 grid-margin stretch-card">
+    <div class="card">
+      <div class="card-body">
+        <h4 class="card-title">Users</h4>
+        
+        <div class="table-responsive">
+          <table class="table">
+            <thead>
+              <tr>
+                <th scope="col">Sl. No</th>
+                <th>Username</th>
+                <th>email</th>
+                <th>Block / Unblock</th>
+              </tr>
+            </thead>
+            <tbody>
+                {% for user in user_details %}
+                <tr>
+                <th scope="row">{{ forloop.counter }}</th>
+                <td>{{user.username}}</td>
+                <td>{{user.email}}</td>
+                {% if user.is_active%}
+                <td><a class="btn btn-outline-danger" href="{% url 'block_user' user.id %}">BLOCK</a></td>
+                {% else %}
+                <td><a class="btn btn-outline-success" href="{% url 'block_user' user.id %}">UNBLOCK</a></td>
+                {% endif %}
+                {% endfor %}
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+
+{% endblock %}
+
