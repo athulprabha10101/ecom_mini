@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
-
+from . models import Category
 # Create your views here.
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
@@ -40,5 +40,37 @@ def block_user(request, id):
         user.save()
     return redirect('admin_home')
 
-def test(request):
-    return render(request, 'customadmin/base.html')
+def categories(request):
+    cat = Category.objects.all()    
+    return render(request, 'customadmin/categories.html',{'cat':cat})
+
+def add_categories(request):
+    if request.method=='POST':
+        name = request.POST.get('name')
+        image = request.FILES.get('image')
+
+        cat = Category.objects.create(name=name, image=image)
+        cat.save()
+    return redirect('categories')
+
+def edit_categories(request, id):
+    cat = Category.objects.get(id=id)
+
+    if request.method == "POST":
+        name=request.POST.get('name')
+        image=request.FILES.get('image')
+
+        cat.name = name
+        if image:
+            cat.image = image
+            cat.save()
+
+    return redirect('categories')
+
+def delete_categories(request, id):
+    cat = Category.objects.get(id=id)
+    cat.delete()
+    return redirect('categories')
+    
+
+

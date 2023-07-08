@@ -1,0 +1,186 @@
+{% extends 'customadmin/base.html'%}
+{% load static %}
+{% block products-active %}active {% endblock %}
+
+{% block dashboard %}
+<div class="content-wrapper">
+
+            
+    <div class="page-header">
+        <h3 class="page-title"> Products </h3>
+        <nav aria-label="breadcrumb">
+          <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a><button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalCenter">
+                +Add Products
+              </button></a></li>
+
+              {% comment %} DONE TILL HERE {% endcomment %}
+          </ol>
+        </nav>
+      </div>
+    <!-- Nav category -->
+    <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLongTitle">Category</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">×</span>
+            </button>
+          </div>
+          <div class="modal-body">
+              <form action="/admin/add_categories " method="POST" enctype="multipart/form-data">
+                <input type="hidden" name="csrfmiddlewaretoken" value="vtYT2OgjKANG2vzDgL0C2fH51wd3i5Hss75oaCL1lRUnPPaQGvKoRLIMJrBbyOJU">
+                  <label for="categoryName">Category Name:</label><br>
+                  <input type="text" id="categoryName" name="name" required=""> <br>
+          
+                   <label for="categoryImage">Category Image:</label>
+                  <input type="file" id="categoryImage" name="image" accept="image/*" required=""> 
+          </form></div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            <button type="submit" class="btn btn-primary">Add category</button>
+          
+          </div>
+        </div>
+      </div>
+    </div>
+    
+      
+      <!-- nav category ends -->
+    
+      <table class="table table-dark">
+        <thead>
+          <tr>
+            <th scope="col">NO.</th>
+            <th scope="col">Category</th>
+            <th scope="col">Image</th>
+          </tr>
+        </thead>
+        <tbody>
+        
+          <tr>
+            <th scope="row">1</th>
+            <td>Smartphones</td>
+            <td><img src="/media/category/20230702053420iphone_14_pro_max_89NOLoC.png"> </td>
+            <td><a><button type="button" href="/admin/edit_categories/4" class="btn btn-primary" data-toggle="modal" data-target="#editmodal4">
+              Edit
+            </button></a></td>
+            <td><a href="/admin/delete_categories/4" onclick="return confirm('Are you sure you want to delete?');" class="text-danger">Delete</a> </td>
+          </tr>
+         
+          <tr>
+            <th scope="row">2</th>
+            <td>Laptops</td>
+            <td><img src="/media/category/20230702053616laptop_cat_dt6s6bt.png"> </td>
+            <td><a><button type="button" href="/admin/edit_categories/5" class="btn btn-primary" data-toggle="modal" data-target="#editmodal5">
+              Edit
+            </button></a></td>
+            <td><a href="/admin/delete_categories/5" onclick="return confirm('Are you sure you want to delete?');" class="text-danger">Delete</a> </td>
+          </tr>
+         
+          <tr>
+            <th scope="row">3</th>
+            <td>Bluetooth Speakers</td>
+            <td><img src="/media/category/20230702053742bluetooth_cat_64tD4AR.png"> </td>
+            <td><a><button type="button" href="/admin/edit_categories/6" class="btn btn-primary" data-toggle="modal" data-target="#editmodal6">
+              Edit
+            </button></a></td>
+            <td><a href="/admin/delete_categories/6" onclick="return confirm('Are you sure you want to delete?');" class="text-danger">Delete</a> </td>
+          </tr>
+         
+        </tbody>
+      </table>
+      
+    
+    
+      
+     <div class="modal fade" id="editmodal4" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+       <div class="modal-dialog modal-dialog-centered" role="document">
+         <div class="modal-content">
+           <div class="modal-header">
+             <h5 class="modal-title" id="exampleModalLongTitle">Category</h5>
+             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+               <span aria-hidden="true">×</span>
+             </button>
+           </div>
+           <div class="modal-body">
+               <form action="/admin/edit_categories/4" method="POST" enctype="multipart/form-data">
+                 <input type="hidden" name="csrfmiddlewaretoken" value="vtYT2OgjKANG2vzDgL0C2fH51wd3i5Hss75oaCL1lRUnPPaQGvKoRLIMJrBbyOJU">
+                   <label for="categoryName">Category Name:</label><br>
+                   <input type="text" id="categoryName" name="name" placeholder="Smartphones" value="Smartphones" required=""> <br>
+           
+                   <label for="categoryImage">Category Image:</label><br>
+                   <input type="file" id="categoryImage" name="image" value="category/20230702053420iphone_14_pro_max_89NOLoC.png" accept="image/*" required=""><br>
+             </form></div>
+            
+           <div class="modal-footer">
+             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+             <button type="submit" class="btn btn-primary">Save category</button>
+           
+           </div>
+         </div>
+       </div>
+     </div>
+     
+     <div class="modal fade" id="editmodal5" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+       <div class="modal-dialog modal-dialog-centered" role="document">
+         <div class="modal-content">
+           <div class="modal-header">
+             <h5 class="modal-title" id="exampleModalLongTitle">Category</h5>
+             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+               <span aria-hidden="true">×</span>
+             </button>
+           </div>
+           <div class="modal-body">
+               <form action="/admin/edit_categories/5" method="POST" enctype="multipart/form-data">
+                 <input type="hidden" name="csrfmiddlewaretoken" value="vtYT2OgjKANG2vzDgL0C2fH51wd3i5Hss75oaCL1lRUnPPaQGvKoRLIMJrBbyOJU">
+                   <label for="categoryName">Category Name:</label><br>
+                   <input type="text" id="categoryName" name="name" placeholder="Laptops" value="Laptops" required=""> <br>
+           
+                   <label for="categoryImage">Category Image:</label><br>
+                   <input type="file" id="categoryImage" name="image" value="category/20230702053616laptop_cat_dt6s6bt.png" accept="image/*" required=""><br>
+             </form></div>
+            
+           <div class="modal-footer">
+             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+             <button type="submit" class="btn btn-primary">Save category</button>
+           
+           </div>
+         </div>
+       </div>
+     </div>
+     
+     <div class="modal fade" id="editmodal6" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+       <div class="modal-dialog modal-dialog-centered" role="document">
+         <div class="modal-content">
+           <div class="modal-header">
+             <h5 class="modal-title" id="exampleModalLongTitle">Category</h5>
+             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+               <span aria-hidden="true">×</span>
+             </button>
+           </div>
+           <div class="modal-body">
+               <form action="/admin/edit_categories/6" method="POST" enctype="multipart/form-data">
+                 <input type="hidden" name="csrfmiddlewaretoken" value="vtYT2OgjKANG2vzDgL0C2fH51wd3i5Hss75oaCL1lRUnPPaQGvKoRLIMJrBbyOJU">
+                   <label for="categoryName">Category Name:</label><br>
+                   <input type="text" id="categoryName" name="name" placeholder="Bluetooth Speakers" value="Bluetooth Speakers" required=""> <br>
+           
+                   <label for="categoryImage">Category Image:</label><br>
+                   <input type="file" id="categoryImage" name="image" value="category/20230702053742bluetooth_cat_64tD4AR.png" accept="image/*" required=""><br>
+             </form></div>
+            
+           <div class="modal-footer">
+             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+             <button type="submit" class="btn btn-primary">Save category</button>
+           
+           </div>
+         </div>
+       </div>
+     </div>
+     
+    
+    
+              </div>
+
+{% endblock dashboard %}
