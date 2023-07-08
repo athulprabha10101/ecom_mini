@@ -82,9 +82,6 @@ def user_register(request):
             }
             return redirect('otpValidator')
 
-            
-
-            return redirect('user_login')
         else:
             return render(request, 'users/register.html', {'error': "Password mismatch"})
 
@@ -133,14 +130,23 @@ def user_home(request):
 def user_product(request, id):
     product = Products.objects.get(id=id)
     images = product.images.all()
-    user = UserProfile.objects.get(email=request.session['email'])
-    print(product.name)
+    
+    if 'email' in request.session:
+        user = UserProfile.objects.get(email=request.session['email'])
+        return render(request, 'store/product.html',
+                    {'product': product, 'images': images, 'user': user})  # Sends a single prod to htm
+    
     return render(request, 'store/product.html',
-                  {'product': product, 'images': images, 'user': user})  # Sends a single prod to htm
+                {'product': product, 'images': images, 'user':'none'})  # Sends a single prod to htm
+
 
 
 def cat_product(request, id):
     cat = Category.objects.get(id=id)
     products = Products.objects.filter(category=cat)
-    user = UserProfile.objects.get(email=request.session['email'])
-    return render(request, 'store/cat_products.html', {'products': products, 'user': user})
+    
+    if 'email' in request.session:
+        user = UserProfile.objects.get(email=request.session['email'])
+        return render(request, 'store/cat_products.html', {'products': products, 'user': user})
+    
+    return render(request, 'store/cat_products.html', {'products': products, 'user':'none'})
