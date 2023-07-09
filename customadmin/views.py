@@ -104,6 +104,39 @@ def add_products(request):
 
         return redirect('products')
     
+def edit_products(request, id):
+    product = Products.objects.get(id=id)
     
+    if request.method == 'POST':
+        # Process the form submission and save the updated product details
         
+        return redirect('products')  # Redirect to the product listing page after saving the changes
+    
+    # If it's a GET request, render the template with the product details
+    return render(request, 'customadmin/products.html', {'product': product})
+
+
+
+
+
+def delete_products(request, id):
+    product = Products.objects.get(id=id)
+    product.delete()
+    return redirect('products')
+
+def delete_image(request, id):
+    image = ProductImage.objects.get(id=id)
+    image.delete()
+    return redirect('products')
         
+def add_image(request, id):
+
+    if request.method=='POST':
+        images = request.FILES.getlist('image')
+
+        product = Products.objects.get(id=id)
+
+        for image in images:
+            ProductImage.objects.create(product=product, product_image=image)
+    
+        return redirect('products')

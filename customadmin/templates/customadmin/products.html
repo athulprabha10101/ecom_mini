@@ -3,6 +3,7 @@
 {% block products-active %}active {% endblock %}
 
 {% block dashboard %}
+
 <div class="content-wrapper">
     <div class="page-header">
         <h3 class="page-title"> Products </h3>
@@ -74,18 +75,31 @@
             <th scope="col">Stock</th>
             <th scope="col">MRP</th>
             <th scope="col">Selling price</th>
+            <th scope="col">Description</th>
             <th scope="col">Images</th>
           </tr>
         </thead>
         <tbody>
-        
+ 
+
             {% for product in products %}
             <tr>
               <th scope="row">{{ forloop.counter }}</th>
-              <td>{{product.name }}</td>
+              <td>
+                <div class="product-name">
+                  <span style="display: inline-block; width: 200px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+                    {{ product.name }}
+                  </span>
+                </div>
+              </td>         
               <td>{{product.quantity }}</td>
               <td>{{product.original_price }}</td>
               <td>{{product.selling_price }}</td>
+              <td>
+                <div class="description-tooltip">
+                  <span class="description-text">{{ product.description }}</span>
+              </div>
+            </td>
               <td>
                 {% for image in product.productimage_set.all %}
                     <img src="{{ image.product_image.url }}">
@@ -93,12 +107,12 @@
               </td>
 
             <td>
-            <a href="#" class="btn btn-primary" data-toggle="modal" data-target="#editModal{{ product.id }}">
+            <a href="{% url 'edit_products' product.id %}" class="btn btn-primary" data-toggle="modal" data-target="#editModal{{ product.id }}">
                 Edit
             </a>
         </td>
         <td>
-            <a href="#" onclick="return confirm('Are you sure you want to delete?');" class="text-danger">Delete</a>
+            <a href="{% url 'delete_products' product.id %}" onclick="return confirm('Are you sure you want to delete?');" class="text-danger">Delete</a>
         </td>
     </tr>
 {% endfor %}
@@ -109,6 +123,12 @@
       
         {% for product in products %}
         <div class="modal fade" id="editModal{{ product.id }}" tabindex="-1" role="dialog" aria-labelledby="editModal{{ product.id }}Title" aria-hidden="true">
+        <style>
+          .icon-image {
+              width: 50px;
+              height: 50px;
+          }
+        </style>
             <div class="modal-dialog modal-dialog-centered" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -118,7 +138,47 @@
                         </button>
                     </div>
                     <div class="modal-body">
-                        <!-- Add the form fields for editing the product -->
+                      <form action="{% url 'edit_products' product.id %}" method="POST" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <label for="productCategory">Category:</label><br>
+                        <select id="productCategory" name="category" required>
+                        {% for category in categories %}
+                        <option value="{{ category.id }}">{{ category.name }}</option>
+                        {% endfor %}
+                        </select> <br> 
+        
+                        <label for="productName">Product Name:</label><br>
+                        <input type="text" id="productName" name="name" value="{{product.name}}" required> <br>
+        
+                        <label for="productQuantity">Quantity:</label><br>
+                        <input type="number" id="productQuantity" name="quantity" value="{{product.quantity}}" required> <br>
+        
+                        <label for="productOriginalPrice">Original Price:</label><br>
+                        <input type="number" step="0.01" id="productOriginalPrice" name="original_price" value="{{product.original_price}}" required> <br>
+        
+                        <label for="productSellingPrice">Selling Price:</label><br>
+                        <input type="number" step="0.01" id="productSellingPrice" name="selling_price" value="{{product.selling_price}}" required> <br>
+        
+                        <label for="productDescription">Description:</label><br>
+                        <textarea id="productDescription" name="description"  required>{{product.description}}</textarea> <br>
+                      </form>
+
+                        {% for image in product.productimage_set.all %}
+                        <div class="product-image">
+                            <img src="{{ image.product_image.url }}" alt="Product Image" class="icon-image">
+                            <form action="{% url 'delete_image' image.id %}" method="POST" style="display: inline;">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-danger delete-image">Delete</button>
+                            </form>
+                        </div>
+                        {% endfor %}
+                        
+                        <form action="{% url 'add_image' product.id %}" method="POST" enctype="multipart/form-data">
+                          {% csrf_token %}
+                          <input type="file" id="productImage" name="image" accept="image/*" multiple required>
+                          <button type="submit" class="btn btn-primary">Add Images</button>
+                      </form>
+                
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>

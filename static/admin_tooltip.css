@@ -1,0 +1,17 @@
+.description-tooltip {
+    display: inline-block;
+    max-width: 150px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+
+.product-name {
+  display: inline-block;
+  max-width: 150px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+  
