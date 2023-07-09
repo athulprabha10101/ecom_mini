@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
-from . models import Category
+from . models import Category, ProductImage, Products
 # Create your views here.
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
@@ -72,5 +72,38 @@ def delete_categories(request, id):
     cat.delete()
     return redirect('categories')
     
+def products(request):
+    categories = Category.objects.all()
+    products = Products.objects.all()
+    return render(request, 'customadmin/products.html', {'products':products,'categories':categories})
 
+def add_products(request):
+    if request.method=='POST':
+        category_id = request.POST.get('category')
+        name = request.POST.get('name')
+        quantity = request.POST.get('quantity')
+        original_price = request.POST.get('original_price')
+        selling_price = request.POST.get('selling_price')
+        description = request.POST.get('description')
+        images = request.FILES.getlist('image')
+        
+        category = Category.objects.get(id=category_id)
 
+        product = Products.objects.create(
+            category=category,
+            name=name,
+            quantity=quantity,
+            original_price=original_price,
+            selling_price=selling_price,
+            description=description,
+        )
+        product.save()
+
+        for image in images:
+            ProductImage.objects.create(product=product, product_image=image)
+
+        return redirect('products')
+    
+    
+        
+        
