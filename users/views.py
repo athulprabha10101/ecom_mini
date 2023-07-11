@@ -8,14 +8,15 @@ from django.contrib.auth import authenticate, login, logout
 
 def user_register(request):
     if request.method=='POST':
-        username = request.POST['username']
+        name = request.POST['name']
+        email = request.POST['email']
         phone = request.POST['phone']
         password = request.POST['password']
         cpassword = request.POST['cpassword']
 
         if password == cpassword:
-            user = User.objects.create_user(username=username, phone=phone, password=password, is_superuser=0)
-            login(request, user)
+            UserProfile.objects.create(name = name, email=email, phone=phone, password=password)
+
             return redirect('user_login')
         else:
             return render(request, 'users/register.html',{'error':"Password mismatch"})
@@ -25,23 +26,35 @@ def user_register(request):
 
 
 def user_login(request):
+    if 'email' in request.session:
+        return redirect ('user_home')
     if request.method== "POST":
-        username = request.POST['username']
+        email = request.POST['email']
         password = request.POST['password']
 
-        user = authenticate(request, username=username, password=password)
+        try:
+            user = UserProfile.objects.get(email = email , password = password)
+            if user:
+                request.session['email'] = email
+                return  render(request, 'store/index-3.html', {'user': user})
 
-        if user is not None:
-            login(request, user)
-            return redirect('home')
-        else:
-            return render(request, 'users/login.html', {'error':"Wrong credentials"})
+        except UserProfile.DoesNotExist:
+
+            return render(request, 'users/login.html',{'message':"Wrong credentials"})
+        
     return render(request, 'users/login.html')
 
+
 def user_logout(request):
-    logout(request)
-    return redirect('user_login')
+    if 'email' in request.session:
+        del request.session['email']
+    return redirect('user_home')
 
 def user_home(request):
+    if 'email' in request.session:
+        return render(request, 'store/index-3.html')
+    
+    return redirect('user_login')
 
-    return render(request, 'store/index-3.html')
+
+    

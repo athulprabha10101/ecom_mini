@@ -74,7 +74,12 @@
                                             </div><!-- End .header-menu -->
                                         </div>
                                     </li>
-                                    <li><a href="#signin-modal" data-toggle="modal">Sign in / Sign up</a></li>
+
+                                    {% if user %}
+                                    <li><a href="{% url 'user_logout' %}">Logout</a></li>
+                                    {% else %}
+                                    <li><a href="{% url 'user_login' %}" >Sign in / Sign up</a></li>
+                                    {% endif %}
                                 </ul>
                             </li>
                         </ul><!-- End .top-menu -->

@@ -14,7 +14,7 @@
             <thead>
               <tr>
                 <th scope="col">Sl. No</th>
-                <th>Username</th>
+                <th>Name</th>
                 <th>email</th>
                 <th>Block / Unblock</th>
               </tr>
@@ -23,7 +23,7 @@
                 {% for user in user_details %}
                 <tr>
                 <th scope="row">{{ forloop.counter }}</th>
-                <td>{{user.username}}</td>
+                <td>{{user.name}}</td>
                 <td>{{user.email}}</td>
                 {% if user.is_active%}
                 <td><a class="btn btn-outline-danger" href="{% url 'block_user' user.id %}">BLOCK</a></td>

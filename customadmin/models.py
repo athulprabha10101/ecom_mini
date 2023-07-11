@@ -19,4 +19,16 @@ class ProductImage(models.Model):
     product = models.ForeignKey(Products, on_delete=models.CASCADE)
     product_image = models.ImageField(upload_to='product_images')
 
+class UserProfile(models.Model):
+    name = models.CharField(max_length=100)
+    email = models.CharField(max_length=100)
+    phone = models.CharField(max_length=20)
+    password = models.CharField(max_length=50)
+    is_active = models.BooleanField(default=True)
 
+    def __str__(self) -> str:
+        return self.name
+    
+class AdminProfile(models.Model):
+    name = models.CharField(max_length=100)
+    password = models.CharField(max_length=20)

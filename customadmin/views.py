@@ -6,33 +6,42 @@ from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 
 
-def admin_login(request):
+def admin_login(request): 
+    if 'name' in request.session:
+        return redirect('admin_home')
     if request.method== "POST":
-        username = request.POST['username']
+        name = request.POST['name']
         password = request.POST['password']
 
-        user = authenticate(request, username=username, password=password, is_superuser=1)
+        print(name)
+        print(password)
 
-        if user is not None:
-            login(request, user)
-            return redirect('admin_home')
-        else:
-            return render(request, 'customadmin/login.html', {'error':"Wrong credentials"})
+        try:
+            admin = AdminProfile.objects.get(name=name, password=password)
+            print(admin)
+            if admin:
+                request.session['name']= name
+                return render(request, 'customadmin/homepage.html')
+        except AdminProfile.DoesNotExist:
+            
+            return render(request, 'customadmin/login.html',{'message':"Wrong credentials"})
+        
     return render(request, 'customadmin/login.html')
 
 def admin_logout(request):
-    logout(request)
+    if 'name' in request.session:
+        del request.session['name']
     return redirect('admin_login')
 
 def admin_home(request):
-    if request.user.is_authenticated and request.user.is_superuser:
-        user_details = User.objects.filter(is_superuser=False)
+    if 'name' in request.session:
+        user_details = UserProfile.objects.all()
         return render(request, 'customadmin/homepage.html', {'user_details':user_details})
     return render(request, 'customadmin/login.html')
 
 def block_user(request, id):
-    if request.user.is_authenticated and request.user.is_superuser:    
-        user = User.objects.get(id=id)
+    if 'name' in request.session:
+        user = UserProfile.objects.get(id=id)
         if user.is_active:
             user.is_active = False
             user.save()
@@ -43,13 +52,13 @@ def block_user(request, id):
     return render(request, 'customadmin/login.html')
 
 def categories(request):
-    if request.user.is_authenticated and request.user.is_superuser:    
+    if 'name' in request.session:   
         cat = Category.objects.all()    
         return render(request, 'customadmin/categories.html',{'cat':cat})
     return render(request, 'customadmin/login.html')
 
 def add_categories(request):
-    if request.user.is_authenticated and request.user.is_superuser:       
+    if 'name' in request.session:
         if request.method=='POST':
             name = request.POST.get('name')
             image = request.FILES.get('image')
@@ -60,7 +69,7 @@ def add_categories(request):
     return render(request, 'customadmin/login.html')
 
 def edit_categories(request, id):
-    if request.user.is_authenticated and request.user.is_superuser:           
+    if 'name' in request.session:
         cat = Category.objects.get(id=id)
 
         if request.method == "POST":
@@ -76,21 +85,21 @@ def edit_categories(request, id):
     return render(request, 'customadmin/login.html')
 
 def delete_categories(request, id):
-    if request.user.is_authenticated and request.user.is_superuser:           
+    if 'name' in request.session:
         cat = Category.objects.get(id=id)
         cat.delete()
         return redirect('categories')
     return render(request, 'customadmin/login.html')
     
 def products(request):
-    if request.user.is_authenticated and request.user.is_superuser:           
+    if 'name' in request.session:
         categories = Category.objects.all()
         products = Products.objects.all()
         return render(request, 'customadmin/products.html', {'products':products,'categories':categories})
     return render(request, 'customadmin/login.html')
 
 def add_products(request):
-    if request.user.is_authenticated and request.user.is_superuser:           
+    if 'name' in request.session:
         if request.method=='POST':
             category_id = request.POST.get('category')
             name = request.POST.get('name')
@@ -122,7 +131,7 @@ def add_products(request):
     
 def edit_products(request, id):
     
-    if request.user.is_authenticated and request.user.is_superuser:           
+    if 'name' in request.session:
         product = Products.objects.get(id=id)
         
         if request.method == 'POST':
