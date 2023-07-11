@@ -13,7 +13,10 @@ class Products(models.Model):
     original_price = models.FloatField(null=False, blank=False)
     selling_price = models.FloatField(null=False, blank = False)
     description = models.TextField(null=False, blank=False)
+    is_deleted = models.BooleanField(default=False)
 
 class ProductImage(models.Model):
     product = models.ForeignKey(Products, on_delete=models.CASCADE)
     product_image = models.ImageField(upload_to='product_images')
+
+

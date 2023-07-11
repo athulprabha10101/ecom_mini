@@ -1,8 +1,8 @@
 .description-tooltip {
     display: inline-block;
     max-width: 150px;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    overflow: auto;
+    
     white-space: nowrap;
   }
 
