@@ -115,7 +115,7 @@
               <td>
                 <div class=" col-md-3" style="max-width: 210px; overflow: auto;">
 
-                {% for image in product.productimage_set.all %}
+                {% for image in product.images.all %}
                   
                     <img src="{{ image.product_image.url }}">
                 {% endfor %}
@@ -192,7 +192,7 @@
                     </div>
                     
                     <div class="product-images">
-                      {% for image in product.productimage_set.all %}
+                      {% for image in product.images.all %}
                         <div class="product-image">
                           <img src="{{ image.product_image.url }}" alt="Product Image" class="icon-image">
                           <form action="{% url 'delete_image' image.id %}" method="POST" style="display: inline;">

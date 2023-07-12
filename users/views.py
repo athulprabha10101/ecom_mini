@@ -36,7 +36,7 @@ def user_login(request):
             user = UserProfile.objects.get(email = email , password = password)
             if user:
                 request.session['email'] = email
-                return  render(request, 'store/index-3.html', {'user': user})
+                return  redirect( 'user_home')
 
         except UserProfile.DoesNotExist:
 
@@ -52,9 +52,26 @@ def user_logout(request):
 
 def user_home(request):
     if 'email' in request.session:
-        return render(request, 'store/index-3.html')
-    
+        categories = Category.objects.all()
+        user = UserProfile.objects.get(email=request.session['email'])
+        return render(request, 'store/index-3.html',{'categories':categories, 'user':user})
     return redirect('user_login')
+
+def user_product(request, id):
+    
+    product = Products.objects.get(id=id)
+    images = product.images.all()
+    user = UserProfile.objects.get(email=request.session['email'])
+    print(product.name)
+    return render(request, 'store/product.html', {'product':product, 'images':images, 'user':user}) # Sends a single prod to htm
+
+def cat_product(request, id):
+    cat = Category.objects.get(id=id)
+    products = Products.objects.filter(category=cat)
+    user = UserProfile.objects.get(email=request.session['email'])
+    return render(request, 'store/cat_products.html', {'products': products, 'user':user})
+
+
 
 
     

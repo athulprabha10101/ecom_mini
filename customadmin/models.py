@@ -16,7 +16,7 @@ class Products(models.Model):
     is_deleted = models.BooleanField(default=False)
 
 class ProductImage(models.Model):
-    product = models.ForeignKey(Products, on_delete=models.CASCADE)
+    product = models.ForeignKey(Products, on_delete=models.CASCADE, related_name='images')
     product_image = models.ImageField(upload_to='product_images')
 
 class UserProfile(models.Model):
