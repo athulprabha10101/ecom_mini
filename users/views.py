@@ -35,6 +35,8 @@ def user_login(request):
         try:
             user = UserProfile.objects.get(email = email , password = password)
             if user:
+                if not user.is_active:
+                    return render(request, 'users/login.html',{'message':"User Blocked"})        
                 request.session['email'] = email
                 return  redirect( 'user_home')
 
