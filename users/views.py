@@ -50,14 +50,19 @@ def user_login(request):
 def user_logout(request):
     if 'email' in request.session:
         del request.session['email']
-    return redirect('user_home')
+    return redirect('user_login')
 
 def user_home(request):
+    
+    categories = Category.objects.all()
+
     if 'email' in request.session:
-        categories = Category.objects.all()
         user = UserProfile.objects.get(email=request.session['email'])
+        
         return render(request, 'store/index-3.html',{'categories':categories, 'user':user})
-    return redirect('user_login')
+    
+    return render(request, 'store/index-3.html',{'categories':categories})
+    
 
 def user_product(request, id):
     

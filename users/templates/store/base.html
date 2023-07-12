@@ -77,11 +77,11 @@
                                             </div><!-- End .header-menu -->
                                         </div>
                                     </li>
-
-                                    {% if user %}
-                                    <li><a href="{% url 'user_logout' %}">{{user.name | upper }}&nbsp Logout</a></li>
-                                    {% else %}
+                                    
+                                    {% if request.user is None %}
                                     <li><a href="{% url 'user_login' %}" >Sign in / Sign up</a></li>
+                                    {% else %}
+                                    <li><a href="{% url 'user_logout' %}">{{user.name | upper }}&nbsp Logout</a></li>
                                     {% endif %}
                                 </ul>
                             </li>
