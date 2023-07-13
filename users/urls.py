@@ -8,4 +8,5 @@ urlpatterns = [
     path('logout/', views.user_logout, name='user_logout'),
     path('product/<int:id>', views.user_product, name='user_product'),
     path('cat_product/<int:id>', views.cat_product, name='cat_product'),
+    path('otpValidator/', views.otpValidator, name='otpValidator'),
 ]
