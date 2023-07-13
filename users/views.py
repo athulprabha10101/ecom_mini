@@ -67,7 +67,7 @@ def user_register(request):
 
             otp = str(random.randint(1000, 9999))
 
-            sendOtp(otp)
+            #sendOtp(otp)
 
             print("-----------------------")
             print(otp)
