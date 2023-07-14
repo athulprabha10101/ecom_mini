@@ -79,9 +79,10 @@
                                     </li>
                                     
                                     {% if request.user == "none" %}
-                                    <li><a href="{% url 'user_logout' %}">{{user.name | upper }}&nbsp Logout</a></li>
-                                    {% else %}
                                     <li><a href="{% url 'user_login' %}" >Sign in / Sign up</a></li>
+                                    {% else %}
+                                    
+                                    <li><a href="{% url 'user_logout' %}">{{user.name | upper }}&nbsp Logout</a></li>
                                     {% endif %}
                                 </ul>
                             </li>
