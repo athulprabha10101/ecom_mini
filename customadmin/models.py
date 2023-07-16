@@ -37,6 +37,7 @@ class UserAddress(models.Model):
     state = models.CharField(max_length=30)
     country = models.CharField(max_length=30)
     pin = models.CharField(max_length=30)
+    deleted = models.BooleanField(default=False)
 
     
 class AdminProfile(models.Model):

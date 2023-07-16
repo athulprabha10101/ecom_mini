@@ -182,3 +182,26 @@ def add_address(request):
                 pin=pin
                 )
             return redirect('user_profile')
+    
+    return redirect('user_login')    
+
+def edit_address(request, id):
+    if 'email' in request.session:
+        address = UserAddress.objects.get(id=id)
+
+        if request.method=='POST':
+            address.address_line1=request.POST['address1']
+            address.address_line2=request.POST['address2']
+            address.city=request.POST['city']
+            address.state=request.POST['state']
+            address.country=request.POST['country']
+            address.pin=request.POST['pin']
+            address.save()
+            return redirect('user_profile')
+
+def delete_address(request, id):
+    if 'email' in request.session:
+        address = UserAddress.objects.get(id=id)
+        address.deleted=True
+        address.save()
+        return redirect('user_profile')
