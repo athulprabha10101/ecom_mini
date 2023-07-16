@@ -181,3 +181,4 @@ def add_address(request):
                 country=country,
                 pin=pin
                 )
+            return render(request, 'store/user_profile.html', {'user':user})
