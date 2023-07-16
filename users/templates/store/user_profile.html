@@ -163,21 +163,24 @@
                                     </div>
                                 </div>
                                 <div class="row">
+                                    {% for address in user.addresses.all  %}
                                     <div class="col-lg-6">
                                         <div class="card card-dashboard">
                                             <div class="card-body">
-                                                <h3 class="card-title">Billing Address</h3><!-- End .card-title -->
+                                                <h3 class="card-title"> Address {{forloop.counter}} </h3><!-- End .card-title -->
 
-                                                <p>User Name<br>
-                                                    User Company<br>
-                                                    John str<br>
-                                                    New York, NY 10001<br>
-                                                    1-234-987-6543<br>
-                                                    yourmail@mail.com<br>
+                                                <p>{{address.address_line1}}<br>
+                                                    {{address.address_line2}}<br>
+                                                    {{address.city}}<br>
+                                                    {{address.state}}<br>
+                                                    {{address.country}}<br>
+                                                    {{address.pin}}<br>
+                                                    
                                                     <a href="#">Edit <i class="icon-edit"></i></a></p>
                                             </div><!-- End .card-body -->
                                         </div><!-- End .card-dashboard -->
                                     </div><!-- End .col-lg-6 -->
+                                    {% endfor %}
 
 
                                     {% comment %}
