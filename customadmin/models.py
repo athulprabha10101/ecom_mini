@@ -28,6 +28,16 @@ class UserProfile(models.Model):
 
     def __str__(self) -> str:
         return self.name
+
+class UserAddress(models.Model):
+    user = models.ForeignKey(UserProfile, on_delete=models.CASCADE, related_name='addresses')
+    address_line1 = models.CharField(max_length=200)
+    address_ine2 = models.CharField(max_length=200)
+    city = models.CharField(max_length=30)
+    state = models.CharField(max_length=30)
+    country = models.CharField(max_length=30), 
+    pin = models.CharField(max_length=30)
+
     
 class AdminProfile(models.Model):
     name = models.CharField(max_length=100)

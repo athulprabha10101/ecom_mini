@@ -134,10 +134,10 @@ def user_product(request, id):
     if 'email' in request.session:
         user = UserProfile.objects.get(email=request.session['email'])
         return render(request, 'store/product.html',
-                    {'product': product, 'images': images, 'user': user})  # Sends a single prod to htm
+                    {'product': product, 'images': images, 'user': user})  # Sends a single prod to html
     
     return render(request, 'store/product.html',
-                {'product': product, 'images': images, 'user':'none'})  # Sends a single prod to htm
+                {'product': product, 'images': images, 'user':'none'}) 
 
 
 
@@ -150,3 +150,34 @@ def cat_product(request, id):
         return render(request, 'store/cat_products.html', {'products': products, 'user': user})
     
     return render(request, 'store/cat_products.html', {'products': products, 'user':'none'})
+
+def user_profile(request):
+    
+    if 'email' in request.session:
+        user = UserProfile.objects.get(email=request.session['email'])
+        return render(request, 'store/user_profile.html', {'user':user})
+
+    return redirect('user_login')
+
+def add_address(request):
+
+    if 'email' in request.session:
+        user = UserProfile.objects.get(email= request.session['email'])
+
+        if request.method=='POST':
+            address_line1 = request.POST['address1']
+            address_line2 = request.POST['address2']
+            city = request.POST['city']
+            state = request.POST['state']
+            country = request.POST['country']
+            pin = request.POST['pin']
+
+            UserAddress.objects.create(
+                user=user, 
+                address_line1=address_line1,
+                address_line2=address_line2,
+                city=city,
+                state=state,
+                country=country,
+                pin=pin
+                )
