@@ -234,30 +234,40 @@ def edit_details(request, id):
 
         if display_name:
             user.name = display_name
+            user.save()
 
         if email:
             if not UserProfile.objects.filter(email=email).exists():
                 user.email = email
                 request.session['email'] = email
+                user.save()
             else:
                 errors.append(f"{email} - email already exists")
+                
         
         if phonenum:
             if UserProfile.objects.filter(phone=phonenum).exists():
                 errors.append(f"{phonenum} - phone number already exists")
             else:
                 user.phone = phonenum
+                user.save()
 
-        if old_password and old_password != '':
-            if user.password == old_password and new_password == confirm_password:
-                user.password = new_password
-            else:
-                errors.append("Password mismatch")
+        if old_password and old_password != '' and old_password == user.password and new_password == confirm_password:
+            print("----------------------")
+            print(request.POST)
+            
+            user.password = new_password
+            user.save()
+            print("----------------------")
+            print("CHANGED")
+        else:
+            errors.append("Password mismatch")
+            print("mismatch")
 
         if errors:
             return render(request, 'store/user_profile.html', {'errors': errors, 'user': user})
 
-        user.save()
+        
         return render(request, 'store/user_profile.html', {'user':user})
 
     return redirect('user_login')
