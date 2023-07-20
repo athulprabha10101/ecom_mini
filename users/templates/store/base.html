@@ -80,7 +80,7 @@
                                         </div>
                                     </li>
                                     
-                                    {% if request.user == "none" %}
+                                    {% if 'email' not in request.session %}
                                     <li><a href="{% url 'user_login' %}" >Sign in / Sign up</a></li>
                                     {% else %}
                                     <li><a href="{% url 'user_logout' %}"> Logout {{user.name | capfirst }}</a></li>
