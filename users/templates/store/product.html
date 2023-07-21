@@ -85,7 +85,7 @@
                                         </div><!-- End .product-nav -->
                                     </div><!-- End .details-filter-row -->
 
-
+                                    
                                     <div class="details-filter-row details-row-size">
                                         <label for="size">Variant :</label>
                                         <div class="select-custom">
@@ -98,23 +98,26 @@
                                         </div><!-- End .select-custom -->
                                     </div><!-- End .details-filter-row -->
                                     
+                                    {% if product.quantity > 0 %}
+                                    <div>
                                     <div class="details-filter-row details-row-size">
                                         <label for="qty">Qty:</label>
-                                        <div class="product-details-quantity">
-                                            <input type="number" id="qty" class="form-control" value="1" min="1" max="10" step="1" data-decimals="0" required="" style="display: none;">
-                                            <div class="input-group  input-spinner">
-                                                <div class="input-group-prepend">
-                                                    <button style="min-width: 26px" class="btn btn-decrement btn-spinner" type="button">
-                                                        <i class="icon-minus"></i>
-                                                    </button>
-                                                </div>
+                                            <div class="input-group" style="width:150px">
+                                                <button class="input-group-text bg-warning text-light" id="btnMinus"><i class="fa fa-minus"></i></button>
+                                                <input type="text" name="qty" id='txtQty' value='1' class="form-control text-center">
+                                                <button class="input-group-text bg-primary text-light" id="btnPlus"><i class="fa fa-plus"></i></button>
+                                                
                                             </div>
-                                        </div><!-- End .product-details-quantity -->
                                     </div><!-- End .details-filter-row -->
-
+                               
                                     <div class="product-details-action">
                                         <a href="#" class="btn-product btn-cart"><span>add to cart</span></a>
-
+                                    </div>
+                                    {% else %}
+                                    
+                                    <h3 style="color:red";> Out of stock </h3>
+                                    
+                                    {% endif %}
                                         <div class="details-action-wrapper">
                                             <a href="#" class="btn-product btn-wishlist" title="Wishlist"><span>Add to Wishlist</span></a>
                                             {% comment %} <a href="#" class="btn-product btn-compare" title="Compare"><span>Add to Compare</span></a> {% endcomment %}
@@ -485,6 +488,33 @@
                 </div><!-- End .container -->
             </div><!-- End .page-content -->
         </main>
+
+        <script>
+            document.addEventListener("DOMContentLoaded", function(event){
+                const btnPlus = document.getElementById('btnPlus');
+                const btnMinus = document.getElementById('btnMinus');
+                const txtQty  = document.getElementById('txtQty');
+                
+                btnPlus.addEventListener("click", function(event){
+                    let qty = parseInt(txtQty.value, 10);
+                    qty = isNaN(qty) ? 0 : qty;
+                    if(qty < 10){
+                        qty++;
+                        txtQty.value = qty;
+                    }
+                });
+                btnMinus.addEventListener("click", function(event){
+                    let qty = parseInt(txtQty.value, 10);
+                    qty = isNaN(qty) ? 0 : qty;
+                    if(qty > 1){
+                        qty--;
+                        txtQty.value = qty;
+                    }
+                });
+            });
+        </script>
+        
+        
         <script src="{% static 'user_assets/js/bootstrap.bundle.min.js' %}"></script>
         <script src="{% static 'user_assets/js/jquery.min.js' %}"></script>
         <script src="{% static 'user_assets/js/jquery.hoverIntent.min.js' %}"></script>
@@ -497,4 +527,5 @@
         <script src="{% static 'user_assets/js/jquery.magnific-popup.min.js' %}"></script>
         <!-- Main JS File -->
         <script src="{% static 'user_assets/js/main.js' %}"></script>
+        
 {% endblock %}
