@@ -94,45 +94,61 @@ def delete_categories(request, id):
 def products(request):
     if 'name' in request.session:
         categories = Category.objects.all()
-        products = Products.objects.all()
-        return render(request, 'customadmin/products.html', {'products':products,'categories':categories})
+        variants = Variants.objects.all()
+        return render(request, 'customadmin/products.html', {'variants':variants,'categories':categories})
     return render(request, 'customadmin/login.html')
 
 def add_products(request):
     if 'name' in request.session:
         if request.method=='POST':
             category_id = request.POST.get('category')
-            name = request.POST.get('name')
-            quantity = request.POST.get('quantity')
-            original_price = request.POST.get('original_price')
-            selling_price = request.POST.get('selling_price')
-            description = request.POST.get('description')
-            images = request.FILES.getlist('image')
-            is_deleted = request.POST.get('is_deleted') == 'True'
+            baseProductName = request.POST.get('baseProductName')
+            hasVariant = request.POST.get('hasVariant')
+            variantName = request.POST.get('variantName')
+            variantColor = request.POST.get('variantColor')
+            variantStorage = request.POST.get('variantStorage')
+            variantPrice = request.POST.get('variantPrice')
+            variantQuantity = request.POST.get('variantQuantity')
+            variantOriginalPrice = request.POST.get('variantOriginalPrice')
+            variantSellingPrice = request.POST.get('variantSellingPrice')
+            variantDescription = request.POST.get('variantDescription')
+            variantImages = request.FILES.getlist('variantImage')
             
             category = Category.objects.get(id=category_id)
 
-            product = Products.objects.create(
-                category=category,
-                name=name,
-                quantity=quantity,
-                original_price=original_price,
-                selling_price=selling_price,
-                description=description,
-                is_deleted = is_deleted  # Set the is_deleted field
-            )
-            product.save()
+            try:
+                product = BaseProducts.objects.get(name = baseProductName, category=category)
+            except BaseProducts.DoesNotExist:
+                product = BaseProducts.objects.create(name=baseProductName, category=category, has_variant=True)
 
-            for image in images:
-                ProductImage.objects.create(product=product, product_image=image)
+            if hasVariant:
+                variation = Variations.objects.get_or_create(product=product, color=variantColor, storage=variantStorage)[0]
+            else:
+                variation = Variations.objects.get_or_create(product=product, color=None, storage=None)[0]
+
+            variant = Variants.objects.create(
+                variation = variation,
+                product=product,
+                variantname = variantName,
+                quantity = variantQuantity,
+                original_price = variantOriginalPrice,
+                selling_price = variantSellingPrice,
+                description = variantDescription,
+                is_deleted = False
+            )
+
+            for image in variantImages:
+                VariantImages.objects.create(variation=variation, image=image)
 
             return redirect('products')
+            
     return render(request, 'customadmin/login.html')
+
     
 def edit_products(request, id):
     
     if 'name' in request.session:
-        product = Products.objects.get(id=id)
+        product = Variants.objects.get(id=id)
         
         if request.method == 'POST':
             category_id = request.POST.get('category')

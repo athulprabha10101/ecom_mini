@@ -37,27 +37,41 @@
                 <option value="{{ category.id }}">{{ category.name }}</option>
                 {% endfor %}
                 </select> <br> 
-
-                <label for="productName">Product Name:</label><br>
-                <input type="text" id="productName" name="name" required> <br>
-
-                <label for="productQuantity">Quantity:</label><br>
-                <input type="number" id="productQuantity" name="quantity" required> <br>
-
-                <label for="productOriginalPrice">Original Price:</label><br>
-                <input type="number" step="0.01" id="productOriginalPrice" name="original_price" required> <br>
-
-                <label for="productSellingPrice">Selling Price:</label><br>
-                <input type="number" step="0.01" id="productSellingPrice" name="selling_price" required> <br>
-
-                <label for="productDescription">Description:</label><br>
-                <textarea id="productDescription" name="description" required></textarea> <br>
-        
-                <label for="productImage">Product Images:</label>
-                <input type="file" id="productImage" name="image"  accept="image/*" multiple required> 
+                  
+                <label for="baseProductName">Product Name:</label><br>
+                <input type="text" id="baseProductName" name="baseProductName" required> <br>
+                <br>
                 
-                <label for="isDeleted">Is Deleted:</label>
-                <input type="checkbox" id="isDeleted" name="is_deleted" value="True">
+                <label for="hasVariant">Has Varinats:</label>
+                <input type="checkbox" id="hasVariant" name="hasVariant" value="True">
+                <br>
+                  
+                <label for="variantName">Variant name:</label><br>
+                <input type="text" id="variantName" name="variantName"><br>
+
+                <label for="variantColor">Color:</label><br>
+                <input type="text" id="variantColor" name="variantColor"><br>
+
+                <label for="variantStorage">Storage:</label><br>
+                <input type="text" id="variantStorage" name="variantStorage"><br>
+
+                <label for="variantPrice">Price:</label><br>
+                <input type="number" step="0.01" id="variantPrice" name="variantPrice"><br>
+
+                <label for="variantQuantity">Quantity:</label><br>
+                <input type="number" id="variantQuantity" name="variantQuantity"><br>
+
+                <label for="variantOriginalPrice">Original Price:</label><br>
+                <input type="number" step="0.01" id="variantOriginalPrice" name="variantOriginalPrice"><br>
+
+                <label for="variantSellingPrice">Selling Price:</label><br>
+                <input type="number" step="0.01" id="variantSellingPrice" name="variantSellingPrice"><br>
+
+                <label for="variantDescription">Description:</label><br>
+                <textarea id="variantDescription" name="variantDescription"></textarea><br>
+
+                <label for="variantImage">Product Images:</label>
+                <input type="file" id="variantImage" name="variantImage" accept="image/*" multiple required>
 
                 </div>
                 <div class="modal-footer">

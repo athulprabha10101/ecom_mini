@@ -23,6 +23,7 @@ class VariantImages(models.Model):
 class Variants(models.Model):
     variation = models.ForeignKey(Variations, on_delete=models.CASCADE, related_name='variants')
     product = models.ForeignKey(BaseProducts, on_delete=models.CASCADE, related_name='variant')
+    variantname = models.CharField(max_length=255)
     quantity = models.IntegerField()
     original_price = models.DecimalField(max_digits=10, decimal_places=2)
     selling_price = models.DecimalField(max_digits=10, decimal_places=2)
