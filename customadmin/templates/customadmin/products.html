@@ -1,245 +1,296 @@
+
 {% extends 'customadmin/base.html'%}
+
 {% load static %}
-{% block products-active %}active {% endblock %}
+{% block products-active %}active{% endblock %}
 
 {% block dashboard %}
 
 <div class="content-wrapper" style="overflow-x:scroll;">
     <div class="page-header">
         <h3 class="page-title"> Products </h3>
-        <nav aria-label="breadcrumb">
-          <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a><button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalCenter">
-                +Add Products
-              </button></a></li>
-          </ol>
-        </nav>
-      </div>
-    <!-- Nav category -->
-    <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-      <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLongTitle">Product</h5>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+      {% if message %}
+        <div class="alert alert-info alert-dismissible fade show" role="alert">
+          {{ message }}
+          <button type="button" class="close" data-dismiss="alert" aria-label="Close">
               <span aria-hidden="true">&times;</span>
-            </button>
-          </div>
-          <div class="modal-body">
-              <form action="{% url 'add_products' %}" method="POST" enctype="multipart/form-data">
-                
-                {% csrf_token %}
-                
-                <label for="productCategory">Category:</label><br>
-                <select id="productCategory" name="category" required>
-                
-                {% for category in categories %}
-                <option value="{{ category.id }}">{{ category.name }}</option>
-                {% endfor %}
-                </select> <br> 
-                  
-                <label for="baseProductName">Product Name:</label><br>
-                <input type="text" id="baseProductName" name="baseProductName" required> <br>
-                <br>
-                
-                <label for="hasVariant">Has Varinats:</label>
-                <input type="checkbox" id="hasVariant" name="hasVariant" value="True">
-                <br>
-                  
-                <label for="variantName">Variant name:</label><br>
-                <input type="text" id="variantName" name="variantName"><br>
-
-                <label for="variantColor">Color:</label><br>
-                <input type="text" id="variantColor" name="variantColor"><br>
-
-                <label for="variantStorage">Storage:</label><br>
-                <input type="text" id="variantStorage" name="variantStorage"><br>
-
-                <label for="variantPrice">Price:</label><br>
-                <input type="number" step="0.01" id="variantPrice" name="variantPrice"><br>
-
-                <label for="variantQuantity">Quantity:</label><br>
-                <input type="number" id="variantQuantity" name="variantQuantity"><br>
-
-                <label for="variantOriginalPrice">Original Price:</label><br>
-                <input type="number" step="0.01" id="variantOriginalPrice" name="variantOriginalPrice"><br>
-
-                <label for="variantSellingPrice">Selling Price:</label><br>
-                <input type="number" step="0.01" id="variantSellingPrice" name="variantSellingPrice"><br>
-
-                <label for="variantDescription">Description:</label><br>
-                <textarea id="variantDescription" name="variantDescription"></textarea><br>
-
-                <label for="variantImage">Product Images:</label>
-                <input type="file" id="variantImage" name="variantImage" accept="image/*" multiple required>
-
-                </div>
-                <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <button type="submit" class="btn btn-primary">Add Product</button>
-          
-        </form>
-          </div>
+          </button>
         </div>
-      </div>
-    </div>
-    
-      
-      <!-- nav category ends -->
-    
-      <table class="table table-dark">
-        <thead>
-          <tr>
-            <th scope="col">NO.</th>
-            <th scope="col">Product</th>
-            <th scope="col">Stock</th>
-            <th scope="col">MRP</th>
-            <th scope="col">Selling price</th>
-            <th scope="col">Deleted</th>
-            <th scope="col">Description</th>
-            <th scope="col">Images</th>
-            
-          </tr>
-        </thead>
-        <tbody>
- 
+        {% endif %}
 
-            {% for product in products %}
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item">
+                    <a><button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addProductsModalCenter">
+                        +Add Products
+                    </button></a>
+                </li>
+                <li class="breadcrumb-item">
+                  <a><button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalCenter">
+                      +Add Variants
+                  </button></a>
+              </li>
+            </ol>
+        </nav>
+    </div>
+     
+    {% comment %} add products {% endcomment %}
+
+    <div class="modal fade" id="addProductsModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered" role="document">
+          <div class="modal-content">
+              <div class="modal-header">
+                  <h5 class="modal-title" id="exampleModalLongTitle">Product</h5>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                      <span aria-hidden="true">&times;</span>
+                  </button>
+              </div>
+              
+              <div class="modal-body">
+                
+                <form action="{% url 'add_products' %}" method="POST" enctype="multipart/form-data">
+                  {% csrf_token %}
+                  <label for="productCategory">Category:</label><br>
+                  <select class="col-lg-12" id="productCategory" name="category" required>
+                      {% for category in categories %}
+                      <option value="{{ category.id }}">{{ category.name }}</option>
+                      {% endfor %}
+                  </select>
+                  <br>
+                  <br>
+                  <label for="newProductName">New Product Name:</label><br>
+                  <input type="text" id="newProductName" name="newProductName" required class="col-lg-12">
+                  <br>
+                  <br>
+                  <label for="hasVariant">Has Variants:</label>
+                  <input type="checkbox" id="hasVariant" name="hasVariant" value="True" checked>
+                  <br>
+              
+                  <div class="modal-footer">
+                      <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                      <button type="submit" class="btn btn-primary">Add Product</button>
+                  </div>
+              </form>
+              </div>
+          </div>
+      </div>
+  </div>
+    <!-- Nav category -->
+
+    {% comment %} Add Variants {% endcomment %}
+
+    <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLongTitle">Product</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                
+                <div class="modal-body">
+                  
+                    <form action="{% url 'add_variants' %}" method="POST" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        
+                        <label for="baseProductName">Product Name:</label><br>
+                        <select id="baseProductName" name="baseProduct" required class="col-lg-12">
+                            <option value="" disabled selected>Select the product</option>
+                            {% for product in existingBaseProducts %}
+                            <option value="{{ product.id }}">{{ product.name }}</option>
+                            {% endfor %}
+                        </select>
+                        <br>
+                        <br>
+
+                        <label for="hasVariant">Has Variants:</label>
+                        <input type="checkbox" id="hasVariant" name="hasVariant" value="True" checked>
+                        <br>
+
+                        <label for="variantName">Variant name:</label><br>
+                        <input class="col-lg-12" type="text" id="variantName" name="variantName"><br>
+
+                        <label for="variantColor">Color:</label><br>
+                        <input class="col-lg-12" type="text" id="variantColor" name="variantColor"><br>
+
+                        <label for="variantStorage">Storage:</label><br>
+                        <input class="col-lg-12" type="text" id="variantStorage" name="variantStorage"><br>
+
+                        <label for="variantQuantity">Quantity:</label><br>
+                        <input class="col-lg-12" type="number" id="variantQuantity" name="variantQuantity"><br>
+
+                        <label for="variantOriginalPrice">Original Price:</label><br>
+                        <input class="col-lg-12" type="number" step="0.01" id="variantOriginalPrice" name="variantOriginalPrice"><br>
+
+                        <label for="variantSellingPrice">Selling Price:</label><br>
+                        <input class="col-lg-12" type="number" step="0.01" id="variantSellingPrice" name="variantSellingPrice"><br>
+
+                        <label for="variantDescription">Description:</label><br>
+                        <textarea class="col-lg-12" id="variantDescription" name="variantDescription"></textarea><br>
+
+                        <label for="variantImage">Product Images:</label>
+                        <input class="col-lg-12" type="file" id="variantImage" name="variantImage" accept="image/*" multiple required>
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Add Product</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- nav category ends -->
+
+    <table class="table table-dark">
+      <thead>
+        <tr>
+          <th scope="col">NO.</th>
+          <th scope="col">Base Product</th>  
+          <th scope="col">Variant</th>
+          <th scope="col">Stock</th>
+          <th scope="col">MRP</th>
+          <th scope="col">Selling price</th>
+          <th scope="col">Deleted</th>
+          <th scope="col">Description</th>
+          <th scope="col">Images</th>
+          <th scope="col">Actions</th>
+      </tr>
+      </thead>
+
+        <tbody>
+            {% for variant in variants %}
             <tr>
               <th scope="row">{{ forloop.counter }}</th>
               <td>
-                <div class="product-name">
-                  <span style="display: inline-block; width: 200px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
-                    {{ product.name }}
-                  </span>
-                </div>
-              </td>         
-              <td>{{product.quantity }}</td>
-              <td>{{product.original_price }}</td>
-              <td>{{product.selling_price }}</td>
-              <td><input type="checkbox" disabled {% if product.is_deleted %}checked{% endif %}></td>
-
-              
-    
-              <td>
-                <div class="description-tooltip " style="overflow: auto;">
-                  <span class="description-text">{{ product.description }}</span>
-              </div>
-            </td>
-              <td>
-                <div class=" col-md-3" style="max-width: 210px; overflow: auto;">
-
-                {% for image in product.images.all %}
-                  
-                    <img src="{{ image.product_image.url }}">
-                {% endfor %}
-
-                </div>
+                  <div class="base-product-name">  <!-- Add this div -->
+                      <span style="display: inline-block; width: 100px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+                          {{ variant.product.name }}
+                      </span>
+                  </div>
               </td>
+              <td>
+                  <div class="variant-name">
+                      <span style="display: inline-block; width: 100px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+                          {{ variant.variantname }}
+                      </span>
+                  </div>
+              </td>
+              <td>{{ variant.quantity }}</td>
+              <td>{{ variant.original_price }}</td>
+              <td>{{ variant.selling_price }}</td>
+              <td><input type="checkbox" disabled {% if variant.is_deleted %}checked{% endif %}></td>
+              <td>
+                  <div class="description-tooltip " style="overflow: auto;">
+                      <span class="description-text">{{ variant.description }}</span>
+                  </div>
+              </td>
+              <td>
+                <div class="col-md-3" style="max-width: 100px; overflow: auto;">
+                  {% for image in variant.variation.variant_images.all %}
+                      <img src="{{ image.image.url }}">
+                  {% endfor %}
+              </div>
+              </td>
+              
+              <td>
+                  <a href="{% url 'edit_variants' variant.id %}" class="btn btn-primary" data-toggle="modal" data-target="#editModal{{ variant.id }}">
+                      Edit
+                  </a>
+              </td>
+              <td>
+                  <a href="{% url 'delete_variants' variant.id %}" onclick="return confirm('Are you sure you want to delete?');" class="text-danger">Delete</a>
+              </td>
+          </tr>
+          {% endfor %}
+      </tbody>
+  </table>
 
-            <td>
-            <a href="{% url 'edit_products' product.id %}" class="btn btn-primary" data-toggle="modal" data-target="#editModal{{ product.id }}">
-                Edit
-            </a>
-        </td>
-        <td>
-            <a href="{% url 'delete_products' product.id %}" onclick="return confirm('Are you sure you want to delete?');" class="text-danger">Delete</a>
-        </td>
-    </tr>
-{% endfor %}
-          </tbody>
-        </table>
-        
-      
-      
-        {% for product in products %}
-        <div class="modal fade" id="editModal{{ product.id }}" tabindex="-1" role="dialog" aria-labelledby="editModal{{ product.id }}Title" aria-hidden="true">
+    {% for product in products %}
+    <div class="modal fade" id="editModal{{ product.id }}" tabindex="-1" role="dialog" aria-labelledby="editModal{{ product.id }}Title" aria-hidden="true">
         <style>
-          .icon-image {
-              width: 50px;
-              height: 50px;
-          }
+            .icon-image {
+                width: 50px;
+                height: 50px;
+            }
         </style>
-            <div class="modal-dialog modal-dialog-centered" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="editModal{{ product.id }}Title">Edit Product</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                      <form action="{% url 'edit_products' product.id %}" method="POST" enctype="multipart/form-data">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editModal{{ product.id }}Title">Edit Product</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form action="{% url 'edit_products' product.id %}" method="POST" enctype="multipart/form-data">
                         {% csrf_token %}
                         <label for="productCategory">Category:</label><br>
                         <select id="productCategory" name="category" required>
-                          {% for category in categories %}
+                            {% for category in categories %}
                             <option value="{{ category.id }}" {% if category.id == product.category.id %}selected{% endif %}>{{ category.name }}</option>
-                          {% endfor %}
-                        </select> <br> 
-                    
+                            {% endfor %}
+                        </select> <br>
+
                         <label for="productName">Product Name:</label><br>
-                        <input type="text" id="productName" name="name" value="{{product.name}}" required> <br>
-                    
+                        <input type="text" id="productName" name="name" value="{{ product.name }}" required> <br>
+
                         <label for="productQuantity">Quantity:</label><br>
-                        <input type="number" id="productQuantity" name="quantity" value="{{product.quantity}}" required> <br>
-                    
+                        <input type="number" id="productQuantity" name="quantity" value="{{ product.quantity }}" required> <br>
+
                         <label for="productOriginalPrice">Original Price:</label><br>
-                        <input type="number" step="0.01" id="productOriginalPrice" name="original_price" value="{{product.original_price}}" required> <br>
-                    
+                        <input type="number" step="0.01" id="productOriginalPrice" name="original_price" value="{{ product.original_price }}" required> <br>
+
                         <label for="productSellingPrice">Selling Price:</label><br>
-                        <input type="number" step="0.01" id="productSellingPrice" name="selling_price" value="{{product.selling_price}}" required> <br>
-                    
+                        <input type="number" step="0.01" id="productSellingPrice" name="selling_price" value="{{ product.selling_price }}" required> <br>
+
                         <label for="productDescription">Description:</label><br>
-                        <textarea id="productDescription" name="description" required>{{product.description}}</textarea> <br>
-                        
+                        <textarea id="productDescription" name="description" required>{{ product.description }}</textarea> <br>
+
                         <label for="isDeleted">Is Deleted:</label>
                         <input type="checkbox" id="isDeleted" name="is_deleted" value="True">
 
                         <div class="modal-footer">
-                          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                          <button type="submit" class="btn btn-primary">Save</button>
-                          </form>
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary">Save</button>
                         </div>
+                    </form>
+                </div>
 
-                      </form>
-                    </div>
-                    
-                    <div class="product-images">
-                      {% for image in product.images.all %}
-                        <div class="product-image">
-                          <img src="{{ image.product_image.url }}" alt="Product Image" class="icon-image">
-                          <form action="{% url 'delete_image' image.id %}" method="POST" style="display: inline;">
+                <div class="product-images">
+                    {% for image in product.images.all %}
+                    <div class="product-image">
+                        <img src="{{ image.product_image.url }}" alt="Product Image" class="icon-image">
+                        <form action="{% url 'delete_image' image.id %}" method="POST" style="display: inline;">
                             {% csrf_token %}
                             <button type="submit" class="btn btn-danger delete-image">Delete</button>
-                          </form>
-                        </div>
-                      {% endfor %}
-                    </div> 
-                    
-                    <div class="image-upload">
-                      <form action="{% url 'add_image' product.id %}" method="POST" enctype="multipart/form-data">
+                        </form>
+                    </div>
+                    {% endfor %}
+                </div>
+
+                <div class="image-upload">
+                    <form action="{% url 'add_image' product.id %}" method="POST" enctype="multipart/form-data">
                         {% csrf_token %}
                         <label for="productImage">Product Images:</label>
                         <input type="file" id="productImage" name="image" accept="image/*" multiple required>
                         <button type="submit" class="btn btn-primary">Add Images</button>
-                      </form>
-                    </div>
-                    
-                    
-                    
-                    <script>
-                      // JavaScript code to handle image upload
-                      document.querySelector('.image-upload form').addEventListener('submit', function() {
+                    </form>
+                </div>
+
+                <script>
+                    // JavaScript code to handle image upload
+                    document.querySelector('.image-upload form').addEventListener('submit', function() {
                         const fileInput = document.getElementById('productImage');
                         fileInput.click();
-                      });
-                    </script>
-                    
-                    
-                </div>
+                    });
+                </script>              
             </div>
         </div>
+    </div>
     {% endfor %}
-      {% endblock dashboard %}
-      
+</div>
+
+{% endblock dashboard %}

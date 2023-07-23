@@ -1,9 +1,11 @@
 from django.shortcuts import render, redirect
-from django.contrib.auth import authenticate, login, logout
-from . models import *
+from django.contrib import messages
+from .models import *
 # Create your views here.
 from django.contrib.auth.models import User
-from django.contrib.auth import authenticate, login, logout
+from django.urls import reverse
+
+
 
 
 def admin_login(request): 
@@ -93,33 +95,54 @@ def delete_categories(request, id):
     
 def products(request):
     if 'name' in request.session:
+        variants = Variants.objects.prefetch_related('variation__variant_images').all()
         categories = Category.objects.all()
-        variants = Variants.objects.all()
-        return render(request, 'customadmin/products.html', {'variants':variants,'categories':categories})
+        existingBaseProducts = BaseProducts.objects.all()
+
+        return render(request, 'customadmin/products.html', 
+                      {'variants':variants,
+                       'categories':categories,
+                       'existingBaseProducts':existingBaseProducts,
+                       }
+                      )
     return render(request, 'customadmin/login.html')
 
 def add_products(request):
     if 'name' in request.session:
         if request.method=='POST':
-            category_id = request.POST.get('category')
-            baseProductName = request.POST.get('baseProductName')
+            category_id= request.POST.get('category')
+            baseProductName = request.POST.get('newProductName')
+            has_variant = request.POST.get('hasVariant')=='True'
+
+            category = Category.objects.get(id=category_id)
+
+            if BaseProducts.objects.filter(name=baseProductName, category=category).exists():
+                message = "Product already exists!"
+            else:
+                BaseProducts.objects.create(name=baseProductName, category=category, has_variant=has_variant)
+                message = "Product created successfully!"
+                messages.success(request, message)
+            
+            return redirect('products')
+
+    return render(request, 'customadmin/login.html')
+
+
+def add_variants(request):
+    if 'name' in request.session:
+        if request.method=='POST':
+            baseProduct_id = request.POST.get('baseProduct')
             hasVariant = request.POST.get('hasVariant')
             variantName = request.POST.get('variantName')
             variantColor = request.POST.get('variantColor')
             variantStorage = request.POST.get('variantStorage')
-            variantPrice = request.POST.get('variantPrice')
             variantQuantity = request.POST.get('variantQuantity')
             variantOriginalPrice = request.POST.get('variantOriginalPrice')
             variantSellingPrice = request.POST.get('variantSellingPrice')
             variantDescription = request.POST.get('variantDescription')
             variantImages = request.FILES.getlist('variantImage')
             
-            category = Category.objects.get(id=category_id)
-
-            try:
-                product = BaseProducts.objects.get(name = baseProductName, category=category)
-            except BaseProducts.DoesNotExist:
-                product = BaseProducts.objects.create(name=baseProductName, category=category, has_variant=True)
+            product = BaseProducts.objects.get(id=baseProduct_id)
 
             if hasVariant:
                 variation = Variations.objects.get_or_create(product=product, color=variantColor, storage=variantStorage)[0]
@@ -144,7 +167,12 @@ def add_products(request):
             
     return render(request, 'customadmin/login.html')
 
-    
+def edit_variants(request, id):
+    pass
+
+def delete_variants(request, id):
+    pass
+
 def edit_products(request, id):
     
     if 'name' in request.session:
@@ -173,9 +201,6 @@ def edit_products(request, id):
             return redirect('products')
         
     return render(request, 'customadmin/login.html')
-
-
-
 
 def delete_products(request, id):
     product = Products.objects.get(id=id)
