@@ -104,7 +104,7 @@
                         <br>
 
                         <label for="variantName">Variant name:</label><br>
-                        <input class="col-lg-12" type="text" id="variantName" name="variantName"><br>
+                        <input class="col-lg-12" type="text" id="variantName" name="variantName" required><br>
 
                         <label for="variantColor">Color:</label><br>
                         <input class="col-lg-12" type="text" id="variantColor" name="variantColor"><br>
@@ -113,16 +113,16 @@
                         <input class="col-lg-12" type="text" id="variantStorage" name="variantStorage"><br>
 
                         <label for="variantQuantity">Quantity:</label><br>
-                        <input class="col-lg-12" type="number" id="variantQuantity" name="variantQuantity"><br>
+                        <input class="col-lg-12" type="number" id="variantQuantity" name="variantQuantity" required><br>
 
                         <label for="variantOriginalPrice">Original Price:</label><br>
-                        <input class="col-lg-12" type="number" step="0.01" id="variantOriginalPrice" name="variantOriginalPrice"><br>
+                        <input class="col-lg-12" type="number" step="0.01" id="variantOriginalPrice" name="variantOriginalPrice" required><br>
 
                         <label for="variantSellingPrice">Selling Price:</label><br>
-                        <input class="col-lg-12" type="number" step="0.01" id="variantSellingPrice" name="variantSellingPrice"><br>
+                        <input class="col-lg-12" type="number" step="0.01" id="variantSellingPrice" name="variantSellingPrice" required><br>
 
                         <label for="variantDescription">Description:</label><br>
-                        <textarea class="col-lg-12" id="variantDescription" name="variantDescription"></textarea><br>
+                        <textarea class="col-lg-12" id="variantDescription" name="variantDescription" required></textarea><br>
 
                         <label for="variantImage">Product Images:</label>
                         <input class="col-lg-12" type="file" id="variantImage" name="variantImage" accept="image/*" multiple required>
@@ -142,10 +142,13 @@
     <table class="table table-dark">
       <thead>
         <tr>
-          <th scope="col">NO.</th>
+          <th scope="col">No.</th>
+          <th scope="col">Category</th>
           <th scope="col">Base Product</th>  
           <th scope="col">Variant</th>
           <th scope="col">Stock</th>
+          <th scope="col">Color</th>
+          <th scope="col">Storage</th>
           <th scope="col">MRP</th>
           <th scope="col">Selling price</th>
           <th scope="col">Deleted</th>
@@ -159,6 +162,7 @@
             {% for variant in variants %}
             <tr>
               <th scope="row">{{ forloop.counter }}</th>
+              <td>{{ variant.product.category.name }}</td>
               <td>
                   <div class="base-product-name"> 
                       <span style="display: inline-block; width: 100px; overflow: auto; text-overflow: ellipsis; white-space: nowrap;">
@@ -174,12 +178,15 @@
                   </div>
               </td>
               <td>{{ variant.quantity }}</td>
+              <td>{{ variant.variation.color }}</td>
+              <td>{{ variant.variation.storage }}</td>
               <td>{{ variant.original_price }}</td>
               <td>{{ variant.selling_price }}</td>
               
+              
               <td><input type="checkbox" disabled {% if variant.is_deleted %}checked{% endif %}></td>
               <td>
-                  <div class="description-tooltip " style="overflow: auto;">
+                  <div class="description-tooltip " style="max-width: 100px; overflow: auto;">
                       <span class="description-text">{{ variant.description }}</span>
                   </div>
               </td>
@@ -197,7 +204,7 @@
                   </a>
               </td>
               <td>
-                  <a href="" onclick="return confirm('Are you sure you want to delete?');" class="text-danger">Delete</a>
+                  <a href="{% url 'delete_variants' variant.id %}" onclick="return confirm('Are you sure you want to delete?');" class="text-danger">Delete</a>
               </td>
           </tr>
           {% endfor %}
@@ -238,10 +245,10 @@
                         <input type="text" id="variantName" name="variantName" value="{{ variant.variantname }}" required> <br>
 
                         <label for="variantColor">Color:</label><br>
-                        <input class="col-lg-12" type="text" id="variantColor" name="variantColor" value="{{ variant.variation.color }}" required> <br>
+                        <input class="col-lg-12" type="text" id="variantColor" name="variantColor" value="{{ variant.variation.color }}" > <br>
 
                         <label for="variantStorage">Storage:</label><br>
-                        <input class="col-lg-12" type="text" id="variantStorage" name="variantStorage" value="{{ variant.variation.storage }}" required> <br>
+                        <input class="col-lg-12" type="text" id="variantStorage" name="variantStorage" value="{{ variant.variation.storage }}" > <br>
 
                         <label for="variantQuantity">Quantity:</label><br>
                         <input class="col-lg-12" type="number" id="variantQuantity" name="variantQuantity" value="{{ variant.quantity }}" required> <br>

@@ -5,9 +5,6 @@ from .models import *
 from django.contrib.auth.models import User
 from django.urls import reverse
 
-
-
-
 def admin_login(request): 
     if 'name' in request.session:
         return redirect('admin_home')
@@ -132,7 +129,6 @@ def add_variants(request):
     if 'name' in request.session:
         if request.method=='POST':
             baseProduct_id = request.POST.get('baseProduct')
-            hasVariant = request.POST.get('hasVariant')
             variantName = request.POST.get('variantName')
             variantColor = request.POST.get('variantColor')
             variantStorage = request.POST.get('variantStorage')
@@ -144,10 +140,14 @@ def add_variants(request):
             
             product = BaseProducts.objects.get(id=baseProduct_id)
 
-            if hasVariant:
-                variation = Variations.objects.get_or_create(product=product, color=variantColor, storage=variantStorage)[0]
+            if variantColor and variantStorage:
+                variation, created = Variations.objects.get_or_create(product=product, color=variantColor, storage=variantStorage)
+            elif variantColor:
+                variation, created = Variations.objects.get_or_create(product=product, color=variantColor)
+            elif variantStorage:
+                variation, created = Variations.objects.get_or_create(product=product, storage=variantStorage)
             else:
-                variation = Variations.objects.get_or_create(product=product, color=None, storage=None)[0]
+                variation, created = Variations.objects.get_or_create(product=product)
 
             variant = Variants.objects.create(
                 variation = variation,
@@ -187,11 +187,11 @@ def edit_variants(request, id):
             product = BaseProducts.objects.get(id=product_id)
             
             if variantColor and variantStorage:
-                    variation, created = Variations.objects.get_or_create(product=product, color=variantColor, storage=variantStorage)
+                variation, created = Variations.objects.get_or_create(product=product, color=variantColor, storage=variantStorage)
             elif variantColor:
-                variation, created = Variations.objects.get_or_create(product=product, color=variantColor)
+                variation, created = Variations.objects.get_or_create(product=product, color=variantColor, storage=None)
             elif variantStorage:
-                variation, created = Variations.objects.get_or_create(product=product, storage=variantStorage)
+                variation, created = Variations.objects.get_or_create(product=product,color=None, storage=variantStorage)
             else:
                 variation, created = Variations.objects.get_or_create(product=product)
             
@@ -210,8 +210,7 @@ def edit_variants(request, id):
         
     return render(request, 'customadmin/login.html')      
 
-def delete_variants(request, id):
-    pass
+
 
 def edit_products(request, id):
     
@@ -249,7 +248,8 @@ def edit_products(request, id):
 
 def delete_variants(request, id):
     variant = Variants.objects.get(id=id)
-    variant.delete()
+    variant.is_deleted=True
+    variant.save()
     return redirect('products')
 
 def delete_image(request, id):
