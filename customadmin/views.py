@@ -1,9 +1,11 @@
 from django.shortcuts import render, redirect
-from django.contrib.auth import authenticate, login, logout
-from . models import *
+from django.contrib import messages
+from .models import *
 # Create your views here.
 from django.contrib.auth.models import User
-from django.contrib.auth import authenticate, login, logout
+from django.urls import reverse
+
+
 
 
 def admin_login(request): 
@@ -93,46 +95,128 @@ def delete_categories(request, id):
     
 def products(request):
     if 'name' in request.session:
+        variants = Variants.objects.prefetch_related('variation__variant_images').all()
         categories = Category.objects.all()
-        products = Products.objects.all()
-        return render(request, 'customadmin/products.html', {'products':products,'categories':categories})
+        existingBaseProducts = BaseProducts.objects.all()
+
+        return render(request, 'customadmin/products.html', 
+                      {'variants':variants,
+                       'categories':categories,
+                       'existingBaseProducts':existingBaseProducts,
+                       }
+                      )
     return render(request, 'customadmin/login.html')
 
 def add_products(request):
     if 'name' in request.session:
         if request.method=='POST':
-            category_id = request.POST.get('category')
-            name = request.POST.get('name')
-            quantity = request.POST.get('quantity')
-            original_price = request.POST.get('original_price')
-            selling_price = request.POST.get('selling_price')
-            description = request.POST.get('description')
-            images = request.FILES.getlist('image')
-            is_deleted = request.POST.get('is_deleted') == 'True'
-            
+            category_id= request.POST.get('category')
+            baseProductName = request.POST.get('newProductName')
+            has_variant = request.POST.get('hasVariant')=='True'
+
             category = Category.objects.get(id=category_id)
 
-            product = Products.objects.create(
-                category=category,
-                name=name,
-                quantity=quantity,
-                original_price=original_price,
-                selling_price=selling_price,
-                description=description,
-                is_deleted = is_deleted  # Set the is_deleted field
-            )
-            product.save()
+            if BaseProducts.objects.filter(name=baseProductName, category=category).exists():
+                message = "Product already exists!"
+            else:
+                BaseProducts.objects.create(name=baseProductName, category=category, has_variant=has_variant)
+                message = "Product created successfully!"
+                messages.success(request, message)
+            
+            return redirect('products')
 
-            for image in images:
-                ProductImage.objects.create(product=product, product_image=image)
+    return render(request, 'customadmin/login.html')
+
+
+def add_variants(request):
+    if 'name' in request.session:
+        if request.method=='POST':
+            baseProduct_id = request.POST.get('baseProduct')
+            hasVariant = request.POST.get('hasVariant')
+            variantName = request.POST.get('variantName')
+            variantColor = request.POST.get('variantColor')
+            variantStorage = request.POST.get('variantStorage')
+            variantQuantity = request.POST.get('variantQuantity')
+            variantOriginalPrice = request.POST.get('variantOriginalPrice')
+            variantSellingPrice = request.POST.get('variantSellingPrice')
+            variantDescription = request.POST.get('variantDescription')
+            variantImages = request.FILES.getlist('variantImage')
+            
+            product = BaseProducts.objects.get(id=baseProduct_id)
+
+            if hasVariant:
+                variation = Variations.objects.get_or_create(product=product, color=variantColor, storage=variantStorage)[0]
+            else:
+                variation = Variations.objects.get_or_create(product=product, color=None, storage=None)[0]
+
+            variant = Variants.objects.create(
+                variation = variation,
+                product=product,
+                variantname = variantName,
+                quantity = variantQuantity,
+                original_price = variantOriginalPrice,
+                selling_price = variantSellingPrice,
+                description = variantDescription,
+                is_deleted = False
+            )
+
+            for image in variantImages:
+                VariantImages.objects.create(variation=variation, image=image)
 
             return redirect('products')
+            
     return render(request, 'customadmin/login.html')
-    
+
+def edit_variants(request, id):
+    if 'name' in request.session:
+        
+        variant = Variants.objects.get(id=id)
+
+        if request.method=='POST':
+
+            product_id = request.POST.get('productCategory')
+            variantName = request.POST.get('variantName')
+            variantColor = request.POST.get('variantColor')
+            variantStorage = request.POST.get('variantStorage')
+            variantQuantity = request.POST.get('variantQuantity')
+            variantOriginalPrice = request.POST.get('variantOriginalPrice')
+            variantSellingPrice = request.POST.get('variantSellingPrice')
+            variantDescription = request.POST.get('variantDescription')
+            variantIsDeleted = request.POST.get('variantIsDeleted') == 'True'
+            
+            product = BaseProducts.objects.get(id=product_id)
+            
+            if variantColor and variantStorage:
+                    variation, created = Variations.objects.get_or_create(product=product, color=variantColor, storage=variantStorage)
+            elif variantColor:
+                variation, created = Variations.objects.get_or_create(product=product, color=variantColor)
+            elif variantStorage:
+                variation, created = Variations.objects.get_or_create(product=product, storage=variantStorage)
+            else:
+                variation, created = Variations.objects.get_or_create(product=product)
+            
+            variant.product = product
+            variant.variation = variation
+            variant.variantname = variantName
+            variant.quantity = variantQuantity
+            variant.original_price = variantOriginalPrice
+            variant.selling_price = variantSellingPrice
+            variant.description = variantDescription
+            variant.is_deleted = variantIsDeleted
+            variant.save()
+            
+
+            return redirect('products')
+        
+    return render(request, 'customadmin/login.html')      
+
+def delete_variants(request, id):
+    pass
+
 def edit_products(request, id):
     
     if 'name' in request.session:
-        product = Products.objects.get(id=id)
+        product = Variants.objects.get(id=id)
         
         if request.method == 'POST':
             category_id = request.POST.get('category')
@@ -158,16 +242,18 @@ def edit_products(request, id):
         
     return render(request, 'customadmin/login.html')
 
+# def delete_products(request, id):
+#     product = Products.objects.get(id=id)
+#     product.delete()
+#     return redirect('products')
 
-
-
-def delete_products(request, id):
-    product = Products.objects.get(id=id)
-    product.delete()
+def delete_variants(request, id):
+    variant = Variants.objects.get(id=id)
+    variant.delete()
     return redirect('products')
 
 def delete_image(request, id):
-    image = ProductImage.objects.get(id=id)
+    image = VariantImages.objects.get(id=id)
     image.delete()
     return redirect('products')
         
@@ -175,10 +261,9 @@ def add_image(request, id):
 
     if request.method=='POST':
         images = request.FILES.getlist('image')
-
-        product = Products.objects.get(id=id)
+        variant = Variants.objects.get(id=id)
 
         for image in images:
-            ProductImage.objects.create(product=product, product_image=image)
+            VariantImages.objects.create(variation = variant.variation, image=image)
     
         return redirect('products')
