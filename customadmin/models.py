@@ -6,18 +6,29 @@ class Category(models.Model):
     name = models.CharField(max_length=30, blank=False, null=False)
     image = models.ImageField(upload_to='category')
 
-class Products(models.Model):
-    category = models.ForeignKey(Category, on_delete=models.CASCADE)
-    name = models.CharField(max_length=100, null=False, blank=False)
-    quantity = models.IntegerField(null=False, blank=False)
-    original_price = models.FloatField(null=False, blank=False)
-    selling_price = models.FloatField(null=False, blank = False)
-    description = models.TextField(null=False, blank=False)
+class BaseProducts(models.Model):
+    category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='products')
+    name = models.CharField(max_length=100)
+    has_variant = models.BooleanField(default=False)
+
+class Variations(models.Model):
+    product = models.ForeignKey(BaseProducts, on_delete=models.CASCADE, related_name='variations')
+    color = models.CharField(max_length=50, null=True, blank=True)
+    storage = models.CharField(max_length=50, null=True, blank=True)
+
+class VariantImages(models.Model):
+    variation = models.ForeignKey(Variations, on_delete=models.CASCADE, related_name='variant_images')
+    image = models.ImageField(upload_to='product_images')
+
+class Variants(models.Model):
+    variation = models.ForeignKey(Variations, on_delete=models.CASCADE, related_name='variants')
+    product = models.ForeignKey(BaseProducts, on_delete=models.CASCADE, related_name='variant')
+    variantname = models.CharField(max_length=255)
+    quantity = models.IntegerField()
+    original_price = models.DecimalField(max_digits=10, decimal_places=2)
+    selling_price = models.DecimalField(max_digits=10, decimal_places=2)
+    description = models.TextField()
     is_deleted = models.BooleanField(default=False)
-    
-class ProductImage(models.Model):
-    product = models.ForeignKey(Products, on_delete=models.CASCADE, related_name='images')
-    product_image = models.ImageField(upload_to='product_images')
 
 class UserProfile(models.Model):
     name = models.CharField(max_length=100)
