@@ -6,26 +6,24 @@ class Category(models.Model):
     name = models.CharField(max_length=30, blank=False, null=False)
     image = models.ImageField(upload_to='category')
 
-class Product(models.Model):
+class BaseProducts(models.Model):
     category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='products')
     name = models.CharField(max_length=100)
     has_variant = models.BooleanField(default=False)
 
-class Variation(models.Model):
-    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='variations')
+class Variations(models.Model):
+    product = models.ForeignKey(BaseProducts, on_delete=models.CASCADE, related_name='variations')
     color = models.CharField(max_length=50, null=True, blank=True)
     storage = models.CharField(max_length=50, null=True, blank=True)
 
-class ProductImages(models.Model):
-    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='images')
-    color = models.ForeignKey(Variation, on_delete=models.CASCADE, null=True, blank=True, related_name='color_images')
+class VariantImages(models.Model):
+    variation = models.ForeignKey(Variations, on_delete=models.CASCADE, related_name='variant_images')
     image = models.ImageField(upload_to='product_images')
 
-class Variant(models.Model):
-    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='product_variants')
-    color = models.ForeignKey(Variation, on_delete=models.CASCADE, null=True, blank=True, related_name='color_variants')
-    storage = models.ForeignKey(Variation, on_delete=models.CASCADE, null=True, blank=True, related_name='storage_variants')
-    price = models.DecimalField(max_digits=10, decimal_places=2)
+class Variants(models.Model):
+    variation = models.ForeignKey(Variations, on_delete=models.CASCADE, related_name='variants')
+    product = models.ForeignKey(BaseProducts, on_delete=models.CASCADE, related_name='variant')
+    variantname = models.CharField(max_length=255)
     quantity = models.IntegerField()
     original_price = models.DecimalField(max_digits=10, decimal_places=2)
     selling_price = models.DecimalField(max_digits=10, decimal_places=2)
