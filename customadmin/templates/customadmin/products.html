@@ -47,7 +47,6 @@
               </div>
               
               <div class="modal-body">
-                
                 <form action="{% url 'add_products' %}" method="POST" enctype="multipart/form-data">
                   {% csrf_token %}
                   <label for="productCategory">Category:</label><br>
@@ -102,10 +101,6 @@
                             {% endfor %}
                         </select>
                         <br>
-                        <br>
-
-                        <label for="hasVariant">Has Variants:</label>
-                        <input type="checkbox" id="hasVariant" name="hasVariant" value="True" checked>
                         <br>
 
                         <label for="variantName">Variant name:</label><br>
@@ -165,15 +160,15 @@
             <tr>
               <th scope="row">{{ forloop.counter }}</th>
               <td>
-                  <div class="base-product-name">  <!-- Add this div -->
-                      <span style="display: inline-block; width: 100px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+                  <div class="base-product-name"> 
+                      <span style="display: inline-block; width: 100px; overflow: auto; text-overflow: ellipsis; white-space: nowrap;">
                           {{ variant.product.name }}
                       </span>
                   </div>
               </td>
               <td>
                   <div class="variant-name">
-                      <span style="display: inline-block; width: 100px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+                      <span style="display: inline-block; width: 100px; overflow: auto; text-overflow:  white-space: nowrap;">
                           {{ variant.variantname }}
                       </span>
                   </div>
@@ -181,6 +176,7 @@
               <td>{{ variant.quantity }}</td>
               <td>{{ variant.original_price }}</td>
               <td>{{ variant.selling_price }}</td>
+              
               <td><input type="checkbox" disabled {% if variant.is_deleted %}checked{% endif %}></td>
               <td>
                   <div class="description-tooltip " style="overflow: auto;">
@@ -196,20 +192,22 @@
               </td>
               
               <td>
-                  <a href="{% url 'edit_variants' variant.id %}" class="btn btn-primary" data-toggle="modal" data-target="#editModal{{ variant.id }}">
+                  <a href="" class="btn btn-primary" data-toggle="modal" data-target="#editModal{{ variant.id }}">
                       Edit
                   </a>
               </td>
               <td>
-                  <a href="{% url 'delete_variants' variant.id %}" onclick="return confirm('Are you sure you want to delete?');" class="text-danger">Delete</a>
+                  <a href="" onclick="return confirm('Are you sure you want to delete?');" class="text-danger">Delete</a>
               </td>
           </tr>
           {% endfor %}
       </tbody>
   </table>
 
-    {% for product in products %}
-    <div class="modal fade" id="editModal{{ product.id }}" tabindex="-1" role="dialog" aria-labelledby="editModal{{ product.id }}Title" aria-hidden="true">
+  {% comment %} edit variant modal {% endcomment %}
+
+    {% for variant in variants %}
+    <div class="modal fade" id="editModal{{ variant.id }}" tabindex="-1" role="dialog" aria-labelledby="editModal{{ variant.id }}Title" aria-hidden="true">
         <style>
             .icon-image {
                 width: 50px;
@@ -219,38 +217,46 @@
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="editModal{{ product.id }}Title">Edit Product</h5>
+                    <h5 class="modal-title" id="editModal{{ variant.id }}Title">Edit Variant</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
                 <div class="modal-body">
-                    <form action="{% url 'edit_products' product.id %}" method="POST" enctype="multipart/form-data">
+                    <form action="{% url 'edit_variants' variant.id %}" method="POST" enctype="multipart/form-data">
                         {% csrf_token %}
-                        <label for="productCategory">Category:</label><br>
-                        <select id="productCategory" name="category" required>
-                            {% for category in categories %}
-                            <option value="{{ category.id }}" {% if category.id == product.category.id %}selected{% endif %}>{{ category.name }}</option>
-                            {% endfor %}
+                        <label for="productCategory">Product:</label><br>
+                        <select id="productCategory" name="productCategory" required>
+
+                          {% for product in existingBaseProducts %}
+                          <option value="{{ product.id }}" {% if product.id == variant.product.id %}selected{% endif %}>{{ product.name }}</option>
+                          {% endfor %}
+                      </select> <br>
                         </select> <br>
 
-                        <label for="productName">Product Name:</label><br>
-                        <input type="text" id="productName" name="name" value="{{ product.name }}" required> <br>
+                        <label for="variantName">Variant Name:</label><br>
+                        <input type="text" id="variantName" name="variantName" value="{{ variant.variantname }}" required> <br>
 
-                        <label for="productQuantity">Quantity:</label><br>
-                        <input type="number" id="productQuantity" name="quantity" value="{{ product.quantity }}" required> <br>
+                        <label for="variantColor">Color:</label><br>
+                        <input class="col-lg-12" type="text" id="variantColor" name="variantColor" value="{{ variant.variation.color }}" required> <br>
 
-                        <label for="productOriginalPrice">Original Price:</label><br>
-                        <input type="number" step="0.01" id="productOriginalPrice" name="original_price" value="{{ product.original_price }}" required> <br>
+                        <label for="variantStorage">Storage:</label><br>
+                        <input class="col-lg-12" type="text" id="variantStorage" name="variantStorage" value="{{ variant.variation.storage }}" required> <br>
 
-                        <label for="productSellingPrice">Selling Price:</label><br>
-                        <input type="number" step="0.01" id="productSellingPrice" name="selling_price" value="{{ product.selling_price }}" required> <br>
+                        <label for="variantQuantity">Quantity:</label><br>
+                        <input class="col-lg-12" type="number" id="variantQuantity" name="variantQuantity" value="{{ variant.quantity }}" required> <br>
 
-                        <label for="productDescription">Description:</label><br>
-                        <textarea id="productDescription" name="description" required>{{ product.description }}</textarea> <br>
+                        <label for="variantOriginalPrice">Original Price:</label><br>
+                        <input class="col-lg-12" type="number" step="0.01" id="variantOriginalPrice" name="variantOriginalPrice" value="{{ variant.original_price }}"</input> <br>
 
-                        <label for="isDeleted">Is Deleted:</label>
-                        <input type="checkbox" id="isDeleted" name="is_deleted" value="True">
+                        <label for="variantSellingPrice">Selling Price:</label><br>
+                        <input class="col-lg-12" type="number" step="0.01" id="variantSellingPrice" name="variantSellingPrice" value="{{ variant.selling_price }}"</input> <br>
+
+                        <label for="variantDescription">Description:</label><br>
+                        <textarea class="col-lg-12" id="variantDescription" name="variantDescription" >{{ variant.description }}</textarea><br>
+
+                        <label for="variantIsDeleted">Is Deleted:</label>
+                        <input type="checkbox" id="variantIsDeleted" name="variantIsDeleted" {% if variant.is_deleted %}value="True" checked {% else %}value="{% endif %}">
 
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -259,26 +265,28 @@
                     </form>
                 </div>
 
-                <div class="product-images">
-                    {% for image in product.images.all %}
-                    <div class="product-image">
-                        <img src="{{ image.product_image.url }}" alt="Product Image" class="icon-image">
+                <h5>Delete Images:</h5>
+                <div class="product-images mb-3 mt-3">
+                    {% for image in variant.variation.variant_images.all %}
+                    <span class="product-image">
+                        <img src="{{ image.image.url }}" alt="Product Image" class="icon-image">
                         <form action="{% url 'delete_image' image.id %}" method="POST" style="display: inline;">
                             {% csrf_token %}
-                            <button type="submit" class="btn btn-danger delete-image">Delete</button>
+                            <button type="submit" class="btn btn-danger delete-image"><i class="fas fa-trash-alt"></i></button>
                         </form>
-                    </div>
+                    </span>
                     {% endfor %}
                 </div>
-
-                <div class="image-upload">
-                    <form action="{% url 'add_image' product.id %}" method="POST" enctype="multipart/form-data">
+                <br>
+                
+                <div class="image-upload mt-3">
+                    <form action="{% url 'add_image' variant.id %}" method="POST" enctype="multipart/form-data">
                         {% csrf_token %}
-                        <label for="productImage">Product Images:</label>
+                        <label for="productImage"><b>New Images:</label>
                         <input type="file" id="productImage" name="image" accept="image/*" multiple required>
                         <button type="submit" class="btn btn-primary">Add Images</button>
                     </form>
-                </div>
+                </div> 
 
                 <script>
                     // JavaScript code to handle image upload

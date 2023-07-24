@@ -168,7 +168,47 @@ def add_variants(request):
     return render(request, 'customadmin/login.html')
 
 def edit_variants(request, id):
-    pass
+    if 'name' in request.session:
+        
+        variant = Variants.objects.get(id=id)
+
+        if request.method=='POST':
+
+            product_id = request.POST.get('productCategory')
+            variantName = request.POST.get('variantName')
+            variantColor = request.POST.get('variantColor')
+            variantStorage = request.POST.get('variantStorage')
+            variantQuantity = request.POST.get('variantQuantity')
+            variantOriginalPrice = request.POST.get('variantOriginalPrice')
+            variantSellingPrice = request.POST.get('variantSellingPrice')
+            variantDescription = request.POST.get('variantDescription')
+            variantIsDeleted = request.POST.get('variantIsDeleted') == 'True'
+            
+            product = BaseProducts.objects.get(id=product_id)
+            
+            if variantColor and variantStorage:
+                    variation, created = Variations.objects.get_or_create(product=product, color=variantColor, storage=variantStorage)
+            elif variantColor:
+                variation, created = Variations.objects.get_or_create(product=product, color=variantColor)
+            elif variantStorage:
+                variation, created = Variations.objects.get_or_create(product=product, storage=variantStorage)
+            else:
+                variation, created = Variations.objects.get_or_create(product=product)
+            
+            variant.product = product
+            variant.variation = variation
+            variant.variantname = variantName
+            variant.quantity = variantQuantity
+            variant.original_price = variantOriginalPrice
+            variant.selling_price = variantSellingPrice
+            variant.description = variantDescription
+            variant.is_deleted = variantIsDeleted
+            variant.save()
+            
+
+            return redirect('products')
+        
+    return render(request, 'customadmin/login.html')      
 
 def delete_variants(request, id):
     pass
@@ -202,13 +242,18 @@ def edit_products(request, id):
         
     return render(request, 'customadmin/login.html')
 
-def delete_products(request, id):
-    product = Products.objects.get(id=id)
-    product.delete()
+# def delete_products(request, id):
+#     product = Products.objects.get(id=id)
+#     product.delete()
+#     return redirect('products')
+
+def delete_variants(request, id):
+    variant = Variants.objects.get(id=id)
+    variant.delete()
     return redirect('products')
 
 def delete_image(request, id):
-    image = ProductImage.objects.get(id=id)
+    image = VariantImages.objects.get(id=id)
     image.delete()
     return redirect('products')
         
@@ -216,10 +261,9 @@ def add_image(request, id):
 
     if request.method=='POST':
         images = request.FILES.getlist('image')
-
-        product = Products.objects.get(id=id)
+        variant = Variants.objects.get(id=id)
 
         for image in images:
-            ProductImage.objects.create(product=product, product_image=image)
+            VariantImages.objects.create(variation = variant.variation, image=image)
     
         return redirect('products')
