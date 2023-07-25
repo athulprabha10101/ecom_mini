@@ -130,28 +130,26 @@ def user_home(request):
 
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
 def user_product(request, id):
-    product = Products.objects.get(id=id)
-    images = product.images.all()
+    variant = Variants.objects.get(id=id)
+    images = variant.variation.variant_images.all()
     
     if 'email' in request.session:
         user = UserProfile.objects.get(email=request.session['email'])
-        return render(request, 'store/product.html',
-                    {'product': product, 'images': images, 'user': user})  # Sends a single prod to html
+        return render(request, 'store/product.html',{'variant': variant, 'images': images, 'user': user})  # Sends a single variant to html
     
-    return render(request, 'store/product.html',
-                {'product': product, 'images': images, 'user':'none'}) 
+    return render(request, 'store/product.html',{'variant': variant, 'images': images, 'user':'none'}) 
 
 
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
 def cat_product(request, id):
     cat = Category.objects.get(id=id)
-    products = Products.objects.filter(category=cat)
+    variants = Variants.objects.filter(product__category=cat)
     
     if 'email' in request.session:
         user = UserProfile.objects.get(email=request.session['email'])
-        return render(request, 'store/cat_products.html', {'products': products, 'user': user})
+        return render(request, 'store/cat_products.html', {'products': variants, 'user': user})
     
-    return render(request, 'store/cat_products.html', {'products': products, 'user':'none'})
+    return render(request, 'store/cat_products.html', {'products': variants, 'user':'none'})
 
 
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)

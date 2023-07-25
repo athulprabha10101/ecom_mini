@@ -71,14 +71,14 @@
                 </div><!-- End .toolbox -->
 
                 <div class="products mb-3">
-                    <div class="row justify-content-center">
-                        {% for product in products  %}
+                    <div class="row justify-content-start">
+                        {% for variant in products  %}
                         <div class="col-6 col-md-4 col-lg-4 col-xl-3">
                             <div class="product product-7 text-center">
                                 <figure class="product-media">
                                     <span class="product-label label-new">New</span>
-                                    <a href="{% url 'user_product' product.id %}">
-                                        <img src="{{product.images.first.product_image.url}}" alt="Product image" class="product-image">
+                                    <a href="{% url 'user_product' variant.id %}">
+                                        <img src="{{variant.variation.variant_images.first.image.url}}" alt="Product image" class="product-image">
                                     </a>
                                     <div class="product-action-vertical">
                                         <a href="#" class="btn-product-icon btn-wishlist btn-expandable"><span>add to wishlist</span></a>
@@ -95,9 +95,11 @@
                                     <div class="product-cat">
                                         <a href="#"></a>
                                     </div><!-- End .product-cat -->
-                                    <h3 class="product-title"><a href="{% url 'user_product' product.id %}">{{product.name}}</a></h3><!-- End .product-title -->
-                                    <div class="product-price">
-                                        $60.00
+
+                                    <h3 class="product-title" style=" overflow: hidden; text-overflow: ellipsis;"><a href="{% url 'user_product' variant.id %}">{{variant.variantname | truncatechars:50}}</a></h3><!-- End .product-title -->
+                                    <div class="product-price d-flex justify-content-between">
+                                        <span class="text-decoration-line-through text-danger">{{variant.original_price}}</span>
+                                        <span class="text-primary">{{variant.selling_price}}</span>
                                     </div><!-- End .product-price -->
                                     <div class="ratings-container">
                                         <div class="ratings">
