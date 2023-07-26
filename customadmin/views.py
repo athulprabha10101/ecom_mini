@@ -131,7 +131,7 @@ def add_variants(request):
             baseProduct_id = request.POST.get('baseProduct')
             variantName = request.POST.get('variantName')
             variantColor = request.POST.get('variantColor')
-            variantStorage = request.POST.get('variantStorage')
+            # variantStorage = request.POST.get('variantStorage')
             variantQuantity = request.POST.get('variantQuantity')
             variantOriginalPrice = request.POST.get('variantOriginalPrice')
             variantSellingPrice = request.POST.get('variantSellingPrice')
@@ -140,12 +140,9 @@ def add_variants(request):
             
             product = BaseProducts.objects.get(id=baseProduct_id)
 
-            if variantColor and variantStorage:
-                variation, created = Variations.objects.get_or_create(product=product, color=variantColor, storage=variantStorage)
-            elif variantColor:
+           
+            if variantColor:
                 variation, created = Variations.objects.get_or_create(product=product, color=variantColor)
-            elif variantStorage:
-                variation, created = Variations.objects.get_or_create(product=product, storage=variantStorage)
             else:
                 variation, created = Variations.objects.get_or_create(product=product)
 
@@ -177,7 +174,7 @@ def edit_variants(request, id):
             product_id = request.POST.get('productCategory')
             variantName = request.POST.get('variantName')
             variantColor = request.POST.get('variantColor')
-            variantStorage = request.POST.get('variantStorage')
+            # variantStorage = request.POST.get('variantStorage')
             variantQuantity = request.POST.get('variantQuantity')
             variantOriginalPrice = request.POST.get('variantOriginalPrice')
             variantSellingPrice = request.POST.get('variantSellingPrice')
@@ -186,12 +183,12 @@ def edit_variants(request, id):
             
             product = BaseProducts.objects.get(id=product_id)
             
-            if variantColor and variantStorage:
-                variation, created = Variations.objects.get_or_create(product=product, color=variantColor, storage=variantStorage)
-            elif variantColor:
-                variation, created = Variations.objects.get_or_create(product=product, color=variantColor, storage=None)
-            elif variantStorage:
-                variation, created = Variations.objects.get_or_create(product=product,color=None, storage=variantStorage)
+            # if variantColor and variantStorage:
+            #     variation, created = Variations.objects.get_or_create(product=product, color=variantColor, storage=variantStorage)
+            if variantColor:
+                variation, created = Variations.objects.get_or_create(product=product, color=variantColor)
+            # elif variantStorage:
+            #     variation, created = Variations.objects.get_or_create(product=product,color=None, storage=variantStorage)
             else:
                 variation, created = Variations.objects.get_or_create(product=product)
             

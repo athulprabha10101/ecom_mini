@@ -3,6 +3,7 @@ from django.shortcuts import render, redirect
 from django.views.decorators.cache import cache_control
 from customadmin.models import *
 from twilio.rest import Client
+from django.contrib import messages
 
 # Create your views here.
 from django.contrib.auth.models import User
@@ -271,16 +272,34 @@ def edit_details(request, id):
     return redirect('user_login')
 
 
-def display_cart(request, id=None):
+def add_to_cart(request, id):
     
-    if id is None:
-        return redirect('user_login')
-    
-    else:
-        user = UserProfile.objects.get(id=id)
-        cart = Cart.objects.get(user=user)
-        variant = cart.items.all()
+    if 'email' in request.session:
 
-        return render(request, 'store/cart.html', {'cart':variant})
+        user = UserProfile.objects.get(email=request.session['email'])
         
+        if request.method == 'POST':
+            variant = Variants.objects.get(id=id)
+            cart, created = Cart.objects.get_or_create(user=user)
+
+            try:
+                check = cart.cart_items.get(item=variant)
+                messages.success(request," already added to cart .... ")    
+                return redirect('user_product', id=id)
+            except:
+                CartItem.objects.create(cart=cart, item=variant, quantity=1)
+                messages.success(request," added to cart .... ")
+                return redirect('user_product', id=id)
+            
+    messages.warning(request,"Not logged in ...")
+    return redirect('user_product')
+
+def display_cart(request, id):
+# WAIT
+    if 'email' in request.session:
         
+        user = UserProfile.objects.get(id=id)
+        cart, created = Cart.objects.get_or_create(user=user)
+        variant = cart.cart_items.all()
+
+    return redirect(user_login)

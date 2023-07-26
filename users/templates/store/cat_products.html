@@ -87,7 +87,9 @@
                                     </div><!-- End .product-action-vertical -->
 
                                     <div class="product-action">
-                                        <a href="{% url 'display_cart' user.id %}" class="btn-product btn-cart"><span>add to cart</span></a>
+                                        
+                                        <a href="{% url 'add_to_cart' variant.id %}" class="btn-product btn-cart"><span>add to cart</span></a>
+                                        
                                     </div><!-- End .product-action -->
                                 </figure><!-- End .product-media -->
 

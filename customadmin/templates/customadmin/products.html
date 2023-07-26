@@ -106,10 +106,7 @@
                         <input class="col-lg-12" type="text" id="variantName" name="variantName" required><br>
 
                         <label for="variantColor">Color:</label><br>
-                        <input class="col-lg-12" type="text" id="variantColor" name="variantColor"><br>
-
-                        <label for="variantStorage">Storage:</label><br>
-                        <input class="col-lg-12" type="text" id="variantStorage" name="variantStorage"><br>
+                        <input class="col-lg-12" type="text" id="variantColor" name="variantColor"><br
 
                         <label for="variantQuantity">Quantity:</label><br>
                         <input class="col-lg-12" type="number" id="variantQuantity" name="variantQuantity" required><br>
@@ -147,7 +144,7 @@
           <th scope="col">Variant</th>
           <th scope="col">Stock</th>
           <th scope="col">Color</th>
-          <th scope="col">Storage</th>
+          
           <th scope="col">MRP</th>
           <th scope="col">Selling price</th>
           <th scope="col">Deleted</th>
@@ -178,7 +175,7 @@
               </td>
               <td>{{ variant.quantity }}</td>
               <td>{{ variant.variation.color }}</td>
-              <td>{{ variant.variation.storage }}</td>
+              
               <td>{{ variant.original_price }}</td>
               <td>{{ variant.selling_price }}</td>
               
@@ -245,9 +242,6 @@
 
                         <label for="variantColor">Color:</label><br>
                         <input class="col-lg-12" type="text" id="variantColor" name="variantColor" value="{{ variant.variation.color }}" > <br>
-
-                        <label for="variantStorage">Storage:</label><br>
-                        <input class="col-lg-12" type="text" id="variantStorage" name="variantStorage" value="{{ variant.variation.storage }}" > <br>
 
                         <label for="variantQuantity">Quantity:</label><br>
                         <input class="col-lg-12" type="number" id="variantQuantity" name="variantQuantity" value="{{ variant.quantity }}" required> <br>

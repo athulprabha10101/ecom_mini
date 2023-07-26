@@ -14,7 +14,6 @@ class BaseProducts(models.Model):
 class Variations(models.Model):
     product = models.ForeignKey(BaseProducts, on_delete=models.CASCADE, related_name='variations')
     color = models.CharField(max_length=50, null=True, blank=True)
-    storage = models.CharField(max_length=50, null=True, blank=True)
 
 class VariantImages(models.Model):
     variation = models.ForeignKey(Variations, on_delete=models.CASCADE, related_name='variant_images')
@@ -54,3 +53,13 @@ class UserAddress(models.Model):
 class AdminProfile(models.Model):
     name = models.CharField(max_length=100)
     password = models.CharField(max_length=20)
+
+class Cart(models.Model):
+    user = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
+
+class CartItem(models.Model):
+    cart = models.ForeignKey(Cart, on_delete=models.CASCADE, related_name='cart_items')
+    item = models.ForeignKey(Variants, on_delete=models.CASCADE)
+    quantity = models.PositiveIntegerField(default=1)
+
+    
