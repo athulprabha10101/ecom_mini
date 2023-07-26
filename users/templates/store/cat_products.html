@@ -72,7 +72,7 @@
 
                 <div class="products mb-3">
                     <div class="row justify-content-start">
-                        {% for variant in products  %}
+                        {% for variant in products %}
                         <div class="col-6 col-md-4 col-lg-4 col-xl-3">
                             <div class="product product-7 text-center">
                                 <figure class="product-media">
@@ -87,7 +87,7 @@
                                     </div><!-- End .product-action-vertical -->
 
                                     <div class="product-action">
-                                        <a href="#" class="btn-product btn-cart"><span>add to cart</span></a>
+                                        <a href="{% url 'display_cart' user.id %}" class="btn-product btn-cart"><span>add to cart</span></a>
                                     </div><!-- End .product-action -->
                                 </figure><!-- End .product-media -->
 

@@ -112,7 +112,7 @@
                                     </div><!-- End .details-filter-row -->
                                
                                     <div class="product-details-action">
-                                        <a href="#" class="btn-product btn-cart"><span>add to cart</span></a>
+                                        <a href="{% url 'display_cart' user.id %}" class="btn-product btn-cart"><span>add to cart</span></a>
                                     </div>
                                     {% else %}
                                     
@@ -310,7 +310,9 @@
                                 </div><!-- End .product-action-vertical -->
 
                                 <div class="product-action">
+                                    
                                     <a href="#" class="btn-product btn-cart"><span>add to cart</span></a>
+                                    
                                 </div><!-- End .product-action -->
                             </figure><!-- End .product-media -->
 

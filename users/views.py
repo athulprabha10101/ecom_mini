@@ -269,3 +269,18 @@ def edit_details(request, id):
         return render(request, 'store/user_profile.html', {'user':user})
 
     return redirect('user_login')
+
+
+def display_cart(request, id=None):
+    
+    if id is None:
+        return redirect('user_login')
+    
+    else:
+        user = UserProfile.objects.get(id=id)
+        cart = Cart.objects.get(user=user)
+        variant = cart.items.all()
+
+        return render(request, 'store/cart.html', {'cart':variant})
+        
+        
