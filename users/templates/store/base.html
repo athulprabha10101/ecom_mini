@@ -3,7 +3,7 @@
 <html lang="en">
 
 
-<!-- molla/index-3.html  22 Nov 2019 09:55:42 GMT -->
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -14,7 +14,6 @@
     <meta name="author" content="p-themes">
     <!-- Favicon -->
     <link rel="apple-touch-icon" sizes="180x180" href="{% static 'user_assets/images/icons/apple-touch-icon.png' %}">
-    {% comment %} <link rel="icon" type="image/png" sizes="32x32" href="{% static ' {% static 'user_assets/images/icons/favicon-32x32.png' %} ' %}"> {% endcomment %}
     <link rel="icon" type="image/png" sizes="16x16" href="{% static 'user_assets/images/icons/favicon-16x16.png' %}">
     <link rel="manifest" href="{% static 'user_assets/images/icons/site.html' %}">
     <link rel="mask-icon" href="{% static 'user_assets/images/icons/safari-pinned-tab.svg' %}" color="#666666">
@@ -41,10 +40,10 @@
 
 <body>
     <div class="page-wrapper">
-        <header class="header header-intro-clearance header-3">
-            <div class="header-top">
+        <header class="header header-intro-clearance header-3 " style='background-color: #3aacaf; color:#ffffff; ' >
+            <div class="header-top" style='background-color: #3aacaf; color:#ffffff; '>
                 
-                <div class="container">
+                <div class="container ">
                     
                     <div class="header-left">
                         <a href="{% static 'tel:#' %}"><i class="icon-phone"></i>Call: +0123 456 789</a>
@@ -58,9 +57,9 @@
                                 <a href="#">Links</a>
                                 <ul>
                                     <li>
-                                        <div class="header-dropdown">
+                                        <div class="header-dropdown" >
                                             <a href="#">USD</a>
-                                            <div class="header-menu">
+                                            <div class="header-menu" style='background-color:#3aacaf; color:#ffffff;'>
                                                 <ul>
                                                     <li><a href="#">Eur</a></li>
                                                     <li><a href="#">Usd</a></li>
@@ -69,9 +68,9 @@
                                         </div>
                                     </li>
                                     <li>
-                                        <div class="header-dropdown">
+                                        <div class="header-dropdown" >
                                             <a href="#">English</a>
-                                            <div class="header-menu">
+                                            <div class="header-menu" style='background-color: #3aacaf; color:#ffffff;'>
                                                 <ul>
                                                     <li><a href="#">English</a></li>
                                                     <li><a href="#">French</a></li>
@@ -97,8 +96,9 @@
             </div><!-- End .header-top -->
             
 
-            <div class="header-middle">
-                <div class="container">
+            <div class="header-middle" style="background-image: url('{% static "assets/images/pexels-steve-johnson-1044990.jpg" %}');  background-size:cover; background-position: center bottom; background-repeat: no-repeat;">
+            
+                <div class="container" >
                     <div class="header-left">
                         <button class="mobile-menu-toggler">
                             <span class="sr-only">Toggle mobile menu</span>
@@ -106,7 +106,7 @@
                         </button>
                         
                         <a href="{% url 'user_home' %}" class="logo">
-                            <img src="{% static 'user_assets/images/demos/demo-3/logo.png' %}" alt="Molla Logo" width="105" height="25">
+                            <img src="{% static 'user_assets/images/demos/demo-3/logo1.png'%}" alt="" width="125" height="125">
                         </a>
                     </div><!-- End .header-left -->
                     
@@ -125,12 +125,12 @@
                     </div>
 
                     <div class="header-right">
-                        <div class="dropdown compare-dropdown">
+                        <div class="dropdown compare-dropdown" >
                             <a href="#" class="dropdown-toggle" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-display="static" title="Compare Products" aria-label="Compare Products">
                                 <div class="icon">
                                     <i class="icon-random"></i>
                                 </div>
-                                <p>Compare</p>
+                                <p style='color:#ffffff;'>Compare</p>
                             </a>
 
                             <div class="dropdown-menu dropdown-menu-right">
@@ -152,13 +152,13 @@
                             </div><!-- End .dropdown-menu -->
                         </div><!-- End .compare-dropdown -->
 
-                        <div class="wishlist">
+                        <div class="wishlist" >
                             <a href="{% static 'wishlist.html' %}" title="Wishlist">
                                 <div class="icon">
                                     <i class="icon-heart-o"></i>
                                     <span class="wishlist-count badge">3</span>
                                 </div>
-                                <p>Wishlist</p>
+                                <p style='color:#ffffff;'>Wishlist</p>
                             </a>
                         </div><!-- End .compare-dropdown -->
 
@@ -168,7 +168,7 @@
                                     <i class="icon-shopping-cart"></i>
                                     <span class="cart-count">2</span>
                                 </div>
-                                <p>Cart</p>
+                                <p style='color:#ffffff;'>Cart</p>
                             </a>
 
                             {% comment %} <div class="dropdown-menu dropdown-menu-right">
@@ -284,7 +284,7 @@
                                                 </div><!-- End .demo-item -->
 
                                                 <div class="demo-item">
-                                                    <a href="{% static 'index-3.html' %}">
+                                                    <a href="{% static 'homepage' %}">
                                                         <span class="demo-bg" style="background-image: url ('{% static 'user_assets/images/menu/demos/3.jpg' %}')"></span>
                                                         <span class="demo-title">03 - electronic store</span>
                                                     </a>
@@ -640,14 +640,14 @@
         
         {% endblock content %}
         
-        <footer class="footer">
+        <footer class="footer" style="color: #fff; background-color: #3aacaf;">
         	<div class="footer-middle">
 	            <div class="container">
 	            	<div class="row">
 	            		<div class="col-sm-6 col-lg-3">
 	            			<div class="widget widget-about">
 	            				<img src="{% static 'user_assets/images/demos/demo-3/logo-footer.png' %}" class="footer-logo" alt="Footer Logo" width="105" height="25">
-	            				<p>Praesent dapibus, neque id cursus ucibus, tortor neque egestas augue, eu vulputate magna eros eu erat. </p>
+	            				<p style="color: #fff;">Praesent dapibus, neque id cursus ucibus, tortor neque egestas augue, eu vulputate magna eros eu erat. </p>
 
 	            				<div class="widget-call">
                                     <i class="icon-phone"></i>
@@ -713,7 +713,7 @@
 	        </div><!-- End .footer-bottom -->
         </footer><!-- End .footer -->
     </div><!-- End .page-wrapper -->
-    <button id="scroll-top" title="Back to Top"><i class="icon-arrow-up"></i></button>
+    <button id="scroll-top" style="border: 1px solid black"title="Back to Top"><i class="icon-arrow-up "></i></button>
 
     <!-- Mobile Menu -->
     <div class="mobile-menu-overlay"></div><!-- End .mobil-menu-overlay -->
@@ -747,7 +747,7 @@
                                 <ul>
                                     <li><a href="{% static 'index-1.html' %}">01 - furniture store</a></li>
                                     <li><a href="{% static 'index-2.html' %}">02 - furniture store</a></li>
-                                    <li><a href="{% static 'index-3.html' %}">03 - electronic store</a></li>
+                                    <li><a href="{% static 'homepage' %}">03 - electronic store</a></li>
                                     <li><a href="{% static 'index-4.html' %}">04 - electronic store</a></li>
                                     <li><a href="{% static 'index-5.html' %}">05 - fashion store</a></li>
                                     <li><a href="{% static 'index-6.html' %}">06 - fashion store</a></li>
@@ -1065,5 +1065,5 @@
 </body>
 
 
-<!-- molla/index-3.html  22 Nov 2019 09:55:58 GMT -->
+<!-- molla/homepage  22 Nov 2019 09:55:58 GMT -->
 </html>

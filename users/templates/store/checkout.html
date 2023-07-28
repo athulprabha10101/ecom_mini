@@ -1,0 +1,237 @@
+{% extends 'store/base.html' %}
+{% load static %}
+{% block content %}
+    
+    
+    <main class="main">
+        <div class="page-header text-center" >
+            <div class="container">
+                <h1 class="page-title">Checkout<span>Shop</span></h1>
+            </div><!-- End .container -->
+        </div><!-- End .page-header -->
+        <nav aria-label="breadcrumb" class="breadcrumb-nav">
+            <div class="container">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="index.html">Home</a></li>
+                    <li class="breadcrumb-item"><a href="#">Shop</a></li>
+                    <li aria-current="page" class="breadcrumb-item active">Checkout</li>
+                </ol>
+            </div><!-- End .container -->
+        </nav><!-- End .breadcrumb-nav -->
+    
+        <div class="page-content">
+            <div class="checkout">
+                <div class="container">
+                    <div class="checkout-discount">
+                        <form action="#">
+                            <input class="form-control" id="checkout-discount-input" required type="text">
+                            <label class="text-truncate" for="checkout-discount-input">Have a coupon? <span>Click here to enter your code</span></label>
+                        </form>
+                    </div><!-- End .checkout-discount -->
+                    <form  action="" id="order_form" method="POST">
+                        {% csrf_token %}
+                        <div class="row">
+                            <aside class="col-lg-4">
+                                <div class="summary summary-cart">
+                                    <h3 class="summary-title">Cart Total</h3><!-- End .summary-title -->
+        
+                                    <table class="table table-summary">
+                                        <tbody>
+                                            <tr class="summary-subtotal">
+                                                <td>Subtotal:</td>
+                                                <td>{{cart.totalprice}}</td>
+                                            </tr><!-- End .summary-subtotal -->
+                                            <tr class="summary-shipping">
+                                                <td>Shipping:</td>
+                                                <td>&nbsp;</td>
+                                            </tr>
+        
+                                            <tr class="summary-shipping-row">
+                                                <td>
+                                                    <div class="custom-control custom-radio">
+                                                        <input class="custom-control-input" id="free-shipping" name="shipping" type="radio">
+                                                        <label class="custom-control-label" for="free-shipping">Free Shipping</label>
+                                                    </div><!-- End .custom-control -->
+                                                </td>
+                                                <td>$0.00</td>
+                                            </tr><!-- End .summary-shipping-row -->
+        
+                                            <tr class="summary-shipping-row">
+                                                <td>
+                                                    <div class="custom-control custom-radio">
+                                                        <input class="custom-control-input" id="standart-shipping" name="shipping" type="radio">
+                                                        <label class="custom-control-label" for="standart-shipping">Standart:</label>
+                                                    </div><!-- End .custom-control -->
+                                                </td>
+                                                <td>$10.00</td>
+                                            </tr><!-- End .summary-shipping-row -->
+        
+                                            <tr class="summary-shipping-row">
+                                                <td>
+                                                    <div class="custom-control custom-radio">
+                                                        <input class="custom-control-input" id="express-shipping" name="shipping" type="radio">
+                                                        <label class="custom-control-label" for="express-shipping">Express:</label>
+                                                    </div><!-- End .custom-control -->
+                                                </td>
+                                                <td>$20.00</td>
+                                            </tr><!-- End .summary-shipping-row -->
+        
+                                            <tr class="summary-shipping-estimate">
+                                                <td>Estimate for Your Country<br> <a href="{% static 'dashboard.html' %}">Change address</a></td>
+                                                <td>&nbsp;</td>
+                                            </tr><!-- End .summary-shipping-estimate -->
+        
+                                            <tr class="summary-total">
+                                                <td>Total:</td>
+                                                <td>$160.00</td>
+                                            </tr><!-- End .summary-total -->
+                                        </tbody>
+                                    </table><!-- End .table table-summary -->
+        
+                                    <a class="btn btn-success btn-block" href="">PLACE ORDER</a>
+                                </div><!-- End .summary -->
+        
+                                <a class="btn btn-outline-dark-2 btn-block mb-3" href="{% static 'category.html' %}"><span>CONTINUE SHOPPING</span><i class="icon-refresh"></i></a>
+                            </aside>
+                            <div class="col-lg-7">
+                                <button class="btn btn-lg btn-primary" data-bs-target="#exampleModal" data-bs-toggle="modal"
+                                        type="button">
+                                    + Add new address
+                                </button>
+                                    <div class="row" class="'col-lg-7" >
+                                        <div class="card card-dashboard">
+                                                <div class="card-body">
+                                                    <h3 class="card-title">Shipping Address</h3><!-- End .card-title -->
+                                    {% for address in addresses %}
+                                    {% if not address.deleted %}
+                                    <div class="col-lg-6">
+                                        <div class="card card-dashboard">
+                                            <div class="card-body">
+                                                <h3 class="card-title"> Address {{forloop.counter}} </h3>
+                                                <!-- End .card-title -->
+
+                                                <p>{{address.address_line1}}<br>
+                                                    {{address.address_line2}}<br>
+                                                    {{address.city}}<br>
+                                                    {{address.state}}<br>
+                                                    {{address.country}}<br>
+                                                    {{address.pin}}<br>
+                                                    
+
+                                                    <div class="form-check">
+                                                        <input class="form-check-input" id="defaultAddress{{address.id}}" name="default_address" type="radio" value="{{address.id}}">
+                                                        <label class="form-check-label" for="defaultAddress{{address.id}}">
+                                                          Select
+                                                        </label>
+                                                      </div>
+                 
+                                            
+                                            </div><!-- End .card-body -->
+                                        </div><!-- End .card-dashboard -->
+                                    </div><!-- End .col-lg-6 -->
+
+                                    {% endif %}
+                                    {% endfor %}
+                                                   
+
+                                <br>
+
+                                <!-- Modal -->
+                                <div aria-hidden="true" aria-labelledby="exampleModalLabel" class="modal fade"
+                                     id="exampleModal" tabindex="-1">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h1 class="modal-title fs-5" id="exampleModalLabel">Modal title</h1>
+                                                <button aria-label="Close" class="btn-close" data-bs-dismiss="modal"
+                                                        type="button"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <form action="{% url 'add_address' %}" method="POST">
+                                                    {% csrf_token %}
+
+                                                    <div class="modal-body">
+                                                        <label for="addressLine1" style="width: 100%;">Address line
+                                                            1</label><br>
+                                                        <input id="addressLine1" name="address1" required style="width: 100%;"
+                                                               type="text">
+                                                    </div>
+
+                                                    <div class="modal-body">
+                                                        <label for="addressLine2" style="width: 100%;">Address line
+                                                            2</label><br>
+                                                        <input id="addressLine2" name="address2" required style="width: 100%;"
+                                                               type="text">
+                                                    </div>
+
+                                                    <div class="modal-body">
+                                                        <label for="addressLine1" style="width: 100%;">City</label><br>
+                                                        <input id="city" name="city" required style="width: 100%;"
+                                                               type="text">
+                                                    </div>
+
+                                                    <div class="modal-body">
+                                                        <label for="addressLine1" style="width: 100%;">State</label><br>
+                                                        <input id="state" name="state" required style="width: 100%;"
+                                                               type="text">
+                                                    </div>
+
+                                                    <div class="modal-body">
+                                                        <label for="addressLine1"
+                                                               style="width: 100%;">Country</label><br>
+                                                        <input id="country" name="country" required style="width: 100%;"
+                                                               type="text">
+                                                    </div>
+
+                                                    <div class="modal-body">
+                                                        <label for="addressLine1" style="width: 100%;">PIN</label><br>
+                                                        <input id="pin" name="pin" required style="width: 100%;"
+                                                               type="text">
+                                                    </div>
+                                                    
+                                                    <div>
+                                                    <input id="defaultCheckbox" name="is_default" type="checkbox" value="True">
+                                                    <label for="defaultCheckbox">Set as Default</label>
+                                                    </div>
+                                                    
+                                                    <div class="modal-footer">
+                                                            <a href=""></a>
+                                                        <button class="btn btn-primary" type="submit">Add Address
+                                                        </button>
+                                                    </div>
+
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>                                                                                                                                                                                                                                               
+                                </div><!-- End .summary -->                                
+                            </aside><!-- End .col-lg-3 -->
+
+                            <table>
+                                <tbody>
+                                    {% for item in cartitems %}
+                                    <tr>
+                                        <td><a href="#">{{ item.products.name }}</a></td>
+                                        <td><div class="text-center" >{{ item.quantity }}</div></td>
+                                        <td>{{ item.product_total }}</td>
+                                    </tr>
+                                     {% endfor %}
+                                    <tr>
+                                        
+                                    </tr>
+                                    <tr class="summary-total">
+                                        
+                                        <td>{{cart.total_price}} </td>
+                                    </tr><!-- End .summary-total -->
+                                </tbody>
+                            </table><!-- End .table table-summary -->
+                        </div><!-- End .row -->
+                        <input id="selected_payment" name="payment_method"  type="hidden"  value="">
+                    </form>
+                </div><!-- End .container -->
+            </div><!-- End .checkout -->
+        </div><!-- End .page-content -->
+    </main><!-- End .main -->
+    
+{% endblock %}

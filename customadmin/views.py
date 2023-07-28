@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from django.contrib import messages
-from .models import *
+from customadmin.models import *
 # Create your views here.
 from django.contrib.auth.models import User
 from django.urls import reverse

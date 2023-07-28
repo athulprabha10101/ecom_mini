@@ -1,4 +1,6 @@
 from django.db import models
+import random
+import string
 
 # Create your models here.
 
@@ -47,6 +49,7 @@ class UserAddress(models.Model):
     state = models.CharField(max_length=30)
     country = models.CharField(max_length=30)
     pin = models.CharField(max_length=30)
+    default = models.BooleanField(default=False)
     deleted = models.BooleanField(default=False)
 
     
@@ -57,9 +60,57 @@ class AdminProfile(models.Model):
 class Cart(models.Model):
     user = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
 
+    @property
+    def totalprice(self):
+        total = 0
+        for item in self.cart_items.all():
+            total += item.item.selling_price * item.quantity
+        return total
+
 class CartItem(models.Model):
     cart = models.ForeignKey(Cart, on_delete=models.CASCADE, related_name='cart_items')
     item = models.ForeignKey(Variants, on_delete=models.CASCADE)
     quantity = models.PositiveIntegerField(default=1)
 
+    @property
+    def subtotal(self):
+       return self.item.selling_price * self.quantity
+
+class Orders(models.Model):
+    
+    payment_choices = (
+        ('card', 'Debit/Credit card'),
+        ('cod', 'Cash on delivery'),
+        ('net_banking', 'Internet Banking'),
+        ('upi', 'Pay using UPI app')
+    )
+    order_status_choices = (
+        ('processing', 'Procrssing'),
+        ('delivered', 'Delivered'),
+        ('out', 'Out of delivery'),
+        ('cancelled', 'Cancelled'),
+        ('delivered', 'Delivered'),
+        ('shipped', 'Shipped'),
+        ('pending', 'Pending'),
+    )
+    def generate_orderId(self):
+        chars = string.ascii_uppercase + string.digits
+        return ''.join(random.choice(chars) for _ in range(10))
+    
+    order_num = models.CharField(max_length=20, default=generate_orderId)
+    user = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
+    order_address = models.ForeignKey(UserAddress, on_delete=models.CASCADE)
+    order_date = models.DateTimeField(auto_now_add=True)
+    payment_type = models.CharField(max_length=100, choices=payment_choices, default='Cash on delivery')
+    order_status = models.CharField(max_length=100, choices=order_status_choices, default='Procrssing')
+    
+class Order_items(models.Model):
+    order = models.ForeignKey(Orders, on_delete=models.CASCADE)
+    item = models.ForeignKey(Variants, on_delete=models.CASCADE)
+    quantity = models.PositiveIntegerField()
+    ordered_price = models.PositiveIntegerField()
+
+    @property
+    def ordered_price(self):
+        return self.item.selling_price * self.quantity
     

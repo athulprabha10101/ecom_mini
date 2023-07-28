@@ -7,6 +7,8 @@ from django.contrib import messages
 
 # Create your views here.
 from django.contrib.auth.models import User
+import sys
+print(sys.path)
 
 
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
@@ -125,9 +127,9 @@ def user_home(request):
     if 'email' in request.session:
         user = UserProfile.objects.get(email=request.session['email'])
 
-        return render(request, 'store/index-3.html', {'categories': categories, 'user': user})
+        return render(request, 'store/homepage.html', {'categories': categories, 'user': user})
 
-    return render(request, 'store/index-3.html', {'categories': categories})
+    return render(request, 'store/homepage.html', {'categories': categories})
 
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
 def user_product(request, id):
@@ -165,10 +167,11 @@ def user_profile(request):
 
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
 def add_address(request):
-
+    
     if 'email' in request.session:
         user = UserProfile.objects.get(email= request.session['email'])
 
+        
         if request.method=='POST':
             address_line1 = request.POST['address1']
             address_line2 = request.POST['address2']
@@ -176,6 +179,8 @@ def add_address(request):
             state = request.POST['state']
             country = request.POST['country']
             pin = request.POST['pin']
+            # default = request.POST.get() == 'True'
+
 
             UserAddress.objects.create(
                 user=user, 
@@ -292,14 +297,50 @@ def add_to_cart(request, id):
                 return redirect('user_product', id=id)
             
     messages.warning(request,"Not logged in ...")
-    return redirect('user_product')
+    return redirect('user_login')
 
-def display_cart(request, id):
-# WAIT
+
+def display_cart(request, id=None):
+    
     if 'email' in request.session:
-        
-        user = UserProfile.objects.get(id=id)
-        cart, created = Cart.objects.get_or_create(user=user)
-        variant = cart.cart_items.all()
 
-    return redirect(user_login)
+        user = UserProfile.objects.get(email = request.session['email'])
+        cart = Cart.objects.get(user=user)
+        items = cart.cart_items.all()
+        
+        return render(request, 'store/cart.html', {'user':user, 'items':items, 'cart':cart})
+   
+    return render(request, 'users/login.html', {'error': "login to see yout cart... "})
+
+def remove_item(request, id):
+    cart_item = CartItem.objects.get(id=id)
+    cart_item.delete()
+    return redirect('display_cart')
+
+def add_qty(request, id):
+    cart_item = CartItem.objects.get(id=id)
+    if cart_item.quantity < 10:
+        cart_item.quantity += 1
+    cart_item.save()
+
+    return redirect('display_cart')
+    
+def less_qty(request, id):
+    cart_item = CartItem.objects.get(id=id)
+    if cart_item.quantity > 1:
+        cart_item.quantity -= 1
+    cart_item.save()
+
+    return redirect('display_cart')
+
+def checkout(request, cart_id):
+    cart = Cart.objects.get(id=cart_id)
+    addresses = UserAddress.objects.filter(user = cart.user)
+    cart_items = cart.cart_items.all()
+    
+
+    return render(request, 'store/checkout.html',{'cart_items':cart_items, 'addresses':addresses, 'cart':cart})
+
+def place_order(request):
+    
+    return render(request, 'store/success.html')

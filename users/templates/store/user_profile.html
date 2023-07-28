@@ -148,12 +148,14 @@
                                                         <input type="text" id="pin" name="pin" required
                                                                style="width: 100%;">
                                                     </div>
-
-
+                                                    
+                                                    <div>
+                                                    <input type="checkbox" name="is_default" id="defaultCheckbox" value="True">
+                                                    <label for="defaultCheckbox">Set as Default</label>
+                                                    </div>
+                                                    
                                                     <div class="modal-footer">
-                                                        <button type="button" class="btn btn-secondary"
-                                                                data-bs-dismiss="modal">Close
-                                                        </button>
+                                                            <a href=""></a>
                                                         <button type="submit" class="btn btn-primary">Add Address
                                                         </button>
                                                     </div>
@@ -257,6 +259,13 @@
                                                                    style="width: 100%;">PIN</label><br>
                                                             <input type="text" id="pin" name="pin" required
                                                                    style="width: 100%;" value="{{address.pin}}">
+                                                        </div>
+
+                                                        <div class="form-check">
+                                                            <input class="form-check-input" type="checkbox" name="is_default" id="defaultCheckbox" value="True">
+                                                            <label class="form-check-label" for="defaultCheckbox">
+                                                                Set as Default
+                                                            </label>
                                                         </div>
 
                                                         <div class="modal-footer">
