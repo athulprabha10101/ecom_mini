@@ -3,99 +3,44 @@
 {% block content %}
 
 
-        <main class="main">
-            <div class="intro-section pt-3 pb-3 mb-2 ">
+        <main class="main" >
+            <div class="intro-section pt-3 pb-3 mb-2">
                 <div class="container">
                     <div class="row">
                         <div class="col-lg-12">
-                            <div class="intro-slider-container slider-container-ratio mb-2 mb-lg-0" style="max-height:300px">
-                                <div class="intro-slider owl-carousel owl-simple owl-dark owl-nav-inside" data-toggle="owl" data-owl-options='{
-                                        "nav": false, 
-                                        "dots": true,
-                                        "responsive": {
-                                            "768": {
-                                                "nav": true,
-                                                "dots": false
-                                            }
-                                        }
-                                    }'>
-                                    <div class="intro-slide">
-                                        <figure class="slide-image">
-                                            <picture>
-                                                {% comment %} <source media="(max-width: 480px)" srcset="assets/images/demos/demo-3/slider/slide-1-480w.jpg"> {% endcomment %}
-                                                <img src="{% static 'user_assets/banners/banner1.png' %}" alt="Image Desc" style="object-fit: cover; width: 100%; height: 100%;">
-                                            </picture>
-                                        </figure><!-- End .slide-image -->
-
-                                        {% comment %} <div class="intro-content">
-                                            <h3 class="intro-subtitle text-primary">Daily Deals</h3><!-- End .h3 intro-subtitle -->
-                                            <h1 class="intro-title">
-                                                AirPods <br>Earphones
-                                            </h1><!-- End .intro-title -->
-
-                                            <div class="intro-price">
-                                                <sup>Today:</sup>
-                                                <span class="text-primary">
-                                                    $247<sup>.99</sup>
-                                                </span>
-                                            </div><!-- End .intro-price -->
-
-                                            <a href="{% static 'category.html' %}" class="btn btn-primary btn-round">
-                                                <span>Click Here</span>
-                                                <i class="icon-long-arrow-right"></i>
-                                            </a>
-                                        </div><!-- End .intro-content --> {% endcomment %}
-                                    </div><!-- End .intro-slide -->
-
-                                    <div class="intro-slide">
-                                        <figure class="slide-image">
-                                            <picture>
-                                                <source media="(max-width: 480px)" srcset="assets/images/demos/demo-3/slider/slide-2-480w.jpg">
-                                                <img src="{% static 'user_assets/images/demos/demo-3/slider/slide-2.jpg' %}" alt="Image Desc">
-                                            </picture>
-                                        </figure><!-- End .slide-image -->
-
-                                        {% comment %} <div class="intro-content">
-                                            <h3 class="intro-subtitle text-primary">Deals and Promotions</h3><!-- End .h3 intro-subtitle -->
-                                            <h1 class="intro-title">
-                                                Echo Dot <br>3rd Gen
-                                            </h1><!-- End .intro-title -->
-
-                                            <div class="intro-price">
-                                                <sup class="intro-old-price">$49,99</sup>
-                                                <span class="text-primary">
-                                                    $29<sup>.99</sup>
-                                                </span>
-                                            </div><!-- End .intro-price -->
-
-                                            <a href="{% static 'category.html' %}" class="btn btn-primary btn-round">
-                                                <span>Click Here</span>
-                                                <i class="icon-long-arrow-right"></i>
-                                            </a>
-                                        </div><!-- End .intro-content --> {% endcomment %}
-                                    </div><!-- End .intro-slide -->
-                                </div><!-- End .intro-slider owl-carousel owl-simple -->
-                                
-                                <span class="slider-loader"></span><!-- End .slider-loader -->
-                            </div><!-- End .intro-slider-container -->
+                            <div id="carouselExample" class="carousel slide mb-3">
+                                <div class="carousel-inner">
+                                  <div class="carousel-item active">
+                                    <img src="{% static 'user_assets/banners/banner1.png' %}" class="d-block w-100" alt="...">
+                                  </div>
+                                  <div class="carousel-item">
+                                    <img src="{% static 'user_assets/banners/banner2.png' %}" class="d-block w-100" alt="...">
+                                  </div>
+                                  <div class="carousel-item">
+                                    <img src="{% static 'user_assets/banners/banner3.png' %}" class="d-block w-100" alt="...">
+                                  </div>
+                                </div>
+                                <button class="carousel-control-prev" type="button" data-bs-target="#carouselExample" data-bs-slide="prev">
+                                  <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                  <span class="visually-hidden">Previous</span>
+                                </button>
+                                <button class="carousel-control-next" type="button" data-bs-target="#carouselExample" data-bs-slide="next">
+                                  <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                  <span class="visually-hidden">Next</span>
+                                </button>
+                              </div>
                         </div><!-- End .col-lg-8 -->
-
-                        {% comment %} <div class="col-lg-4">
-                            <div class="intro-banners">
-                                <div class="banner mb-lg-1 mb-xl-2">
-                                    
-                                </div><!-- End .banner -->
-                            </div><!-- End .intro-banners -->
-                        </div><!-- End .col-lg-4 --> {% endcomment %}
                     </div><!-- End .row -->
                 </div><!-- End .container -->
             </div><!-- End .intro-section -->
 
-            <div class="container featured">
-                <ul class="nav nav-pills nav-border-anim nav-big justify-content-center mb-3" role="tablist">
+
+            <div class="container featured ">
+                <div class="divnonclass mb-5">
+                <ul class="nav nav-pills nav-border-anim nav-big justify-content-center " role="tablist">
                     <li class="nav-item">
                         {% comment %} ===================================================== {% endcomment %}
-                        <a class="nav-link active" id="products-featured-link" data-toggle="tab" href="{% static '#products-featured-tab' %}" role="tab" aria-controls="products-featured-tab" aria-selected="true">Categories</a>
+                        <a class="nav-link active" style="border-radius:10px;" id="products-featured-link" data-toggle="tab" href='#products-featured-tab'  role="tab" aria-controls="products-featured-tab" aria-selected="true">Categories</a>
                     </li>
                     {% comment %} <li class="nav-item">
                         <a class="nav-link" id="products-sale-link" data-toggle="tab" href="{% static '#products-sale-tab' %}" role="tab" aria-controls="products-sale-tab" aria-selected="false">On Sale</a>
@@ -104,6 +49,7 @@
                         <a class="nav-link" id="products-top-link" data-toggle="tab" href="{% static '#products-top-tab' %}" role="tab" aria-controls="products-top-tab" aria-selected="false">Top Rated</a>
                     </li> {% endcomment %}
                 </ul>
+                </div>
 
                 <div class="tab-content tab-content-carousel">
                     <div class="tab-pane p-0 fade show active" id="products-featured-tab" role="tabpanel" aria-labelledby="products-featured-link">
@@ -142,7 +88,7 @@
                                     <div class="product-cat">
                                         <a href="#"></a>
                                     </div><!-- End .product-cat -->
-                                    <h3 class="product-title"><a href="{% url 'cat_product' cat.id %}">{{cat.name}}</a></h3><!-- End .product-title -->
+                                    <h3 class="product-title"><a href="{% url 'cat_product' cat.id %}">{{cat.name | capfirst}}</a></h3><!-- End .product-title -->
                                     {% comment %} <div class="product-price">
                                         $349.99
                                     </div><!-- End .product-price --> {% endcomment %}
