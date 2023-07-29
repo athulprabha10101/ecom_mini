@@ -28,11 +28,11 @@
                             <label class="text-truncate" for="checkout-discount-input">Have a coupon? <span>Click here to enter your code</span></label>
                         </form>
                     </div><!-- End .checkout-discount -->
-                    {% comment %} <form  action="" id="order_form" method="POST"> {% endcomment %}
+                    
                         {% csrf_token %}
                         <div class="row">
-                            <aside class="col-lg-4" >
-                                <div class="summary summary-cart">
+                            <aside class="col-lg-4"  >
+                                <div class="summary summary-cart" style="height:500px;">
                                     <h3 class="summary-title">Cart Total</h3><!-- End .summary-title -->
         
                                     <table class="table table-summary">
