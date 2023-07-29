@@ -173,14 +173,15 @@ def add_address(request):
 
         
         if request.method=='POST':
+            print(request.POST, "----------------<<>><<>><<>>___-__-_")
             address_line1 = request.POST['address1']
             address_line2 = request.POST['address2']
             city = request.POST['city']
             state = request.POST['state']
             country = request.POST['country']
             pin = request.POST['pin']
+            checkout = request.POST.get('checkout') == 'True'
             # default = request.POST.get() == 'True'
-
 
             UserAddress.objects.create(
                 user=user, 
@@ -191,6 +192,8 @@ def add_address(request):
                 country=country,
                 pin=pin
                 )
+            if checkout:
+                return redirect('checkout')
             return redirect('user_profile')
     
     return redirect('user_login')    
@@ -338,7 +341,6 @@ def checkout(request, cart_id):
     addresses = UserAddress.objects.filter(user = cart.user)
     cart_items = cart.cart_items.all()
     
-
     return render(request, 'store/checkout.html',{'cart_items':cart_items, 'addresses':addresses, 'cart':cart})
 
 def place_order(request):
