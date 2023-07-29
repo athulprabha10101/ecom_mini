@@ -16,7 +16,7 @@ class Migration(migrations.Migration):
             name='Orders',
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('order_num', models.CharField(default=customadmin.models.Orders.generate_orderId, max_length=20)),
+                ('order_num', models.CharField(default=customadmin.models.Orders.generate_ordernum, max_length=20)),
                 ('order_date', models.DateTimeField(auto_now_add=True)),
                 ('payment_type', models.CharField(choices=[('card', 'Debit/Credit card'), ('cod', 'Cash on delivery'), ('net_banking', 'Internet Banking'), ('upi', 'Pay using UPI app')], default='Cash on delivery', max_length=100)),
                 ('order_status', models.CharField(choices=[('processing', 'Procrssing'), ('delivered', 'Delivered'), ('out', 'Out of delivery'), ('cancelled', 'Cancelled'), ('delivered', 'Delivered'), ('shipped', 'Shipped'), ('pending', 'Pending')], default='Procrssing', max_length=100)),

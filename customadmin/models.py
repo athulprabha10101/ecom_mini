@@ -58,7 +58,7 @@ class AdminProfile(models.Model):
     password = models.CharField(max_length=20)
 
 class Cart(models.Model):
-    user = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
+    user = models.OneToOneField(UserProfile, on_delete=models.CASCADE, related_name='cart_of_user')
 
     @property
     def totalprice(self):
@@ -89,26 +89,25 @@ class Orders(models.Model):
         ('delivered', 'Delivered'),
         ('out', 'Out of delivery'),
         ('cancelled', 'Cancelled'),
-        ('delivered', 'Delivered'),
         ('shipped', 'Shipped'),
         ('pending', 'Pending'),
     )
-    def generate_orderId(self):
+    def generate_ordernum(self):
         chars = string.ascii_uppercase + string.digits
         return ''.join(random.choice(chars) for _ in range(10))
     
-    order_num = models.CharField(max_length=20, default=generate_orderId)
-    user = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
+    order_num = models.CharField(max_length=20, default=generate_ordernum)
+    user = models.ForeignKey(UserProfile, on_delete=models.CASCADE, related_name='orders_of_user')
     order_address = models.ForeignKey(UserAddress, on_delete=models.CASCADE)
     order_date = models.DateTimeField(auto_now_add=True)
     payment_type = models.CharField(max_length=100, choices=payment_choices, default='Cash on delivery')
     order_status = models.CharField(max_length=100, choices=order_status_choices, default='Procrssing')
     
-class Order_items(models.Model):
-    order = models.ForeignKey(Orders, on_delete=models.CASCADE)
+class OrderItems(models.Model):
+    order = models.ForeignKey(Orders, on_delete=models.CASCADE, related_name='items_in_order')
     item = models.ForeignKey(Variants, on_delete=models.CASCADE)
     quantity = models.PositiveIntegerField()
-    ordered_price = models.PositiveIntegerField()
+    sold_at_price = models.PositiveIntegerField()
 
     @property
     def ordered_price(self):

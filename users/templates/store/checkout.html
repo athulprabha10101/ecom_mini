@@ -3,7 +3,7 @@
 {% block content %}
     
     
-    <main class="main" style="background-image: url('{% static 'user_assets/images/backgrounds/checkout-bg.jpg' %}'); background-size cover; background-repeat: no-repeat; background-position: center bottom;" >
+    <main class="main" style="background-image: url('{% static 'user_assets/images/backgrounds/checkout6-bg.jpg' %}'); background-size cover; background-repeat: repeat;  " >
         <div class="page-header text-center" style="background-image: url('{% static 'user_assets/images/backgrounds/checkout-div-bg.png' %}'); background-repeat: no-repeat;" >
             <div class="container" style="display:flex; justify-content: flex-end;">
                 <h1 class="page-title" style="color:gold;"><b>Checkout</b><span>Shop</span></h1>
@@ -31,6 +31,41 @@
                     
                         {% csrf_token %}
                         <div class="row">
+                            
+                            <div class="col-lg-8" style="max-height: 500px; overflow: hidden;">
+                                
+                                <h3 class="card-title mt-3 mb-3" style="color:white;">Shipping Address</h3><!-- End .card-title -->
+                                    <div class="address-container" style="display:flex; flex-wrap: wrap; height: 100%; overflow-y: auto;" >                                                                                            
+                                            {% for address in addresses %}
+                                            {% if not address.deleted %}
+                                            <div class="col-lg-6" >
+                                                <div class="card card-dashboard">
+                                                    <div class="card-body">
+                                                        <h3 class="card-title"> Address {{forloop.counter}} </h3>
+                                                        <!-- End .card-title -->
+
+                                                        <p>{{address.address_line1}}<br>
+                                                            {{address.address_line2}}<br>
+                                                            {{address.city}}<br>
+                                                            {{address.state}}<br>
+                                                            {{address.country}}<br>
+                                                            {{address.pin}}<br>
+                                                        </p>
+
+                                                        <div class="form-check">
+                                                            <input class="form-check-input" id="defaultAddress{{address.id}}" name="default_address" type="radio" value="{{address.id}}">
+                                                            <label class="form-check-label" for="defaultAddress{{address.id}}">
+                                                            Select
+                                                            </label>
+                                                        </div>
+                                                    </div><!-- End .card-body -->
+                                                </div><!-- End .card-dashboard -->
+                                            </div><!-- End .col-lg-6 -->
+                                            {% endif %}
+                                            {% endfor %}
+                                     </div><!-- container -->     
+                            </div><!-- End .col-lg-8 -->
+
                             <aside class="col-lg-4"  >
                                 <div class="summary summary-cart" style="height:500px;">
                                     <h3 class="summary-title">Cart Total</h3><!-- End .summary-title -->
@@ -93,39 +128,6 @@
         
                                 <a class="btn btn-outline-warning btn-lg btn-block mb-3" href="{% static 'category.html' %}"><span>CONTINUE SHOPPING</span><i class="icon-refresh"></i></a>
                             </aside>
-                            <div class="col-lg-8" style="max-height: 500px; overflow: hidden;">
-                                
-                                <h3 class="card-title mt-3 mb-3" style="color:white;">Shipping Address</h3><!-- End .card-title -->
-                                    <div class="address-container" style="display:flex; flex-wrap: wrap; height: 100%; overflow-y: auto;" >                                                                                            
-                                            {% for address in addresses %}
-                                            {% if not address.deleted %}
-                                            <div class="col-lg-6" >
-                                                <div class="card card-dashboard">
-                                                    <div class="card-body">
-                                                        <h3 class="card-title"> Address {{forloop.counter}} </h3>
-                                                        <!-- End .card-title -->
-
-                                                        <p>{{address.address_line1}}<br>
-                                                            {{address.address_line2}}<br>
-                                                            {{address.city}}<br>
-                                                            {{address.state}}<br>
-                                                            {{address.country}}<br>
-                                                            {{address.pin}}<br>
-                                                        </p>
-
-                                                        <div class="form-check">
-                                                            <input class="form-check-input" id="defaultAddress{{address.id}}" name="default_address" type="radio" value="{{address.id}}">
-                                                            <label class="form-check-label" for="defaultAddress{{address.id}}">
-                                                            Select
-                                                            </label>
-                                                        </div>
-                                                    </div><!-- End .card-body -->
-                                                </div><!-- End .card-dashboard -->
-                                            </div><!-- End .col-lg-6 -->
-                                            {% endif %}
-                                            {% endfor %}
-                                     </div><!-- container -->     
-                            </div><!-- End .col-lg-8 -->
 
                             <div style="display:flex; justify-content: flex-end;">
                             <button class="btn btn-lg btn-warning col-lg-2"  data-bs-target="#exampleModal" data-bs-toggle="modal"
