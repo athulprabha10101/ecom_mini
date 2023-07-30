@@ -35,6 +35,7 @@
                             <div class="col-lg-8" style="max-height: 500px; overflow: hidden;">
                                 
                                 <h3 class="card-title mt-3 mb-3" style="color:white;">Shipping Address</h3><!-- End .card-title -->
+                                
                                     <div class="address-container" style="display:flex; flex-wrap: wrap; height: 100%; overflow-y: auto;" >                                                                                            
                                             {% for address in addresses %}
                                             {% if not address.deleted %}
@@ -67,17 +68,34 @@
                             </div><!-- End .col-lg-8 -->
 
                             <aside class="col-lg-4"  >
-                                <div class="summary summary-cart" style="height:500px;">
-                                    <h3 class="summary-title">Cart Total</h3><!-- End .summary-title -->
+                                <div class="summary summary-cart">
+                                    <h3 class="summary-title">Cart Summary</h3><!-- End .summary-title -->
         
                                     <table class="table table-summary">
                                         <tbody>
                                             <tr class="summary-subtotal">
-                                                <td>Subtotal:</td>
-                                                <td>{{cart.totalprice}}</td>
+                                                <td>Items</td>
+                                                <td>Qty</td>
+                                                <td>Amount</td>
+                                            </tr>
+                                            
+                                            <tr class="summary-subtotal">
+                                                {% for item in cart_items %}
+                                                <td><a href="#">{{ item.item.variantname }}</a></td>
+                                                <td><div class="text-center" >{{ item.quantity }}</div></td>
+                                                <td>{{ item.subtotal }}</td>
+                                                {% endfor %}
+                                            </tr>
+                                            
+                                            <tr class="summary-subtotal">
+                                                <td><b>Subtotal:</td>
+                                                <td>&nbsp;</td>
+                                                <td><b>{{cart.totalprice}}</td>
                                             </tr><!-- End .summary-subtotal -->
+
                                             <tr class="summary-shipping">
                                                 <td>Shipping:</td>
+                                                <td>&nbsp;</td>
                                                 <td>&nbsp;</td>
                                             </tr>
         
@@ -88,6 +106,7 @@
                                                         <label class="custom-control-label" for="free-shipping">Free Shipping</label>
                                                     </div><!-- End .custom-control -->
                                                 </td>
+                                                <td>&nbsp;</td>
                                                 <td>$0.00</td>
                                             </tr><!-- End .summary-shipping-row -->
         
@@ -98,6 +117,7 @@
                                                         <label class="custom-control-label" for="standart-shipping">Standart:</label>
                                                     </div><!-- End .custom-control -->
                                                 </td>
+                                                <td>&nbsp;</td>
                                                 <td>$10.00</td>
                                             </tr><!-- End .summary-shipping-row -->
         
@@ -108,17 +128,20 @@
                                                         <label class="custom-control-label" for="express-shipping">Express:</label>
                                                     </div><!-- End .custom-control -->
                                                 </td>
+                                                <td>&nbsp;</td>
                                                 <td>$20.00</td>
                                             </tr><!-- End .summary-shipping-row -->
         
                                             <tr class="summary-shipping-estimate">
-                                                <td>Estimate for Your Country<br> <a href="{% static 'dashboard.html' %}">Change address</a></td>
+                                                <td>Estimate for Your Country<br> </td>
+                                                <td>&nbsp;</td>
                                                 <td>&nbsp;</td>
                                             </tr><!-- End .summary-shipping-estimate -->
         
                                             <tr class="summary-total">
                                                 <td><b>Total:</b></td>
-                                                <td style="color:black;"><b>{{cart.totalprice}} &nbsp INR</b></td>
+                                                <td>&nbsp; INR</td>
+                                                <td style="color:black;"><b>&nbsp; {{cart.totalprice}}</b></td>
                                             </tr><!-- End .summary-total -->
                                         </tbody>
                                     </table><!-- End .table table-summary -->
@@ -129,7 +152,7 @@
                                 <a class="btn btn-outline-warning btn-lg btn-block mb-3" href="{% static 'category.html' %}"><span>CONTINUE SHOPPING</span><i class="icon-refresh"></i></a>
                             </aside>
 
-                            <div style="display:flex; justify-content: flex-end;">
+                            <div style="display:flex; justify-content: flex-start;">
                             <button class="btn btn-lg btn-warning col-lg-2"  data-bs-target="#exampleModal" data-bs-toggle="modal"
                                         type="button">
                                     + Add new address
@@ -215,24 +238,7 @@
                                 </div><!-- End .summary -->                                
                             </aside><!-- End .col-lg-3 -->
 
-                            <table>
-                                <tbody>
-                                    {% for item in cartitems %}
-                                    <tr>
-                                        <td><a href="#">{{ item.products.name }}</a></td>
-                                        <td><div class="text-center" >{{ item.quantity }}</div></td>
-                                        <td>{{ item.product_total }}</td>
-                                    </tr>
-                                     {% endfor %}
-                                    <tr>
-                                        
-                                    </tr>
-                                    <tr class="summary-total">
-                                        
-                                        <td>{{cart.total_price}} </td>
-                                    </tr><!-- End .summary-total -->
-                                </tbody>
-                            </table><!-- End .table table-summary -->
+                            
                         </div><!-- End .row -->
                         <input id="selected_payment" name="payment_method"  type="hidden"  value="">
                     </form>

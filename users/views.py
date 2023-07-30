@@ -340,7 +340,7 @@ def checkout(request, cart_id):
     cart = Cart.objects.get(id=cart_id)
     addresses = UserAddress.objects.filter(user = cart.user)
     cart_items = cart.cart_items.all()
-    
+    print(cart_items,"-------------<><><<>><><><>--------------")
     return render(request, 'store/checkout.html',{'cart_items':cart_items, 'addresses':addresses, 'cart':cart})
 
 def place_order(request):
