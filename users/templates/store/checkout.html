@@ -3,12 +3,8 @@
 {% block content %}
     
     
-    <main class="main" style="background-image: url('{% static 'user_assets/images/backgrounds/checkout6-bg.jpg' %}'); background-size cover; background-repeat: repeat;  " >
-        <div class="page-header text-center" style="background-image: url('{% static 'user_assets/images/backgrounds/checkout-div-bg.png' %}'); background-repeat: no-repeat;" >
-            <div class="container" style="display:flex; justify-content: flex-end;">
-                <h1 class="page-title" style="color:gold;"><b>Checkout</b><span>Shop</span></h1>
-            </div><!-- End .container -->
-        </div><!-- End .page-header -->
+    <main class="main" >
+        {% include 'store/common-banner-div.html' with page_title="Checkout" sub_title=""  %}
         <nav aria-label="breadcrumb" class="breadcrumb-nav">
             <div class="container">
                 <ol class="breadcrumb">
@@ -29,19 +25,21 @@
                         </form>
                     </div><!-- End .checkout-discount -->
                     
-                        {% csrf_token %}
+                        
+                    <form action="{% url 'place_order' %}" method='POST'>
+                            {% csrf_token %}
                         <div class="row">
-                            
+                        
                             <div class="col-lg-8" style="max-height: 500px; overflow: hidden;">
                                 
                                 <h3 class="card-title mt-3 mb-3" style="color:white;">Shipping Address</h3><!-- End .card-title -->
                                 
-                                    <div class="address-container" style="display:flex; flex-wrap: wrap; height: 100%; overflow-y: auto;" >                                                                                            
+                                    <div class="address-container" style="display:flex; flex-wrap: wrap; height: 100%; overflow-y: auto;">                                                                                            
                                             {% for address in addresses %}
                                             {% if not address.deleted %}
                                             <div class="col-lg-6" >
-                                                <div class="card card-dashboard">
-                                                    <div class="card-body">
+                                                <div class="card card-dashboard" style='background-color: #fffa0140;'>
+                                                    <div class="card-body" style="border-radius: 10px;">
                                                         <h3 class="card-title"> Address {{forloop.counter}} </h3>
                                                         <!-- End .card-title -->
 
@@ -54,11 +52,12 @@
                                                         </p>
 
                                                         <div class="form-check">
-                                                            <input class="form-check-input" id="defaultAddress{{address.id}}" name="default_address" type="radio" value="{{address.id}}">
+                                                            <input class="form-check-input" id="defaultAddress{{address.id}}" name="order_address_id" type="radio" value="{{address.id}}" {% if address.default %}checked{% endif %} required>
                                                             <label class="form-check-label" for="defaultAddress{{address.id}}">
                                                             Select
                                                             </label>
                                                         </div>
+                                
                                                     </div><!-- End .card-body -->
                                                 </div><!-- End .card-dashboard -->
                                             </div><!-- End .col-lg-6 -->
@@ -68,10 +67,10 @@
                             </div><!-- End .col-lg-8 -->
 
                             <aside class="col-lg-4"  >
-                                <div class="summary summary-cart">
+                                <div class="summary summary-cart" style="border-radius: 10px; background-color: #fffa0140;">
                                     <h3 class="summary-title">Cart Summary</h3><!-- End .summary-title -->
         
-                                    <table class="table table-summary">
+                                    <table class="table table-summary" >
                                         <tbody>
                                             <tr class="summary-subtotal">
                                                 <td>Items</td>
@@ -145,12 +144,15 @@
                                             </tr><!-- End .summary-total -->
                                         </tbody>
                                     </table><!-- End .table table-summary -->
-        
-                                    <a class="btn btn-success btn-block btn-lg" href="">PLACE ORDER</a>
+                                    
+                                    <button type="submit" class="btn btn-success btn-block btn-lg" href="">PLACE ORDER</button>
                                 </div><!-- End .summary -->
         
-                                <a class="btn btn-outline-warning btn-lg btn-block mb-3" href="{% static 'category.html' %}"><span>CONTINUE SHOPPING</span><i class="icon-refresh"></i></a>
+                                <a class="btn btn-outline-warning btn-lg btn-block mb-3" href="{% url 'user_home' %}"><span>CONTINUE SHOPPING</span><i class="icon-refresh"></i></a>
                             </aside>
+                    </form>
+
+                        
 
                             <div style="display:flex; justify-content: flex-start;">
                             <button class="btn btn-lg btn-warning col-lg-2"  data-bs-target="#exampleModal" data-bs-toggle="modal"
@@ -158,7 +160,7 @@
                                     + Add new address
                                 </button>    
                             </div>
-
+                    
                                 <br>
 
                                 <!-- Modal -->

@@ -308,12 +308,12 @@ def display_cart(request, id=None):
     if 'email' in request.session:
 
         user = UserProfile.objects.get(email = request.session['email'])
-        cart = Cart.objects.get(user=user)
+        cart, created = Cart.objects.get_or_create(user=user)
         items = cart.cart_items.all()
         
         return render(request, 'store/cart.html', {'user':user, 'items':items, 'cart':cart})
    
-    return render(request, 'users/login.html', {'error': "login to see yout cart... "})
+    return render(request, 'users/login.html', {'error': "login to see your cart... "})
 
 def remove_item(request, id):
     cart_item = CartItem.objects.get(id=id)
@@ -340,9 +340,33 @@ def checkout(request, cart_id):
     cart = Cart.objects.get(id=cart_id)
     addresses = UserAddress.objects.filter(user = cart.user)
     cart_items = cart.cart_items.all()
-    print(cart_items,"-------------<><><<>><><><>--------------")
+    
     return render(request, 'store/checkout.html',{'cart_items':cart_items, 'addresses':addresses, 'cart':cart})
 
 def place_order(request):
+    if 'email' in request.session:
+        
+        if request.method=='POST':
+            
+            user = UserProfile.objects.get(email=request.session['email'])
+            order_address_id = request.POST['order_address_id']
+            order_address = UserAddress.objects.get(id=order_address_id)
+            cart = Cart.objects.get(user=user)
+
+            current_order = Orders.objects.create(
+                    
+                    user = user,
+                    order_address = order_address,
+                )
+            items = cart.cart_items.all()
+            for item in items:
+                OrderItems.objects.create(
+                    order = current_order,
+                    item = item.item,
+                    quantity = item.quantity,
+                    sold_at_price = item.item.selling_price
+                )
+            cart.delete()
+            return render(request, 'store/success.html')
+    return render(request, 'users/login.html', {'error': 'login to purchase'})
     
-    return render(request, 'store/success.html')

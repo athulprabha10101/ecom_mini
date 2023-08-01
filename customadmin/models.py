@@ -92,11 +92,12 @@ class Orders(models.Model):
         ('shipped', 'Shipped'),
         ('pending', 'Pending'),
     )
-    def generate_ordernum(self):
+    
+    def generate_ordernum():
         chars = string.ascii_uppercase + string.digits
         return ''.join(random.choice(chars) for _ in range(10))
     
-    order_num = models.CharField(max_length=20, default=generate_ordernum)
+    order_num = models.CharField(max_length=20, default =generate_ordernum)
     user = models.ForeignKey(UserProfile, on_delete=models.CASCADE, related_name='orders_of_user')
     order_address = models.ForeignKey(UserAddress, on_delete=models.CASCADE)
     order_date = models.DateTimeField(auto_now_add=True)

@@ -3,12 +3,11 @@
 {% block content %}
 
 <main class="main">
-    <div class="page-header text-center"
-         style="background-image: {% static 'user_sassets/images/page-header-bg.jpg' %}">
-        <div class="container">
-            <h1 class="page-title">{{user.name | capfirst }} 's Account</h1>
-        </div><!-- End .container -->
-    </div><!-- End .page-header -->
+    {% include 'store/common-banner-div.html' with page_title=user.name|capfirst|add:"'s Addresses" sub_title="" %}
+
+            
+    
+    
     <nav aria-label="breadcrumb" class="breadcrumb-nav mb-3">
         <div class="container">
             <ol class="breadcrumb">
