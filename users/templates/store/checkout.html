@@ -77,14 +77,15 @@
                                                 <td>Qty</td>
                                                 <td>Amount</td>
                                             </tr>
-                                            
+                                            {% for item in cart_items %}
                                             <tr class="summary-subtotal">
-                                                {% for item in cart_items %}
+                                                
                                                 <td><a href="#">{{ item.item.variantname }}</a></td>
                                                 <td><div class="text-center" >{{ item.quantity }}</div></td>
                                                 <td>{{ item.subtotal }}</td>
-                                                {% endfor %}
+                                                
                                             </tr>
+                                            {% endfor %}
                                             
                                             <tr class="summary-subtotal">
                                                 <td><b>Subtotal:</td>

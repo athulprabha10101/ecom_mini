@@ -178,9 +178,9 @@ def user_orders(request):
     
     if 'email' in request.session:
         user = UserProfile.objects.get(email=request.session['email']) # orders
-        orders = Orders.objects.filter(user=user)
-        order_items = orders.order_items.all()
-        return render(request, 'store/user_orders.html', {'user':user, 'orders':orders, 'order_items':order_items})
+        orders = Orders.objects.filter(user=user).prefetch_related('items_in_order')
+        
+        return render(request, 'store/user_orders.html', {'user':user, 'orders':orders})
 
     return redirect('user_login')
 
@@ -192,7 +192,7 @@ def add_address(request):
 
         
         if request.method=='POST':
-            print(request.POST, "----------------<<>><<>><<>>___-__-_")
+            
             address_line1 = request.POST['address1']
             address_line2 = request.POST['address2']
             city = request.POST['city']
@@ -362,6 +362,7 @@ def checkout(request, cart_id):
     
     return render(request, 'store/checkout.html',{'cart_items':cart_items, 'addresses':addresses, 'cart':cart})
 
+@cache_control(no_cache=True, must_revalidate=True, no_store=True)
 def place_order(request):
     if 'email' in request.session:
         
@@ -386,6 +387,7 @@ def place_order(request):
                     sold_at_price = item.item.selling_price
                 )
             cart.delete()
-            return render(request, 'store/success.html')
+            order_num = current_order.order_num
+            return render(request, 'store/success.html', {'order_num':order_num})
     return render(request, 'users/login.html', {'error': 'login to purchase'})
     

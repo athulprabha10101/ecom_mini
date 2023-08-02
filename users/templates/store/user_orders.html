@@ -19,7 +19,7 @@
         <div class="dashboard">
             <div class="container">
                 <div class="row">
-                    <aside class="col-md-4 col-lg-3">
+                    <aside class="col-md-2 col-lg-2">
                         <ul class="nav nav-dashboard flex-column mb-3 mb-md-0" role="tablist">
                             {% comment %} <li class="nav-item">
                                 <a class="nav-link active" id="tab-dashboard-link" data-toggle="tab" href="#tab-dashboard"
@@ -50,7 +50,7 @@
                         </ul>
                     </aside><!-- End .col-lg-3 -->
 
-                    <div class="col-md-8 col-lg-9">
+                    <div class="col-md-10 col-lg-10">
                         <div class="tab-content">
                             
 
@@ -60,36 +60,57 @@
                                  aria-labelledby="tab-orders-link">
 
                                  <table class="table table-dark" style= " space-between;">
+                                    
                                     <thead>
                                       <tr>
                                         <th scope="col">NO.</th>
                                         <th scope="col">Order id</th>
                                         <th scope="col">Order date</th>
-                                        <th scope="col">Items</th>
-                                        <th scope="col">Qty</th>
-                                        <th scope="col">Amount</th>
-                                        <th scope="col">Action</th>
+                                        <th scope="col">Payment</th>
+                                        <th scope="col">Status</th>
+                                        <th scope="col">Particulars </th>
+
+                                        {% comment %} <th scope="col">Action</th> {% endcomment %}
                                       </tr>
                                     </thead>
                                     <tbody>
-                                    {% comment %} {% for i in cat %} {% endcomment %}
+                                    
 
-                                    {% for order_item in order_items %}
-                                    <tr>                            
-                                        <td>{{forloop.counter}}</td>
-                                        <td>Order id</td>
-                                        <td>Item name</td>
-                                        <td>Item Qty</td>
-                                        <td>amount</td>
-                                        
-
-                                        <td><a><button type="button" href="#" class="btn btn-warning">
-                                          Cancel order
-                                        </button></a></td>
-                                        {% comment %} <td><a href="{% url 'delete_categories' i.id %}" onclick="return confirm('Are you sure you want to delete?');" class="text-danger">Delete</a> </td> {% endcomment %}
-                                      </tr>
+                                        {% for order in orders %}
+                                        <tr>                            
+                                            <td style="font-size: 12px;">{{forloop.counter}}</td>
+                                            <td style="font-size: 12px;">{{order.order_num}}</td>
+                                            <td style="font-size: 12px;">{{order.order_date}}</td>
+                                            <td style="font-size: 12px;">{{ order.payment_type }}</td>
+                                            <td style="font-size: 12px;">{{ order.order_status }}</td>                                        
+                                            <td style="font-size: 12px; ">
+                                                <div class="row">
+                                                    
+                                                    <table>
+                                                        <tr>
+                                                            <th><h5>Items in this order</h5></th>
+                                                            <th>Quantity</th>
+                                                            <th>Price</th>
+                                                            <th>Cancel Item</th>
+                                                        </tr>
+                                                        {% for item in order.items_in_order.all %}
+                                                            <tr>
+                                                                <td style="font-size: 12px; border-bottom:none;">{{ item.item.variantname }}</td>
+                                                                <td style="font-size: 12px; border-bottom:none;">{{ item.quantity }}</td>
+                                                                <td style="font-size: 12px; border-bottom:none;">{{ item.sold_at_price }}</td>
+                                                                <td style="border-bottom:none;">
+                                                                    <a style="text-decoration: none; border-bottom:none;" href="#">
+                                                                        <button style="border-bottom:none;" type="button" class="btn btn-warning">Cancel Item</button>
+                                                                    </a>
+                                                                </td>
+                                                            </tr>
+                                                        {% endfor %}
+                                                    </table>
+                                                </div>
+                                            </td>
+                                        </tr>
                                     {% endfor %}
-
+                                    
                                      {% comment %} {% endfor %} {% endcomment %}
                                     </tbody>
                                   </table>
