@@ -104,11 +104,13 @@ class Orders(models.Model):
     payment_type = models.CharField(max_length=100, choices=payment_choices, default='Cash on delivery')
     order_status = models.CharField(max_length=100, choices=order_status_choices, default='Procrssing')
     
+    
 class OrderItems(models.Model):
     order = models.ForeignKey(Orders, on_delete=models.CASCADE, related_name='items_in_order')
     item = models.ForeignKey(Variants, on_delete=models.CASCADE)
     quantity = models.PositiveIntegerField()
     sold_at_price = models.PositiveIntegerField()
+    cancel_req = models.BooleanField(default=False)
 
     @property
     def ordered_price(self):

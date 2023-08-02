@@ -160,10 +160,29 @@ def user_profile(request):
     
     if 'email' in request.session:
         user = UserProfile.objects.get(email=request.session['email'])
-        return render(request, 'store/user_profile.html', {'user':user})
+        return render(request, 'store/user_profile.html', {'user':user}) #profile
 
     return redirect('user_login')
 
+@cache_control(no_cache=True, must_revalidate=True, no_store=True)
+def user_address(request):
+    
+    if 'email' in request.session:
+        user = UserProfile.objects.get(email=request.session['email'])
+        return render(request, 'store/user_address.html', {'user':user}) # address
+
+    return redirect('user_login')
+
+@cache_control(no_cache=True, must_revalidate=True, no_store=True)
+def user_orders(request):
+    
+    if 'email' in request.session:
+        user = UserProfile.objects.get(email=request.session['email']) # orders
+        orders = Orders.objects.filter(user=user)
+        order_items = orders.order_items.all()
+        return render(request, 'store/user_orders.html', {'user':user, 'orders':orders, 'order_items':order_items})
+
+    return redirect('user_login')
 
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
 def add_address(request):
