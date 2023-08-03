@@ -99,7 +99,7 @@
                                                                 <td style="font-size: 12px; border-bottom:none;">{{ item.quantity }}</td>
                                                                 <td style="font-size: 12px; border-bottom:none;">{{ item.sold_at_price }}</td>
                                                                 <td style="border-bottom:none;">
-                                                                    <a style="text-decoration: none; border-bottom:none;" href="#">
+                                                                    <a style="text-decoration: none; border-bottom:none;" href="{% url 'cancel_req' item.id %}">
                                                                         <button style="border-bottom:none;" type="button" class="btn btn-warning">Cancel Item</button>
                                                                     </a>
                                                                 </td>

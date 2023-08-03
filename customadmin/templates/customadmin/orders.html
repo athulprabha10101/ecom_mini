@@ -1,13 +1,50 @@
 
 {% extends 'customadmin/base.html'%}
 {% load static %}
-{% block products-active %}active{% endblock %}
+{% block cart-active %}active{% endblock %}
 
 
 
 {% block dashboard %}
 
+<style>
+    
+    .dashboard-text {
+      color: white;
+    }
+  </style>
 
-{% comment %} code here  {% endcomment %}
+
+
+<div class="col-12 grid-margin">
+    <div class="card">
+      <div class="card-body">
+        <h4 class="card-title" >Order Status</h4>
+        <div class="table-responsive">
+          <table class="table">
+            {% for order in orders %}
+            {% for item in order.items_in_order.all  %}
+            <thead>
+                <tr>
+                  <td style="color: yellow; border-top:solid 1px white ;" colspan="5">Order id : {{ order.order_num | upper }}<div class="badge badge-info" style="margin-left:20px; display: inline-block;">Current Status :{{order.order_status |capfirst}} </div>{% if item.cancel_req %}<div class="badge badge-danger" style="margin-left:20px; display: inline-block;">Cancellation requested</div>{% endif %}</td>
+                </tr>
+                <tr>
+                  <td style="color: yellow;" colspan="5">Username : {{ order.user.name | capfirst }}</td>
+                </tr>
+                <tr>
+                  <td style="color: yellow;" colspan="5">Order date : {{ order.order_date }}</td>
+                </tr>
+                <tr>                    
+                    <td><a href="{% url 'order_details' %}"><i class="mdi mdi-eye" style="display: inline-block;font-size: 30px; color: #88e859;"></i></a></td>           
+                </tr>                
+            </thead>
+                {% endfor %}
+                {% endfor %}
+          </table>
+          
+        </div>
+      </div>
+    </div>
+  </div>
 
 {% endblock dashboard %}

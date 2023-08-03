@@ -264,3 +264,16 @@ def add_image(request, id):
             VariantImages.objects.create(variation = variant.variation, image=image)
     
         return redirect('products')
+    
+def orders(request):
+    
+    if 'name' in request.session:
+        
+        orders = Orders.objects.all().prefetch_related('items_in_order')
+        
+        
+
+            
+        return render(request, 'customadmin/orders.html', {'orders': orders})
+        
+    return render(request, 'customadmin/login.html')

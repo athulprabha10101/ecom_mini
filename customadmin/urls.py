@@ -19,9 +19,11 @@ urlpatterns = [
     path('edit_variants/<int:id>', views.edit_variants, name="edit_variants"),
     path('delete_variants/<int:id>', views.delete_variants, name="delete_variants"),
     path('edit_products/<int:id>', views.edit_products, name="edit_products"),
-    # path('delete_products/<int:id>', views.delete_products, name="delete_products"),
+    # path('delete_products/<int:id>', views.delete_products, name="delete_products"), # products = variant
     path('delete_image/<int:id>', views.delete_image, name="delete_image"),
     path('add_image/<int:id>', views.add_image, name="add_image"),
+    path('orders', views.orders, name="orders"),
+    path('orders_details', views.orders_details, name="orders_details"),
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

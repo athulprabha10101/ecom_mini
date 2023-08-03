@@ -1,0 +1,77 @@
+
+{% extends 'customadmin/base.html'%}
+{% load static %}
+{% block cart-active %}active{% endblock %}
+
+
+
+{% block dashboard %}
+
+<style>
+    
+    .dashboard-text {
+      color: white;
+    }
+  </style>
+
+
+
+<div class="col-12 grid-margin">
+    <div class="card">
+      <div class="card-body">
+        <h4 class="card-title" >Order Status</h4>
+        <div class="table-responsive">
+          <table class="table">
+            {% for order in orders %}
+            <thead>
+                <tr>
+                  <td style="color: yellow; border-top:solid 1px white ;" colspan="5">Order id : {{ order.order_num | upper }}</td>
+                </tr>
+                <tr>
+                  <td style="color: yellow;" colspan="5">Username : {{ order.user.name | capfirst }}</td>
+                </tr>
+                <tr>
+                  <td style="color: yellow;" colspan="5">Order date : {{ order.order_date }}</td>
+                </tr>
+                <tr>
+                    <td>  <a href="{% url 'orders' %}"><i class="mdi mdi-eye" style="display: inline-block;font-size: 30px; color: #88e859;"></i></a></td>
+                </tr>
+
+                {% comment %} -------------- Another html {% endcomment %}
+                {% comment %} <tr>
+                  <th style="color:white;" class="dashboard-text">Items</th>
+                  <th style="color:white;" class="dashboard-text">Quantity</th>
+                  <th style="color:white;" class="dashboard-text">Price</th>
+                  <th style="color:white;" class="dashboard-text">Status</th>
+                  <th style="color:white;" class="dashboard-text">Action</th>
+                </tr>
+              </thead>
+
+                {% for item in order.items_in_order.all  %}
+                <tr>
+                    <td> {{item.item.variantname}} </td>
+                    <td> {{item.quantity}} </td>
+                    <td> {{item.sold_at_price}} </td>
+                    <td> Status </td>
+                    <td>
+                        {% if item.cancel_req == False %}
+                        <div style="display:flex; flex-direction:column;">
+                        <div class="badge badge-danger">Cancellation requested</div>
+                        <button class="btn btn-outline-success">Approve cancellation</button>
+                        </div>
+                        {% else %}
+                        <div class="badge badge-outline-warning">hooaah</div>
+                        {% endif %}
+                      </td>
+                </tr>      
+                {% endfor %}   {% endcomment %}
+            
+            {% endfor %}
+          </table>
+          
+        </div>
+      </div>
+    </div>
+  </div>
+
+{% endblock dashboard %}

@@ -390,4 +390,11 @@ def place_order(request):
             order_num = current_order.order_num
             return render(request, 'store/success.html', {'order_num':order_num})
     return render(request, 'users/login.html', {'error': 'login to purchase'})
+
+def cancel_req(request, id):
+    print(id, "-----------------------------HELLO ID")
+    item = OrderItems.objects.get(id=id)
+    item.cancel_req = True
+    item.save()
+    return redirect(user_orders)
     

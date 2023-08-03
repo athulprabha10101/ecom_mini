@@ -67,11 +67,11 @@
           </li>
         </li>
         <li class="nav-item menu-items {% block cart-active %} {% endblock %}">
-          <a class="nav-link" href="#">
+          <a class="nav-link" href="{% url 'orders' %}">
             <span class="menu-icon">
               <i class="mdi mdi-table-large"></i>
             </span>
-            <span class="menu-title">Order Management</span>
+            <span class="menu-title">Orders</span>
           </a>
         </li>
         </ul>
@@ -234,7 +234,7 @@
         <div class="main-panel">
           <div class="content-wrapper" >
 
-            {% block dashboard %} {% endblock %}
+           {% block dashboard %} {% endblock %}
 
           </div>
           <!-- content-wrapper ends -->
