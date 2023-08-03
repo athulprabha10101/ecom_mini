@@ -1,3 +1,4 @@
+from datetime import timezone
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from customadmin.models import *
@@ -270,10 +271,34 @@ def orders(request):
     if 'name' in request.session:
         
         orders = Orders.objects.all().prefetch_related('items_in_order')
-        
-        
 
-            
         return render(request, 'customadmin/orders.html', {'orders': orders})
         
     return render(request, 'customadmin/login.html')
+
+
+def order_details(request, id):
+
+    if 'name' in request.session:
+
+        order = Orders.objects.get(id=id)
+        order_details = OrderItems.objects.filter(order=order)
+
+        return render(request, 'customadmin/order_details.html', {'order_details': order_details, 'order':order})
+
+    return render(request, 'customadmin/login.html')
+
+def update_item_status(request, id):
+
+    if 'name' in request.session:
+
+        if request.method == 'POST':
+            orderitem = OrderItems.objects.get(id=id)
+            status = request.POST['item_status']
+
+            orderitem.item_order_status = status
+            orderitem.cancel_date = timezone.now()
+            orderitem.save()
+
+            return redirect('order_details')
+            

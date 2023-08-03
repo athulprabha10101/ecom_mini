@@ -20,53 +20,47 @@
     <div class="card">
       <div class="card-body">
         <h4 class="card-title" >Order Status</h4>
-        <div class="table-responsive">
-          <table class="table">
-            {% for order in orders %}
-            <thead>
+            <div class="table-responsive">
+                <table class="table">
+            
+            <thead>                
                 <tr>
-                  <td style="color: yellow; border-top:solid 1px white ;" colspan="5">Order id : {{ order.order_num | upper }}</td>
-                </tr>
-                <tr>
-                  <td style="color: yellow;" colspan="5">Username : {{ order.user.name | capfirst }}</td>
-                </tr>
-                <tr>
-                  <td style="color: yellow;" colspan="5">Order date : {{ order.order_date }}</td>
-                </tr>
-                <tr>
-                    <td>  <a href="{% url 'orders' %}"><i class="mdi mdi-eye" style="display: inline-block;font-size: 30px; color: #88e859;"></i></a></td>
-                </tr>
-
-                {% comment %} -------------- Another html {% endcomment %}
-                {% comment %} <tr>
                   <th style="color:white;" class="dashboard-text">Items</th>
                   <th style="color:white;" class="dashboard-text">Quantity</th>
                   <th style="color:white;" class="dashboard-text">Price</th>
                   <th style="color:white;" class="dashboard-text">Status</th>
-                  <th style="color:white;" class="dashboard-text">Action</th>
+                  <th style="color:white;" class="dashboard-text">Change status</th>
+                  <th style="color:white;" class="dashboard-text">Current status / requests</th>
                 </tr>
               </thead>
-
-                {% for item in order.items_in_order.all  %}
+            
+              
+              {% for order_detail in order_details %}
+              <form action=" {% url 'update_item_status'  order_detail.id %}" method="POST" enctype="multipart/form-data">  
                 <tr>
-                    <td> {{item.item.variantname}} </td>
-                    <td> {{item.quantity}} </td>
-                    <td> {{item.sold_at_price}} </td>
-                    <td> Status </td>
+                    <td> {{order_detail.item.variantname}} </td>
+                    <td> {{order_detail.quantity}} </td>
+                    <td> {{order_detail.sold_at_price}} </td>
+                    <td>  <select name="item_status">
+                        {% for choice in order_detail.item_status_choices %}
+                            <option value="{{ order_detail.item_order_status }}">{{ choice.0 }}</option>
+                        {% endfor %}                        
+                    </select> </td>
+                    <td><button type="submit" class="btn btn-success">Save</button></td>
                     <td>
-                        {% if item.cancel_req == False %}
+                        {% if order_detail.cancel_req %}
                         <div style="display:flex; flex-direction:column;">
                         <div class="badge badge-danger">Cancellation requested</div>
-                        <button class="btn btn-outline-success">Approve cancellation</button>
                         </div>
                         {% else %}
-                        <div class="badge badge-outline-warning">hooaah</div>
+                        <div class="badge badge-outline-warning">{{ order_detail.item_order_status }}</div>
                         {% endif %}
                       </td>
                 </tr>      
-                {% endfor %}   {% endcomment %}
-            
             {% endfor %}
+            
+        </form>
+            
           </table>
           
         </div>

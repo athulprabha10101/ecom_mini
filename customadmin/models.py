@@ -86,9 +86,7 @@ class Orders(models.Model):
     )
     order_status_choices = (
         ('processing', 'Procrssing'),
-        ('delivered', 'Delivered'),
-        ('out', 'Out of delivery'),
-        ('cancelled', 'Cancelled'),
+        ('complete', 'Complete'),
         ('shipped', 'Shipped'),
         ('pending', 'Pending'),
     )
@@ -106,11 +104,22 @@ class Orders(models.Model):
     
     
 class OrderItems(models.Model):
+
+    item_status_choices = (
+        ('Processing','Processing'),
+        ('Delivered','Delivered'),
+        ('Out of delivery','Out of delivery'),
+        ('Cancelled','Cancelled'),
+        ('Shipped','Shipped'),
+        ('Pending','Pending'),
+    )
     order = models.ForeignKey(Orders, on_delete=models.CASCADE, related_name='items_in_order')
     item = models.ForeignKey(Variants, on_delete=models.CASCADE)
     quantity = models.PositiveIntegerField()
     sold_at_price = models.PositiveIntegerField()
     cancel_req = models.BooleanField(default=False)
+    cancel_date = models.DateTimeField(blank=True)
+    item_order_status = models.CharField(max_length=100, choices=item_status_choices, default='Procrssing')
 
     @property
     def ordered_price(self):

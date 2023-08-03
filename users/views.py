@@ -392,7 +392,6 @@ def place_order(request):
     return render(request, 'users/login.html', {'error': 'login to purchase'})
 
 def cancel_req(request, id):
-    print(id, "-----------------------------HELLO ID")
     item = OrderItems.objects.get(id=id)
     item.cancel_req = True
     item.save()

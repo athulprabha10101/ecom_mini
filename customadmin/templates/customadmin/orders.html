@@ -26,7 +26,7 @@
             {% for item in order.items_in_order.all  %}
             <thead>
                 <tr>
-                  <td style="color: yellow; border-top:solid 1px white ;" colspan="5">Order id : {{ order.order_num | upper }}<div class="badge badge-info" style="margin-left:20px; display: inline-block;">Current Status :{{order.order_status |capfirst}} </div>{% if item.cancel_req %}<div class="badge badge-danger" style="margin-left:20px; display: inline-block;">Cancellation requested</div>{% endif %}</td>
+                  <td style="color: yellow; border-top:solid 1px white ;" colspan="5">Order id : {{ order.order_num | upper }}{% if item.cancel_req %}<div class="badge badge-danger" style="margin-left:20px; display: inline-block;">Cancellation requested</div>{% endif %}</td>
                 </tr>
                 <tr>
                   <td style="color: yellow;" colspan="5">Username : {{ order.user.name | capfirst }}</td>
@@ -35,7 +35,7 @@
                   <td style="color: yellow;" colspan="5">Order date : {{ order.order_date }}</td>
                 </tr>
                 <tr>                    
-                    <td><a href="{% url 'order_details' %}"><i class="mdi mdi-eye" style="display: inline-block;font-size: 30px; color: #88e859;"></i></a></td>           
+                    <td><a href="{% url 'order_details' order.id %}"><i class="mdi mdi-eye" style="display: inline-block;font-size: 30px; color: #88e859;"></i></a></td>           
                 </tr>                
             </thead>
                 {% endfor %}

@@ -23,7 +23,8 @@ urlpatterns = [
     path('delete_image/<int:id>', views.delete_image, name="delete_image"),
     path('add_image/<int:id>', views.add_image, name="add_image"),
     path('orders', views.orders, name="orders"),
-    path('orders_details', views.orders_details, name="orders_details"),
+    path('order_details/<int:id>', views.order_details, name="order_details"),
+    path('update_item_status/<int:id>', views.update_item_status, name="update_item_status"),
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
