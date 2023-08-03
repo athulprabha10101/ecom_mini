@@ -1,0 +1,93 @@
+<aside class="col-lg-4">
+    <div class="summary">
+        <h3 class="summary-title">Your Order</h3><!-- End .summary-title -->
+
+        <table class="table table-summary">
+            <thead>
+                <tr>
+                    <th>Product</th>
+                    <th>Quantity</th>
+                    <th>Total</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for item in cart_items %}
+                <tr class="summary-subtotal">
+                    
+                    <td><a href="#">{{ item.item.variantname }}</a></td>
+                    <td><div class="text-center" >{{ item.quantity }}</div></td>
+                    <td>{{ item.subtotal }}</td>
+                    
+                </tr>
+                {% endfor %}
+                <tr>
+                    <td>Shipping:</td>
+                    <td>Free shipping</td>
+                </tr>
+                <tr class="summary-total">
+                    <td>Total:</td>
+                    <td>{{cart.totalprice}} </td>
+                </tr><!-- End .summary-total -->
+            </tbody>
+        </table><!-- End .table table-summary -->
+
+        <div class="accordion-summary" id="accordion-payment">
+            <div class="card">
+                <div class="card-header" id="heading-1">
+                    <h2 class="card-title">
+                        <a role="button"  onclick="redirectToOrderView('cod')"  data-toggle="collapse"  href="#collapse-1" aria-expanded="true" aria-controls="collapse-1">
+                           
+                            Cash On Delivery
+                        </a>
+                    </h2>
+                </div><!-- End .card-header -->
+                <div id="collapse-1" class="collapse show" aria-labelledby="heading-1" data-parent="#accordion-payment">
+                    <div class="card-body">payment is secure when using the debit credit card for the payment</div>
+                  
+                    <button type="submit"  class="btn btn-outline-primary-2 btn-order btn-block">
+                        <span class="btn-text">Place Order</span>
+                        <span  class="btn-hover-text">Proceed to Checkout</span>
+                    </button>
+                </div><!-- End .collapse -->
+            </div><!-- End .card -->
+
+     
+
+            <div class="card">
+                <div class="card-header" id="heading-3">
+                    <h2 class="card-title"> 
+                        <a class="collapsed" onclick="redirectToOrderView('wallet')"  role="button"  data-toggle="collapse" href="#collapse-3" aria-expanded="false" aria-controls="collapse-3">
+                            From My Wallet
+                        </a>
+                    </h2>
+                </div><!-- End .card-header -->
+               
+
+               
+               
+
+            <div class="card">
+                <div class="card-header" id="heading-4">
+                    <h2 class="card-title">
+                        
+                        <a class="collapsed" onclick="redirectToOrderView('onlinepayment')" role="button"  data-toggle="collapse" href="#collapse-4" aria-expanded="false" aria-controls="collapse-4">
+                            
+                            Online Payment <small class="float-right paypal-link">Payment using Razorpay</small>
+                        </a>
+                    </h2>
+                </div><!-- End .card-header -->
+                <div id="collapse-4" class="collapse" aria-labelledby="heading-4"data-parent="#accordion-payment">
+                    <div class="card-body">
+                        <div class="card-body">payment is secure when using the debit credit card for the payment</div>
+                        
+                        <button type="submit" id="rzp-button1"  class="btn btn-outline-primary-2 btn-order btn-block">
+                            <span class="btn-text">Place Order</span>
+                            <span  class="btn-hover-text">Proceed to Checkout</span>
+                        </button>
+                    </div><!-- End .card-body -->
+                </div><!-- End .collapse -->
+            </div><!-- End .card -->
+        </div><!-- End .accordion -->
+    </div><!-- End .summary -->
+</aside><!-- End .col-lg-3 -->

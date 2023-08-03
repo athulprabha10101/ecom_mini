@@ -23,10 +23,10 @@
         <div class="table-responsive">
           <table class="table">
             {% for order in orders %}
-            {% for item in order.items_in_order.all  %}
+            
             <thead>
                 <tr>
-                  <td style="color: yellow; border-top:solid 1px white ;" colspan="5">Order id : {{ order.order_num | upper }}{% if item.cancel_req and not item.item_order_status == 'Cancelled'%}<div class="badge badge-danger" style="margin-left:20px; display: inline-block;">Cancellation requested</div>{% else %}<div class="badge badge-outline-warning" style="margin-left:20px; display: inline-block;">{{ item.item_order_status }}</div>{% endif %}</td>
+                  <td style="color: yellow; border-top:solid 1px white ;" colspan="5">Order id : {{ order.order_num | upper }}</td>
                 </tr>
                 <tr>
                   <td style="color: yellow;" colspan="5">Username : {{ order.user.name | capfirst }}</td>
@@ -38,7 +38,7 @@
                     <td><a href="{% url 'order_details' order.id %}"><i class="mdi mdi-eye" style="display: inline-block;font-size: 30px; color: #88e859;"></i></a></td>           
                 </tr>                
             </thead>
-                {% endfor %}
+                
                 {% endfor %}
           </table>
           
@@ -49,10 +49,3 @@
 
 {% endblock dashboard %}
 
-{% if order_detail.cancel_req and not order_detail.item_order_status == 'Cancelled'%}
-                        <div style="display:flex; flex-direction:column;">
-                        <div class="badge badge-danger">Cancellation requested</div>
-                        </div>
-                        {% else %}
-                        <div class="badge badge-outline-warning">{{ order_detail.item_order_status }}</div>
-                        {% endif %}

@@ -4,7 +4,8 @@ from django.views.decorators.cache import cache_control
 from customadmin.models import *
 from twilio.rest import Client
 from django.contrib import messages
-
+import razorpay
+from django.conf import settings
 # Create your views here.
 from django.contrib.auth.models import User
 import sys
@@ -360,7 +361,11 @@ def checkout(request, cart_id):
     addresses = UserAddress.objects.filter(user = cart.user)
     cart_items = cart.cart_items.all()
     
-    return render(request, 'store/checkout.html',{'cart_items':cart_items, 'addresses':addresses, 'cart':cart})
+    client = razorpay.Client(auth=(settings.RAZOR_KEY, settings.KEY_SECRET))
+    payment = client.order.create({'amount':float(cart.totalprice*100), 'currency':'INR', 'payment_capture':1})
+
+
+    return render(request, 'store/checkout.html',{'cart_items':cart_items, 'addresses':addresses, 'cart':cart, 'payment':payment})
 
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
 def place_order(request):

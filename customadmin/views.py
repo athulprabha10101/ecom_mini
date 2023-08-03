@@ -288,6 +288,7 @@ def order_details(request, id):
 
     return render(request, 'customadmin/login.html')
 
+
 def update_item_status(request, id):
 
     if 'name' in request.session:

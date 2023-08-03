@@ -65,18 +65,23 @@
                                             {% endfor %}
                                      </div><!-- container -->     
                             </div><!-- End .col-lg-8 -->
+{% comment %} ___________________________________________________________________________________________
 
-                            <aside class="col-lg-4"  >
-                                <div class="summary summary-cart" style="border-radius: 10px; background-color: #fffa0140;">
-                                    <h3 class="summary-title">Cart Summary</h3><!-- End .summary-title -->
-        
-                                    <table class="table table-summary" >
-                                        <tbody>
-                                            <tr class="summary-subtotal">
-                                                <td>Items</td>
-                                                <td>Qty</td>
-                                                <td>Amount</td>
+{% endcomment %}
+                            <aside class="col-lg-4">
+                                <div class="summary">
+                                    <h3 class="summary-title">Your Order</h3><!-- End .summary-title -->
+
+                                    <table class="table table-summary">
+                                        <thead>
+                                            <tr>
+                                                <th>Product</th>
+                                                <th>Quantity</th>
+                                                <th>Total</th>
                                             </tr>
+                                        </thead>
+
+                                        <tbody>
                                             {% for item in cart_items %}
                                             <tr class="summary-subtotal">
                                                 
@@ -86,71 +91,63 @@
                                                 
                                             </tr>
                                             {% endfor %}
-                                            
-                                            <tr class="summary-subtotal">
-                                                <td><b>Subtotal:</td>
-                                                <td>&nbsp;</td>
-                                                <td><b>{{cart.totalprice}}</td>
-                                            </tr><!-- End .summary-subtotal -->
-
-                                            <tr class="summary-shipping">
+                                            <tr>
                                                 <td>Shipping:</td>
-                                                <td>&nbsp;</td>
-                                                <td>&nbsp;</td>
+                                                <td></td>
+                                                <td>Free shipping</td>
                                             </tr>
-        
-                                            <tr class="summary-shipping-row">
-                                                <td>
-                                                    <div class="custom-control custom-radio">
-                                                        <input class="custom-control-input" id="free-shipping" name="shipping" type="radio">
-                                                        <label class="custom-control-label" for="free-shipping">Free Shipping</label>
-                                                    </div><!-- End .custom-control -->
-                                                </td>
-                                                <td>&nbsp;</td>
-                                                <td>$0.00</td>
-                                            </tr><!-- End .summary-shipping-row -->
-        
-                                            <tr class="summary-shipping-row">
-                                                <td>
-                                                    <div class="custom-control custom-radio">
-                                                        <input class="custom-control-input" id="standart-shipping" name="shipping" type="radio">
-                                                        <label class="custom-control-label" for="standart-shipping">Standart:</label>
-                                                    </div><!-- End .custom-control -->
-                                                </td>
-                                                <td>&nbsp;</td>
-                                                <td>$10.00</td>
-                                            </tr><!-- End .summary-shipping-row -->
-        
-                                            <tr class="summary-shipping-row">
-                                                <td>
-                                                    <div class="custom-control custom-radio">
-                                                        <input class="custom-control-input" id="express-shipping" name="shipping" type="radio">
-                                                        <label class="custom-control-label" for="express-shipping">Express:</label>
-                                                    </div><!-- End .custom-control -->
-                                                </td>
-                                                <td>&nbsp;</td>
-                                                <td>$20.00</td>
-                                            </tr><!-- End .summary-shipping-row -->
-        
-                                            <tr class="summary-shipping-estimate">
-                                                <td>Estimate for Your Country<br> </td>
-                                                <td>&nbsp;</td>
-                                                <td>&nbsp;</td>
-                                            </tr><!-- End .summary-shipping-estimate -->
-        
                                             <tr class="summary-total">
-                                                <td><b>Total:</b></td>
-                                                <td>&nbsp; INR</td>
-                                                <td style="color:black;"><b>&nbsp; {{cart.totalprice}}</b></td>
+                                                <td>Total:</td>
+                                                <td></td>
+                                                <td>{{cart.totalprice}} </td>
                                             </tr><!-- End .summary-total -->
                                         </tbody>
                                     </table><!-- End .table table-summary -->
-                                    
-                                    <button type="submit" class="btn btn-success btn-block btn-lg" href="">PLACE ORDER</button>
+
+                                    <div class="accordion-summary" id="accordion-payment">
+                                        <div class="card">
+                                            <div class="card-header" id="heading-1">
+                                                <h2 class="card-title">
+                                                    <a role="button"  onclick="redirectToOrderView('cod')"  data-toggle="collapse"  href="#collapse-1" aria-expanded="true" aria-controls="collapse-1">
+                                                    
+                                                        Cash On Delivery
+                                                    </a>
+                                                </h2>
+                                            </div><!-- End .card-header -->
+                                            <div id="collapse-1" class="collapse show" aria-labelledby="heading-1" data-parent="#accordion-payment">
+                                                <div class="card-body">payment is secure when using the debit credit card for the payment</div>
+                                            
+                                                <button type="submit"  class="btn btn-outline-primary-2 btn-order btn-block">
+                                                    <span class="btn-text">Place Order</span>
+                                                    <span  class="btn-hover-text">Proceed to Checkout</span>
+                                                </button>
+                                            </div><!-- End .collapse -->
+                                        </div><!-- End .card -->
+                                                                    
+                                        <div class="card">
+                                            <div class="card-header" id="heading-4">
+                                                <h2 class="card-title">
+                                                    
+                                                    <a class="collapsed" onclick="redirectToOrderView('onlinepayment')" role="button"  data-toggle="collapse" href="#collapse-4" aria-expanded="false" aria-controls="collapse-4">
+                                                        
+                                                        Online Payment <small class="float-right paypal-link">Payment using Razorpay</small>
+                                                    </a>
+                                                </h2>
+                                            </div><!-- End .card-header -->
+                                            <div id="collapse-4" class="collapse" aria-labelledby="heading-4"data-parent="#accordion-payment">
+                                                <div class="card-body">
+                                                    <div class="card-body">payment is secure when using the debit credit card for the payment</div>
+                                                    
+                                                    <button type="submit" id="rzp-button1"  class="btn btn-outline-primary-2 btn-order btn-block">
+                                                        <span class="btn-text">Place Order</span>
+                                                        <span  class="btn-hover-text">Proceed to Checkout</span>
+                                                    </button>
+                                                </div><!-- End .card-body -->
+                                            </div><!-- End .collapse -->
+                                        </div><!-- End .card -->
+                                    </div><!-- End .accordion -->
                                 </div><!-- End .summary -->
-        
-                                <a class="btn btn-outline-warning btn-lg btn-block mb-3" href="{% url 'user_home' %}"><span>CONTINUE SHOPPING</span><i class="icon-refresh"></i></a>
-                            </aside>
+                            </aside><!-- End .col-lg-3 -->
                     </form>
 
                         
@@ -230,9 +227,6 @@
                                                         <button type="submit" class="btn btn-primary">Add Address
                                                         </button>
                                                     </div>
-
-
-
                                                 </form>
                                             </div>
                                         </div>
@@ -249,5 +243,60 @@
             </div><!-- End .checkout -->
         </div><!-- End .page-content -->
     </main><!-- End .main -->
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script>
+var options = {
+    "key": "rzp_test_lIdjq66EM8z09I", // Enter the Key ID generated from the Dashboard
+    "amount": "{{payment.amount}}", // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
+    "currency": "INR",
+    "name": "Acme Corp",
+    "description": "Test Transaction",
+    "image": "https://example.com/your_logo",
+    "order_id": "{{payment.id}}", //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
+    "handler": function (response){
+        alert(response.razorpay_payment_id);
+        alert(response.razorpay_order_id);
+        alert(response.razorpay_signature)
+    },
+    "prefill": {
+        "name": "Gaurav Kumar",
+        "email": "gaurav.kumar@example.com",
+        "contact": "9000090000"
+    },
+    "notes": {
+        "address": "Razorpay Corporate Office"
+    },
+    "theme": {
+        "color": "#3399cc"
+    }
+};
+var rzp1 = new Razorpay(options);
+rzp1.on('payment.failed', function (response){
+        alert(response.error.code);
+        alert(response.error.description);
+        alert(response.error.source);
+        alert(response.error.step);
+        alert(response.error.reason);
+        alert(response.error.metadata.order_id);
+        alert(response.error.metadata.payment_id);
+});
+document.getElementById('rzp-button1').onclick = function(e){
+    rzp1.open();
+    e.preventDefault();
+}
+</script>
+<script>
+
+    const radioButtons = document.querySelectorAll('input[type="radio"][name="group"]');
     
+    radioButtons.forEach(function(radioButton) {
+      radioButton.addEventListener("click", function() {
+        radioButtons.forEach(function(otherRadioButton) {
+          if (otherRadioButton !== radioButton) {
+            otherRadioButton.checked = false; // Uncheck other radio buttons
+          }
+        });
+      });
+    });
+    </script>
 {% endblock %}

@@ -125,3 +125,4 @@ class OrderItems(models.Model):
     def ordered_price(self):
         return self.item.selling_price * self.quantity
     
+
