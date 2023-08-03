@@ -1,4 +1,4 @@
-from datetime import timezone
+from django.utils import timezone
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from customadmin.models import *
@@ -295,10 +295,19 @@ def update_item_status(request, id):
         if request.method == 'POST':
             orderitem = OrderItems.objects.get(id=id)
             status = request.POST['item_status']
-
+            print(status,"------------------>>")
+            print(orderitem.item.variantname,"------------------>>")
+            
             orderitem.item_order_status = status
-            orderitem.cancel_date = timezone.now()
+            
+            
+            if status == 'Cancelled':
+                orderitem.cancel_date = timezone.now()
+                print("cancel------------------>>")
+                
+            
             orderitem.save()
+            print("saved------------------>>")
 
-            return redirect('order_details')
+            return redirect('order_details', id=id)
             

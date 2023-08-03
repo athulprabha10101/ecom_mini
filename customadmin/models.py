@@ -118,7 +118,7 @@ class OrderItems(models.Model):
     quantity = models.PositiveIntegerField()
     sold_at_price = models.PositiveIntegerField()
     cancel_req = models.BooleanField(default=False)
-    cancel_date = models.DateTimeField(blank=True)
+    cancel_date = models.DateTimeField(blank=True, null=True)
     item_order_status = models.CharField(max_length=100, choices=item_status_choices, default='Procrssing')
 
     @property
