@@ -24,6 +24,12 @@ urlpatterns = [
     path('remove_item<int:id>', views.remove_item, name='remove_item'),
     path('place_order', views.place_order, name='place_order'),
     path('cancel_req<int:id>', views.cancel_req, name='cancel_req'),
+    path('forgot_password', views.forgot_password, name='forgot_password'),
+    path('new_password_for_forgotten_password', views.new_password_for_forgotten_password, name='new_password_for_forgotten_password'),
+    path('change_password', views.change_password, name='change_password'),
+    
+
+    
     
     
 ]

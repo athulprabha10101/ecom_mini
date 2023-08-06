@@ -103,6 +103,7 @@ def user_login(request):
 
         try:
             user = UserProfile.objects.get(email=email, password=password)
+            
             if user:
                 if not user.is_active:
                     return render(request, 'users/login.html', {'message': "User Blocked"})
@@ -114,6 +115,56 @@ def user_login(request):
             return render(request, 'users/login.html', {'message': "Wrong credentials"})
 
     return render(request, 'users/login.html')
+
+def forgot_password(request):
+    return render(request, 'users/forgot_password.html')
+
+def new_password_for_forgotten_password(request):
+    
+    if request.method=='POST':
+        email = request.POST['email']
+        phone_num = request.POST['phone']
+
+        try:
+            user = UserProfile.objects.get(phone=phone_num, email=email)
+            if user:
+                generatedotp = str(random.randint(1000, 9999))
+                
+                print("-------------OTP FOR PASSWORD CHANGE-------------")
+                print("---------------",generatedotp)
+                print("-------------OTP FOR PASSWORD CHANGE-------------")
+
+                request.session['newPasswordOTP'] = {
+                    'generatedotp':generatedotp,
+                    'user_id':user.id,
+                }
+
+                return render(request, 'users/set_new_password.html')
+            
+        except UserProfile.DoesNotExist:
+            return render(request, 'users/forgot_password.html',{'invalid':"Invalid credentials, try again"})
+
+@cache_control(no_cache=True, must_revalidate=True)
+def change_password(request):
+
+    if request.method == 'POST':
+        enteredOTP = request.POST['enteredOTP']
+        newpassword = request.POST['newPassword']
+        confirmPassword = request.POST['confirmPassword']
+
+        generatedOTP = request.session['newPasswordOTP']['generatedotp']
+        user = UserProfile.objects.get(id=request.session['newPasswordOTP']['user_id'])
+
+        if confirmPassword == newpassword:
+            if  generatedOTP== enteredOTP:                
+                user.password = newpassword
+                user.save()                
+                request.session.flush()
+
+                return redirect('user_login') # when this is 'rendered' with context instead of redirect, throws enteredOTP multivaluedictkey error
+            
+        return render(request, 'users/set_new_password.html',{'error':'Passwords / OTP not matching'})
+        
 
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
 def user_logout(request):
@@ -401,4 +452,6 @@ def cancel_req(request, id):
     item.cancel_req = True
     item.save()
     return redirect(user_orders)
+
+
     
