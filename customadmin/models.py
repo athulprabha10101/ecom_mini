@@ -113,7 +113,9 @@ class Cart(models.Model):
     def saved_amount(self):
         if self.applied_coupon:
             savings = Decimal(self.totalprice) - Decimal(self.coupon_price)
+            print(savings,"------------savings--------------")
             return savings
+        return Decimal('0.00')
             
 
 class CartItem(models.Model):

@@ -395,7 +395,8 @@ def remove_item(request, id):
     coupon = cart.applied_coupon
 
     if coupon and coupon.min_spend > cart.totalprice:
-        coupon.delete()
+        cart.applied_coupon = None
+        return render(request, 'store/cart.html', {'user': user,'items':items, 'cart':cart,'message': f"Coupon reoved. Minimum purchase is: {coupon.minspend}"})
 
     return redirect('display_cart')
 
@@ -422,8 +423,12 @@ def checkout(request, cart_id):
     coupon = cart.applied_coupon
 
 
-    client = razorpay.Client(auth=(settings.RAZOR_KEY, settings.KEY_SECRET))
-    payment = client.order.create({'amount':float(cart.totalprice*100), 'currency':'INR', 'payment_capture':1})
+    if not coupon:
+        client = razorpay.Client(auth=(settings.RAZOR_KEY, settings.KEY_SECRET))
+        payment = client.order.create({'amount':float(cart.totalprice*100), 'currency':'INR', 'payment_capture':1})
+    else:
+        client = razorpay.Client(auth=(settings.RAZOR_KEY, settings.KEY_SECRET))
+        payment = client.order.create({'amount': float(cart.coupon_price * 100), 'currency': 'INR', 'payment_capture': 1})
 
 
     return render(request, 'store/checkout.html',{'cart_items':cart_items, 'coupon':coupon, 'addresses':addresses, 'cart':cart, 'payment':payment})
@@ -453,10 +458,8 @@ def place_order(request):
                 print(current_order,"---------order object created for applied coupon-----------XXXXXXXX")
 
                 usedcoupon = UsedCoupons.objects.create(
-                    
                     user=user,
                     coupon=applied_coupon
-                    
                 )
                 print(usedcoupon,"---------attempting usercoupon creation-----------XXXXXXXX"),
 
@@ -501,7 +504,7 @@ def apply_coupon(request):
             used = UsedCoupons.objects.filter(user=user, coupon__coupon_code=code).exists()
 
             if used:
-                return render(request, 'store/cart.html', {'user': user,'items':items, 'cart':cart,'message': "Coupon expired!"})
+                return render(request, 'store/cart.html', {'user': user,'items':items, 'cart':cart,'message': str("Coupon expired!")})
      
             else:
                 try:

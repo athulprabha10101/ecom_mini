@@ -70,31 +70,33 @@
 
                         <div class="cart-bottom">
                             {% if not coupon %}
-                                {% if items %}
-                                <div class="cart-discount">
-                                    <form action="{% url 'apply_coupon' %}" method='post'>
-                                        {% csrf_token %}
-                                        <div class="input-group">
-                                            <input type="text" class="form-control" name='code' required="" placeholder="COUPON CODE" style="font-size: 18px">
-                                            <div class="input-group-append">
-                                                <button class="btn btn-outline-primary" type="submit"><i class="icon-long-arrow-right"></i></button>
-                                            </div><!-- .End .input-group-append -->
-                                        </div><!-- End .input-group -->
-                                    </form>
-                                    <div class="alert alert-info alert-dismissible fade show" role="alert" data-bs-delay="3000">
-                                        {{message}}
-                                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="close"></button>
-                                    </div>
-                                </div><!-- End .cart-discount -->
-                                {% else %}
-                                <div>
-                                <h1 style = "color:orange;"> Oops .. ☹️ Cart empty !!! add items to cart to purchase ...</h1>
-                                <div>
-                                <a href="{% url 'user_home' %}" class="btn btn-lg btn-dark btn-block mb-3"><span>CONTINUE SHOPPING</span></a>
-                                </div>
-                                </div>
-                                {% endif %}
-                            {% else %}
+                                    {% if items %}
+                                        <div class="cart-discount">
+                                            <form action="{% url 'apply_coupon' %}" method='post'>
+                                                {% csrf_token %}
+                                                <div class="input-group">
+                                                    <input type="text" class="form-control" name='code' required="" placeholder="COUPON CODE" style="font-size: 18px">
+                                                    <div class="input-group-append">
+                                                        <button class="btn btn-outline-primary" type="submit"><i class="icon-long-arrow-right"></i></button>
+                                                    </div><!-- .End .input-group-append -->
+                                                </div><!-- End .input-group -->
+                                            </form>
+                                            <div class="alert alert-info alert-dismissible fade show" role="alert" data-bs-delay="3000">
+                                                {{message}}
+                                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="close"></button>
+                                            </div>
+                                        </div><!-- End .cart-discount -->
+                                    {% else %}
+                                        <div>
+                                        <h1 style = "color:orange;"> Oops .. ☹️ Cart empty !!! add items to cart to purchase ...</h1>
+                                        <div>
+                                        <a href="{% url 'user_home' %}" class="btn btn-lg btn-dark btn-block mb-3"><span>CONTINUE SHOPPING</span></a>
+                                        </div>
+                                        </div>
+                                    {% endif %}
+                            {% endif %}
+
+                            {% if coupon %}
                                 <div>
                                 <h1 style = "color:green;"> You have applied coupon {{coupon.coupon_code}}</h1>
                                 <h3 style = "color:blue;"> You saved Rs. {{cart.saved_amount}}</h3>

@@ -19,14 +19,14 @@
             <div class="checkout" >
                 <div class="container" >
                     <div class="checkout-discount">
-                        <form action="#">
-                            <input class="form-control" id="checkout-discount-input" required type="text">
-                            <label class="text-truncate" for="checkout-discount-input">Have a coupon? <span>Click here to enter your code</span></label>
-                        </form>
+<!--                        <form action="#">-->
+<!--                            <input class="form-control" id="checkout-discount-input" required type="text">-->
+<!--                            <label class="text-truncate" for="checkout-discount-input">Have a coupon? <span>Click here to enter your code</span></label>-->
+<!--                        </form>-->
                     </div><!-- End .checkout-discount -->
                     
                         
-                    <form action="{% url 'place_order' %}" method='POST'>
+                    <form action="{% url 'place_order' %}" id="order_form" method='POST'>
                             {% csrf_token %}
                         <div class="row">
                         
@@ -270,7 +270,7 @@ var options = {
     "image": "https://example.com/your_logo",
     "order_id": "{{payment.id}}", //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
     "handler": function (response){
-        const form = document.getElementById('place_order');
+        const form = document.getElementById('order_form');
         // Submit the form
         form.submit();
    },
