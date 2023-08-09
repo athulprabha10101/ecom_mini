@@ -25,6 +25,9 @@ urlpatterns = [
     path('orders', views.orders, name="orders"),
     path('order_details/<int:id>', views.order_details, name="order_details"),
     path('update_item_status/<int:id>', views.update_item_status, name="update_item_status"),
+    path('deactivate_coupon/<int:coupon_id>', views.deactivate_coupon, name="deactivate_coupon"),
+    path('coupons', views.coupons, name="coupons"),
+    path('add_coupon', views.add_coupon, name="add_coupon"),
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

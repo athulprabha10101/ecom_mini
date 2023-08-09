@@ -76,7 +76,9 @@
                                         <thead>
                                             <tr>
                                                 <th>Product</th>
+                                                
                                                 <th>Quantity</th>
+                                                
                                                 <th>Total</th>
                                             </tr>
                                         </thead>
@@ -91,15 +93,29 @@
                                                 
                                             </tr>
                                             {% endfor %}
-                                            <tr>
-                                                <td>Shipping:</td>
+                                           
+                                            <tr >
+                                                <td><h5>Estimate for Your Country</h5><br> </td>
                                                 <td></td>
-                                                <td>Free shipping</td>
+                                                <td></td>                                                
                                             </tr>
+                                            {% if coupon %}
+                                            <tr >
+                                                <td><h5>Discount</h5><br> </td>
+                                                <td></td>
+                                                <td><h5> {{cart.saved_amount}}</h5></td>                                                
+                                            </tr>
+                                            {% endif %}
+                                        
+
                                             <tr class="summary-total">
                                                 <td>Total:</td>
                                                 <td></td>
+                                                {% if coupon %}
+                                                <td>{{cart.coupon_price}} </td>
+                                                {% else %}
                                                 <td>{{cart.totalprice}} </td>
+                                                {% endif %}
                                             </tr><!-- End .summary-total -->
                                         </tbody>
                                     </table><!-- End .table table-summary -->
@@ -254,10 +270,10 @@ var options = {
     "image": "https://example.com/your_logo",
     "order_id": "{{payment.id}}", //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
     "handler": function (response){
-        alert(response.razorpay_payment_id);
-        alert(response.razorpay_order_id);
-        alert(response.razorpay_signature)
-    },
+        const form = document.getElementById('place_order');
+        // Submit the form
+        form.submit();
+   },
     "prefill": {
         "name": "Gaurav Kumar",
         "email": "gaurav.kumar@example.com",
@@ -272,13 +288,13 @@ var options = {
 };
 var rzp1 = new Razorpay(options);
 rzp1.on('payment.failed', function (response){
-        alert(response.error.code);
-        alert(response.error.description);
-        alert(response.error.source);
-        alert(response.error.step);
-        alert(response.error.reason);
-        alert(response.error.metadata.order_id);
-        alert(response.error.metadata.payment_id);
+        //alert(response.error.code);
+        //alert(response.error.description);
+        //alert(response.error.source);
+        //alert(response.error.step);
+        //alert(response.error.reason);
+        //alert(response.error.metadata.order_id);
+        //alert(response.error.metadata.payment_id);
 });
 document.getElementById('rzp-button1').onclick = function(e){
     rzp1.open();

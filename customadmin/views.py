@@ -311,4 +311,52 @@ def update_item_status(request, id):
             print("saved------------------>>")
 
             return redirect('order_details', id=id)
-            
+
+def coupons(request):
+    
+    if 'name' in request.session:
+        
+        coupons = Coupons.objects.all()
+
+        return render(request, 'customadmin/coupons.html', {'coupons': coupons})
+        
+    return render(request, 'customadmin/login.html')
+
+def deactivate_coupon(request, coupon_id):
+    if 'name' in request.session:
+        coupon = Coupons.objects.get(id=coupon_id)
+        coupon.is_active = False
+        coupon.save()
+    return redirect()
+
+def add_coupon(request):
+    if 'name' in request.session:
+        if request.method=='POST':
+            couponCode = request.POST['couponCode']
+            coupon_type = request.POST['coupon_type']
+            min_spend = request.POST['min_spend']
+            max_discount = request.POST['max_discount']
+            max_discount = request.POST['max_discount']
+            coupon_discount_percent = request.POST['coupon_discount_percent']
+            expiry_date = request.POST['expiry_date']
+
+        if coupon_type == "fixed_amount":
+            coupon = Coupons.objects.create(
+              coupon_code = couponCode,
+              coupon_type = coupon_type,
+              min_spend = min_spend,
+              max_discount=max_discount,
+              expiry_date=expiry_date
+            )
+
+        if coupon_type == "percentage":
+            coupon = Coupons.objects.create(
+              coupon_code = couponCode,
+              coupon_type = coupon_type,
+              min_spend = min_spend,
+              coupon_discount_percent = coupon_discount_percent,
+              max_discount=max_discount,
+              expiry_date=expiry_date,
+            )
+        return redirect('coupons')
+

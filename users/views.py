@@ -389,6 +389,14 @@ def display_cart(request, id=None):
 def remove_item(request, id):
     cart_item = CartItem.objects.get(id=id)
     cart_item.delete()
+    
+    user = UserProfile.objects.get(email = request.session['email'])
+    cart = Cart.objects.get(user=user)
+    coupon = cart.applied_coupon
+
+    if coupon and coupon.min_spend > cart.totalprice:
+        coupon.delete()
+
     return redirect('display_cart')
 
 def add_qty(request, id):
@@ -411,17 +419,19 @@ def checkout(request, cart_id):
     cart = Cart.objects.get(id=cart_id)
     addresses = UserAddress.objects.filter(user = cart.user)
     cart_items = cart.cart_items.all()
-    
+    coupon = cart.applied_coupon
+
+
     client = razorpay.Client(auth=(settings.RAZOR_KEY, settings.KEY_SECRET))
     payment = client.order.create({'amount':float(cart.totalprice*100), 'currency':'INR', 'payment_capture':1})
 
 
-    return render(request, 'store/checkout.html',{'cart_items':cart_items, 'addresses':addresses, 'cart':cart, 'payment':payment})
+    return render(request, 'store/checkout.html',{'cart_items':cart_items, 'coupon':coupon, 'addresses':addresses, 'cart':cart, 'payment':payment})
 
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
 def place_order(request):
     if 'email' in request.session:
-        
+        print("--------order place clicked------------XXXXXXXX")
         if request.method=='POST':
             
             user = UserProfile.objects.get(email=request.session['email'])
@@ -429,12 +439,38 @@ def place_order(request):
             order_address = UserAddress.objects.get(id=order_address_id)
             cart = Cart.objects.get(user=user)
 
-            current_order = Orders.objects.create(
-                    
+            if cart.applied_coupon:
+                applied_coupon = cart.applied_coupon
+                print(applied_coupon.coupon_code,"--------------------XXXXXXXX")
+
+                current_order = Orders.objects.create(
                     user = user,
                     order_address = order_address,
+                    applied_coupon = applied_coupon, 
+                    order_total_price = cart.coupon_price,
+                    coupon_discount = cart.saved_amount,
                 )
+                print(current_order,"---------order object created for applied coupon-----------XXXXXXXX")
+
+                usedcoupon = UsedCoupons.objects.create(
+                    
+                    user=user,
+                    coupon=applied_coupon
+                    
+                )
+                print(usedcoupon,"---------attempting usercoupon creation-----------XXXXXXXX"),
+
+            else:
+                current_order = Orders.objects.create(
+                    user = user,
+                    order_address = order_address,
+                    applied_coupon = None, 
+                    order_total_price = cart.totalprice,
+                    coupon_discount = None
+                )
+                
             items = cart.cart_items.all()
+
             for item in items:
                 OrderItems.objects.create(
                     order = current_order,
@@ -442,6 +478,7 @@ def place_order(request):
                     quantity = item.quantity,
                     sold_at_price = item.item.selling_price
                 )
+
             cart.delete()
             order_num = current_order.order_num
             return render(request, 'store/success.html', {'order_num':order_num})
@@ -453,5 +490,38 @@ def cancel_req(request, id):
     item.save()
     return redirect(user_orders)
 
+def apply_coupon(request):
+    if 'email' in request.session:
+        if request.method=='POST':
+            code = request.POST['code']
 
-    
+            user = UserProfile.objects.get(email=request.session['email'])
+            cart = Cart.objects.get(user=user)
+            items = cart.cart_items.all()
+            used = UsedCoupons.objects.filter(user=user, coupon__coupon_code=code).exists()
+
+            if used:
+                return render(request, 'store/cart.html', {'user': user,'items':items, 'cart':cart,'message': "Coupon expired!"})
+     
+            else:
+                try:
+                    coupon = Coupons.objects.get(coupon_code=code)
+                    user = UserProfile.objects.get(email = request.session['email'])
+                    cart = Cart.objects.get(user=user)
+                    items = cart.cart_items.all()
+                    cart.applied_coupon = coupon
+                    cart.save()
+                    print("saved--------------------------")
+
+                    return render(request, 'store/cart.html',{'user':user, 'items':items, 'cart':cart, 'coupon':coupon } )
+
+                except Coupons.DoesNotExist:
+                    user = UserProfile.objects.get(email = request.session['email'])
+                    cart = Cart.objects.get(user=user)
+                    items = cart.cart_items.all()
+                    
+                    return render(request, 'store/cart.html', {'user':user, 'items':items, 'cart':cart, 'message':"invalid Coupon"})
+                    
+
+        return redirect('display_cart')
+    return redirect('user_login')

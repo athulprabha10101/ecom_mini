@@ -69,95 +69,111 @@
                         </table><!-- End .table table-wishlist -->
 
                         <div class="cart-bottom">
-                            {% if items %}
-                            <div class="cart-discount">
-                                <form action="#">
-                                    <div class="input-group">
-                                        <input type="text" class="form-control" required="" placeholder="COUPON CODE" style="font-size: 18px">
-                                        <div class="input-group-append">
-                                            <button class="btn btn-outline-primary-2" type="submit"><i class="icon-long-arrow-right"></i></button>
-                                        </div><!-- .End .input-group-append -->
-                                    </div><!-- End .input-group -->
-                                </form>
-                            </div><!-- End .cart-discount -->
+                            {% if not coupon %}
+                                {% if items %}
+                                <div class="cart-discount">
+                                    <form action="{% url 'apply_coupon' %}" method='post'>
+                                        {% csrf_token %}
+                                        <div class="input-group">
+                                            <input type="text" class="form-control" name='code' required="" placeholder="COUPON CODE" style="font-size: 18px">
+                                            <div class="input-group-append">
+                                                <button class="btn btn-outline-primary" type="submit"><i class="icon-long-arrow-right"></i></button>
+                                            </div><!-- .End .input-group-append -->
+                                        </div><!-- End .input-group -->
+                                    </form>
+                                    <div class="alert alert-info alert-dismissible fade show" role="alert" data-bs-delay="3000">
+                                        {{message}}
+                                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="close"></button>
+                                    </div>
+                                </div><!-- End .cart-discount -->
+                                {% else %}
+                                <div>
+                                <h1 style = "color:orange;"> Oops .. ☹️ Cart empty !!! add items to cart to purchase ...</h1>
+                                <div>
+                                <a href="{% url 'user_home' %}" class="btn btn-lg btn-dark btn-block mb-3"><span>CONTINUE SHOPPING</span></a>
+                                </div>
+                                </div>
+                                {% endif %}
                             {% else %}
-                            <div>
-                            <h1 style = "color:orange;"> Oops .. ☹️ Cart empty !!! add items to cart to purchase ...</h1>
-                            <div>
-                            <a href="{% url 'user_home' %}" class="btn btn-lg btn-dark btn-block mb-3"><span>CONTINUE SHOPPING</span></a>
-                            </div>
-                            </div>
-                            {% endif %}
-                            
+                                <div>
+                                <h1 style = "color:green;"> You have applied coupon {{coupon.coupon_code}}</h1>
+                                <h3 style = "color:blue;"> You saved Rs. {{cart.saved_amount}}</h3>
+                                <div>
+                            {% endif %}                            
                         </div><!-- End .cart-bottom -->
                     </div><!-- End .col-lg-9 -->
-                    <aside class="col-lg-3">
-                        <div class="summary summary-cart">
-                            <h3 class="summary-title">Cart Total</h3><!-- End .summary-title -->
-
-                            <table class="table table-summary">
-                                <tbody>
-                                    <tr class="summary-subtotal">
-                                        <td>Subtotal:</td>
-                                        <td>{{cart.totalprice}}</td>
-                                    </tr><!-- End .summary-subtotal -->
-                                    <tr class="summary-shipping">
-                                        <td>Shipping:</td>
-                                        <td>&nbsp;</td>
-                                    </tr>
-
-                                    <tr class="summary-shipping-row">
-                                        <td>
-                                            <div class="custom-control custom-radio">
-                                                <input type="radio" id="free-shipping" name="shipping" class="custom-control-input">
-                                                <label class="custom-control-label" for="free-shipping">Free Shipping</label>
-                                            </div><!-- End .custom-control -->
-                                        </td>
-                                        <td>$0.00</td>
-                                    </tr><!-- End .summary-shipping-row -->
-
-                                    <tr class="summary-shipping-row">
-                                        <td>
-                                            <div class="custom-control custom-radio">
-                                                <input type="radio" id="standart-shipping" name="shipping" class="custom-control-input">
-                                                <label class="custom-control-label" for="standart-shipping">Standart:</label>
-                                            </div><!-- End .custom-control -->
-                                        </td>
-                                        <td>$10.00</td>
-                                    </tr><!-- End .summary-shipping-row -->
-
-                                    <tr class="summary-shipping-row">
-                                        <td>
-                                            <div class="custom-control custom-radio">
-                                                <input type="radio" id="express-shipping" name="shipping" class="custom-control-input">
-                                                <label class="custom-control-label" for="express-shipping">Express:</label>
-                                            </div><!-- End .custom-control -->
-                                        </td>
-                                        <td>$20.00</td>
-                                    </tr><!-- End .summary-shipping-row -->
-
-                                    <tr class="summary-shipping-estimate">
-                                        <td>Estimate for Your Country<br> <a href="{% static 'dashboard.html' %}">Change address</a></td>
-                                        <td>&nbsp;</td>
-                                    </tr><!-- End .summary-shipping-estimate -->
-
-                                    <tr class="summary-total">
-                                        <td>Total:</td>
-                                        <td>{{cart.totalprice}}</td>
-                                    </tr><!-- End .summary-total -->
-                                </tbody>
-                            </table><!-- End .table table-summary -->
-                            {% if items %}
-                            <a href="{% url 'checkout' cart.id %}" class="btn btn-outline-primary btn-block">PROCEED TO CHECKOUT</a>
-                            {% else %}
-                            <a href="{% url 'user_home' %}" class="btn btn-lg btn-dark btn-block mb-3"><span> Cart Empty- CONTINUE SHOPPING</span><i class="icon-refresh"></i></a>
-                            {% endif %}
-                        </div><!-- End .summary -->
-
-                        
-                    </aside><!-- End .col-lg-3 -->
+                    
                 </div><!-- End .row -->
             </div><!-- End .container -->
+            <aside class="col-lg-3">
+                <div class="summary summary-cart">
+                    <h3 class="summary-title">Cart Total</h3><!-- End .summary-title -->
+
+                    <table class="table table-summary">
+                        <tbody>
+                            <tr class="summary-subtotal">
+                                <td>Subtotal:</td>
+                                <td>{{cart.totalprice}}</td>
+                            </tr><!-- End .summary-subtotal -->
+                            {% if coupon %}
+                            <tr class="summary-subtotal">
+                                <td>Coupon discount:</td>
+                                <td style="color:blue">{{cart.saved_amount}}</td>
+                            </tr><!-- End .summary-subtotal -->
+                            {% endif %}
+                            <tr class="summary-shipping">
+                                <td>Shipping:</td>
+                                <td>&nbsp;</td>
+                            </tr>
+
+                            <tr class="summary-shipping-row">
+                                <td>
+                                    <div class="custom-control custom-radio">
+                                        <input type="radio" id="free-shipping" name="shipping" class="custom-control-input">
+                                        <label class="custom-control-label" for="free-shipping">Free Shipping</label>
+                                    </div><!-- End .custom-control -->
+                                </td>
+                                <td>$0.00</td>
+                            </tr><!-- End .summary-shipping-row -->
+
+                            <tr class="summary-shipping-row">
+                                <td>
+                                    <div class="custom-control custom-radio">
+                                        <input type="radio" id="standart-shipping" name="shipping" class="custom-control-input">
+                                        <label class="custom-control-label" for="standart-shipping">Standart:</label>
+                                    </div><!-- End .custom-control -->
+                                </td>
+                                <td>$10.00</td>
+                            </tr><!-- End .summary-shipping-row -->
+
+                            <tr class="summary-shipping-row">
+                                <td>
+                                    <div class="custom-control custom-radio">
+                                        <input type="radio" id="express-shipping" name="shipping" class="custom-control-input">
+                                        <label class="custom-control-label" for="express-shipping">Express:</label>
+                                    </div><!-- End .custom-control -->
+                                </td>
+                                <td>$20.00</td>
+                            </tr><!-- End .summary-shipping-row -->
+
+                            <tr class="summary-shipping-estimate">
+                                <td>Estimate for Your Country<br> <a href="{% static 'dashboard.html' %}">Change address</a></td>
+                                <td>&nbsp;</td>
+                            </tr><!-- End .summary-shipping-estimate -->
+
+                            <tr class="summary-total">
+                                <td>Total:</td>
+                                <td>{{cart.coupon_price}}</td>
+                            </tr><!-- End .summary-total -->
+                        </tbody>
+                    </table><!-- End .table table-summary -->
+                    {% if items %}
+                    <a href="{% url 'checkout' cart.id %}" class="btn btn-outline-primary btn-block">PROCEED TO CHECKOUT</a>
+                    {% else %}
+                    <a href="{% url 'user_home' %}" class="btn btn-lg btn-dark btn-block mb-3"><span> Cart Empty- CONTINUE SHOPPING</span><i class="icon-refresh"></i></a>
+                    {% endif %}
+                </div><!-- End .summary -->
+            </aside><!-- End .col-lg-3 -->
         </div><!-- End .cart -->
     </div><!-- End .page-content -->
 </main>

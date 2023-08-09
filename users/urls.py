@@ -27,7 +27,7 @@ urlpatterns = [
     path('forgot_password', views.forgot_password, name='forgot_password'),
     path('new_password_for_forgotten_password', views.new_password_for_forgotten_password, name='new_password_for_forgotten_password'),
     path('change_password', views.change_password, name='change_password'),
-    
+    path('apply_coupon', views.apply_coupon, name='apply_coupon'),
 
     
     

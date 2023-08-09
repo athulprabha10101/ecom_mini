@@ -1,6 +1,8 @@
+import datetime
 from django.db import models
 import random
 import string
+from decimal import Decimal
 
 # Create your models here.
 
@@ -57,15 +59,62 @@ class AdminProfile(models.Model):
     name = models.CharField(max_length=100)
     password = models.CharField(max_length=20)
 
+
+class Coupons(models.Model):
+    coupon_code = models.CharField(max_length=8, unique=True)
+    coupon_type_choices = (
+        ('fixed_amount', 'Fixed Amount'),
+        ('percentage', 'Percentage'),
+    )
+    coupon_type = models.CharField(max_length=50, choices=coupon_type_choices, null=True, blank=True)
+    min_spend = models.PositiveIntegerField()
+    coupon_discount_percent = models.PositiveIntegerField(null=True, blank=True)
+    max_discount = models.DecimalField(max_digits=10, decimal_places=2)
+    expiry_date = models.DateTimeField()
+    is_active=models.BooleanField(default=True)
+
+class UsedCoupons(models.Model):
+    user = models.ForeignKey(UserProfile, on_delete=models.CASCADE, related_name='coupons_used')
+    coupon = models.ForeignKey(Coupons, on_delete=models.CASCADE)
+
+
 class Cart(models.Model):
     user = models.OneToOneField(UserProfile, on_delete=models.CASCADE, related_name='cart_of_user')
+    applied_coupon = models.ForeignKey(Coupons, on_delete=models.CASCADE, null=True, blank=True)
+
 
     @property
     def totalprice(self):
         total = 0
         for item in self.cart_items.all():
-            total += item.item.selling_price * item.quantity
+            total += item.item.selling_price * Decimal(item.quantity)
         return total
+
+    @property
+    def coupon_price(self):
+        if self.applied_coupon:
+            if self.applied_coupon.coupon_type == 'percentage':
+                if self.totalprice >= self.applied_coupon.min_spend:
+                    discount = (self.totalprice * (Decimal(self.applied_coupon.coupon_discount_percent)/100))
+                    max_discount = self.applied_coupon.max_discount
+                    amount = self.totalprice - min(discount, max_discount)
+                    return amount                
+                return {'message': "Coupon not applicable on this order. Plesae read t&c ... "}
+                    
+                
+            if self.applied_coupon.coupon_type == 'fixed_amount':
+                if self.totalprice >= self.applied_coupon.min_spend:
+                    amount = self.totalprice - self.applied_coupon.max_discount
+                    return amount
+                return {'message': "Coupon not applicable on this order. Plesae read t&c ... "}
+        return 0
+    
+    @property
+    def saved_amount(self):
+        if self.applied_coupon:
+            savings = Decimal(self.totalprice) - Decimal(self.coupon_price)
+            return savings
+            
 
 class CartItem(models.Model):
     cart = models.ForeignKey(Cart, on_delete=models.CASCADE, related_name='cart_items')
@@ -74,7 +123,7 @@ class CartItem(models.Model):
 
     @property
     def subtotal(self):
-       return self.item.selling_price * self.quantity
+       return self.item.selling_price * Decimal(self.quantity)
 
 class Orders(models.Model):
     
@@ -96,12 +145,14 @@ class Orders(models.Model):
         return ''.join(random.choice(chars) for _ in range(10))
     
     order_num = models.CharField(max_length=20, default =generate_ordernum)
+    applied_coupon = models.ForeignKey(Coupons ,on_delete=models.SET_NULL,null=True, blank=True)
     user = models.ForeignKey(UserProfile, on_delete=models.CASCADE, related_name='orders_of_user')
     order_address = models.ForeignKey(UserAddress, on_delete=models.CASCADE)
     order_date = models.DateTimeField(auto_now_add=True)
     payment_type = models.CharField(max_length=100, choices=payment_choices, default='Cash on delivery')
     order_status = models.CharField(max_length=100, choices=order_status_choices, default='Procrssing')
-    
+    order_total_price = models.PositiveIntegerField(default=0)
+    coupon_discount = models.PositiveIntegerField(null=True, blank =True)
     
 class OrderItems(models.Model):
 
@@ -123,6 +174,6 @@ class OrderItems(models.Model):
 
     @property
     def ordered_price(self):
-        return self.item.selling_price * self.quantity
+        return self.item.selling_price * Decimal(self.quantity)
     
 
