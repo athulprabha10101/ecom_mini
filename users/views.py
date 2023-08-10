@@ -423,14 +423,12 @@ def checkout(request, cart_id):
     cart_items = cart.cart_items.all()
     coupon = cart.applied_coupon
 
+    client = razorpay.Client(auth=(settings.RAZOR_KEY, settings.KEY_SECRET))
 
     if not coupon:
-        client = razorpay.Client(auth=(settings.RAZOR_KEY, settings.KEY_SECRET))
         payment = client.order.create({'amount':float(cart.totalprice*100), 'currency':'INR', 'payment_capture':1})
     else:
-        client = razorpay.Client(auth=(settings.RAZOR_KEY, settings.KEY_SECRET))
         payment = client.order.create({'amount': float(cart.coupon_price * 100), 'currency': 'INR', 'payment_capture': 1})
-
 
     return render(request, 'store/checkout.html',{'cart_items':cart_items, 'coupon':coupon, 'addresses':addresses, 'cart':cart, 'payment':payment})
 
@@ -441,7 +439,8 @@ def place_order(request):
         if request.method=='POST':
 
             with transaction.atomic():
-
+                selected_payment_method = request.POST.get('payment_method')  # Get the selected payment method
+                print("Selected Payment Method:", selected_payment_method)
                 user = UserProfile.objects.get(email=request.session['email'])
                 order_address_id = request.POST['order_address_id']
                 order_address = UserAddress.objects.get(id=order_address_id)
@@ -484,6 +483,15 @@ def place_order(request):
                         quantity = item.quantity,
                         sold_at_price = item.item.selling_price
                     )
+
+                if selected_payment_method == 'cod':
+                    current_order.payment_type = 'Cash on delivery'
+                    current_order.save()
+
+                elif selected_payment_method == 'onlinepayment':
+                    current_order.payment_type = 'Internet Banking'
+                    current_order.save()
+                # more payment methods can be added . as razorpay has all, settling with netbanking for all
 
                 cart.delete()
                 order_num = current_order.order_num

@@ -81,10 +81,12 @@
                                                     </div><!-- .End .input-group-append -->
                                                 </div><!-- End .input-group -->
                                             </form>
-                                            <div class="alert alert-info alert-dismissible fade show" role="alert" data-bs-delay="3000">
+                                            {% if message %}
+                                            <div style="mt-5" class="alert alert-info alert-dismissible fade show" role="alert" data-bs-delay="3000">
                                                 {{message}}
                                                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="close"></button>
                                             </div>
+                                            {% endif %}
                                         </div><!-- End .cart-discount -->
                                     {% else %}
                                         <div>
@@ -104,10 +106,7 @@
                             {% endif %}                            
                         </div><!-- End .cart-bottom -->
                     </div><!-- End .col-lg-9 -->
-                    
-                </div><!-- End .row -->
-            </div><!-- End .container -->
-            <aside class="col-lg-3">
+                    <aside class="col-lg-3">
                 <div class="summary summary-cart">
                     <h3 class="summary-title">Cart Total</h3><!-- End .summary-title -->
 
@@ -176,6 +175,9 @@
                     {% endif %}
                 </div><!-- End .summary -->
             </aside><!-- End .col-lg-3 -->
+                </div><!-- End .row -->
+            </div><!-- End .container -->
+
         </div><!-- End .cart -->
     </div><!-- End .page-content -->
 </main>
