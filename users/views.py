@@ -440,11 +440,12 @@ def place_order(request):
 
             with transaction.atomic():
                 selected_payment_method = request.POST.get('payment_method')  # Get the selected payment method
-                print("Selected Payment Method:", selected_payment_method)
                 user = UserProfile.objects.get(email=request.session['email'])
                 order_address_id = request.POST['order_address_id']
                 order_address = UserAddress.objects.get(id=order_address_id)
                 cart = Cart.objects.get(user=user)
+
+                
 
                 if cart.applied_coupon:
                     applied_coupon = cart.applied_coupon
@@ -493,6 +494,12 @@ def place_order(request):
                     current_order.save()
                 # more payment methods can be added . as razorpay has all, settling with netbanking for all
 
+                for cart_item in cart.cart_items.all():
+                    variant = cart_item.item
+                    purchased_quantity = cart_item.quantity
+                    variant.quantity -= purchased_quantity
+                    variant.save()
+
                 cart.delete()
                 order_num = current_order.order_num
                 return render(request, 'store/success.html', {'order_num':order_num})
@@ -536,6 +543,5 @@ def apply_coupon(request):
                     
                     return render(request, 'store/cart.html', {'user':user, 'items':items, 'cart':cart, 'message':"invalid Coupon"})
                     
-
         return redirect('display_cart')
     return redirect('user_login')
