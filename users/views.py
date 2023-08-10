@@ -9,6 +9,7 @@ from django.conf import settings
 # Create your views here.
 from django.contrib.auth.models import User
 import sys
+from django.db import transaction
 print(sys.path)
 
 
@@ -438,53 +439,55 @@ def place_order(request):
     if 'email' in request.session:
         print("--------order place clicked------------XXXXXXXX")
         if request.method=='POST':
-            
-            user = UserProfile.objects.get(email=request.session['email'])
-            order_address_id = request.POST['order_address_id']
-            order_address = UserAddress.objects.get(id=order_address_id)
-            cart = Cart.objects.get(user=user)
 
-            if cart.applied_coupon:
-                applied_coupon = cart.applied_coupon
-                print(applied_coupon.coupon_code,"--------------------XXXXXXXX")
+            with transaction.atomic():
 
-                current_order = Orders.objects.create(
-                    user = user,
-                    order_address = order_address,
-                    applied_coupon = applied_coupon, 
-                    order_total_price = cart.coupon_price,
-                    coupon_discount = cart.saved_amount,
-                )
-                print(current_order,"---------order object created for applied coupon-----------XXXXXXXX")
+                user = UserProfile.objects.get(email=request.session['email'])
+                order_address_id = request.POST['order_address_id']
+                order_address = UserAddress.objects.get(id=order_address_id)
+                cart = Cart.objects.get(user=user)
 
-                usedcoupon = UsedCoupons.objects.create(
-                    user=user,
-                    coupon=applied_coupon
-                )
-                print(usedcoupon,"---------attempting usercoupon creation-----------XXXXXXXX"),
+                if cart.applied_coupon:
+                    applied_coupon = cart.applied_coupon
+                    print(applied_coupon.coupon_code,"--------------------XXXXXXXX")
 
-            else:
-                current_order = Orders.objects.create(
-                    user = user,
-                    order_address = order_address,
-                    applied_coupon = None, 
-                    order_total_price = cart.totalprice,
-                    coupon_discount = None
-                )
-                
-            items = cart.cart_items.all()
+                    current_order = Orders.objects.create(
+                        user = user,
+                        order_address = order_address,
+                        applied_coupon = applied_coupon,
+                        order_total_price = cart.coupon_price,
+                        coupon_discount = cart.saved_amount,
+                    )
+                    print(current_order,"---------order object created for applied coupon-----------XXXXXXXX")
 
-            for item in items:
-                OrderItems.objects.create(
-                    order = current_order,
-                    item = item.item,
-                    quantity = item.quantity,
-                    sold_at_price = item.item.selling_price
-                )
+                    usedcoupon = UsedCoupons.objects.create(
+                        user=user,
+                        coupon=applied_coupon
+                    )
+                    print(usedcoupon,"---------attempting usercoupon creation-----------XXXXXXXX"),
 
-            cart.delete()
-            order_num = current_order.order_num
-            return render(request, 'store/success.html', {'order_num':order_num})
+                else:
+                    current_order = Orders.objects.create(
+                        user = user,
+                        order_address = order_address,
+                        applied_coupon = None,
+                        order_total_price = cart.totalprice,
+                        coupon_discount = None
+                    )
+
+                items = cart.cart_items.all()
+
+                for item in items:
+                    OrderItems.objects.create(
+                        order = current_order,
+                        item = item.item,
+                        quantity = item.quantity,
+                        sold_at_price = item.item.selling_price
+                    )
+
+                cart.delete()
+                order_num = current_order.order_num
+                return render(request, 'store/success.html', {'order_num':order_num})
     return render(request, 'users/login.html', {'error': 'login to purchase'})
 
 def cancel_req(request, id):

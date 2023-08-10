@@ -95,10 +95,10 @@ class Cart(models.Model):
         if self.applied_coupon:
             if self.applied_coupon.coupon_type == 'percentage':
                 if self.totalprice >= self.applied_coupon.min_spend:
-                    discount = (self.totalprice * (Decimal(self.applied_coupon.coupon_discount_percent)/100))
+                    discount = (self.totalprice * (Decimal(self.applied_coupon.coupon_discount_percent))/100)
                     max_discount = self.applied_coupon.max_discount
                     amount = self.totalprice - min(discount, max_discount)
-                    return amount                
+                    return round(amount,2)
                 return {'message': "Coupon not applicable on this order. Plesae read t&c ... "}
                     
                 
@@ -113,8 +113,9 @@ class Cart(models.Model):
     def saved_amount(self):
         if self.applied_coupon:
             savings = Decimal(self.totalprice) - Decimal(self.coupon_price)
+            savings = savings
             print(savings,"------------savings--------------")
-            return savings
+            return round(savings,2)
         return Decimal('0.00')
             
 
@@ -126,6 +127,7 @@ class CartItem(models.Model):
     @property
     def subtotal(self):
        return self.item.selling_price * Decimal(self.quantity)
+
 
 class Orders(models.Model):
     
@@ -141,7 +143,7 @@ class Orders(models.Model):
         ('shipped', 'Shipped'),
         ('pending', 'Pending'),
     )
-    
+
     def generate_ordernum():
         chars = string.ascii_uppercase + string.digits
         return ''.join(random.choice(chars) for _ in range(10))
