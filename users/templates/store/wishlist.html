@@ -1,0 +1,86 @@
+{% extends 'store/base.html' %}
+{% load static %}
+{% block content %}
+
+
+<main class="main">
+    {% include 'store/common-banner-div.html' with page_title="Wishlist" sub_title=""  %}
+    <nav aria-label="breadcrumb" class="breadcrumb-nav">
+        <div class="container">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{% static 'index.html' %}">Home</a></li>
+                <li class="breadcrumb-item"><a href="#">Shop</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Wishlist</li>
+            </ol>
+        </div><!-- End .container -->
+    </nav><!-- End .breadcrumb-nav -->
+
+    <div class="page-content">
+        <div class="container">
+            <table class="table table-wishlist table-mobile">
+                {% if variants %}
+                <thead>
+                    <tr>
+                        <th>Product</th>
+                        <th>Price</th>
+                        <th>Stock Status</th>
+                        <th>Action</th>
+                        <th></th>
+                        <th></th>
+                    </tr>
+                </thead>
+                {% else %}
+                <div style="mb-2">
+                <h3> Wishlist is Empty !!</h3>
+                </div>
+                {% endif %}
+
+                <tbody>
+                    <tr>
+                        {% for variant in variants %}
+                        <td class="product-col">
+                            <div class="product">
+                                <figure class="product-media">
+                                    <a href="#">
+                                        <img src="{{variant.variant.variation.variant_images.first.image.url}}" alt="Product image">
+                                    </a>
+                                </figure>
+
+                                <h3 class="product-title">
+                                    <a href="#">{{variant.variant.variantname}}</a>
+                                </h3><!-- End .product-title -->
+                            </div><!-- End .product -->
+                        </td>
+                        
+                        <td class="price-col"> ₹ {{variant.variant.selling_price}}</td>
+                        <td class="stock-col">{% if variant.variant.quantity > 0 %}<span class="in-stock">In stock</span>{% else %}<span class="out-of-stock">Out of stock</span>{% endif %}</td>
+                        {% if variant.variant.quantity > 0 %}
+                        <td class="action-col">
+                        <a class="btn btn-block btn-outline-primary" href={% url 'add_to_cart_from_wishlist' id=variant.variant.id wishlistitem_id=variant.id %}> <i class="icon-cart-plus"></i>Add to Cart</a>
+                        </td>
+                        {% else %}
+                        <td class="action-col">
+                            <button class="btn btn-block btn-outline-primary disabled">Out of Stock</button>
+                        </td>
+                        {% endif %}
+                        <td class="remove-col"><a href="{% url 'remove_from_wishlist' variant.id %}"><button class="btn-remove"><i class="icon-close"></i></button></a></td>
+                    </tr>
+                    {% endfor %}
+                    
+                </tbody>
+            </table><!-- End .table table-wishlist -->
+            <div class="wishlist-share">
+                <div class="social-icons social-icons-sm mb-2">
+                    <label class="social-label">Share on:</label>
+                    <a href="#" class="social-icon" title="Facebook" target="_blank"><i class="icon-facebook-f"></i></a>
+                    <a href="#" class="social-icon" title="Twitter" target="_blank"><i class="icon-twitter"></i></a>
+                    <a href="#" class="social-icon" title="Instagram" target="_blank"><i class="icon-instagram"></i></a>
+                    <a href="#" class="social-icon" title="Youtube" target="_blank"><i class="icon-youtube"></i></a>
+                    <a href="#" class="social-icon" title="Pinterest" target="_blank"><i class="icon-pinterest"></i></a>
+                </div><!-- End .soial-icons -->
+            </div><!-- End .wishlist-share -->
+        </div><!-- End .container -->
+    </div><!-- End .page-content -->
+</main>
+
+{% endblock %}

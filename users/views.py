@@ -93,7 +93,6 @@ def user_register(request):
 
     return render(request, 'users/register.html')
 
-
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
 def user_login(request):
     if 'email' in request.session:
@@ -166,7 +165,6 @@ def change_password(request):
             
         return render(request, 'users/set_new_password.html',{'error':'Passwords / OTP not matching'})
         
-
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
 def user_logout(request):
     if 'email' in request.session:
@@ -195,7 +193,6 @@ def user_product(request, id):
     
     return render(request, 'store/product.html',{'variant': variant, 'images': images, 'user':'none'}) 
 
-
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
 def cat_product(request, id):
     cat = Category.objects.get(id=id)
@@ -206,7 +203,6 @@ def cat_product(request, id):
         return render(request, 'store/cat_products.html', {'products': variants, 'user': user})
     
     return render(request, 'store/cat_products.html', {'products': variants, 'user':'none'})
-
 
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
 def user_profile(request):
@@ -270,7 +266,6 @@ def add_address(request):
     
     return redirect('user_login')    
 
-
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
 def edit_address(request, id):
     if 'email' in request.session:
@@ -297,7 +292,7 @@ def delete_address(request, id):
         return redirect('user_profile')
     
     return redirect('user_login')    
-    
+
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
 def edit_details(request, id):
     if 'email' in request.session and request.method == 'POST':
@@ -351,7 +346,6 @@ def edit_details(request, id):
 
     return redirect('user_login')
 
-
 def add_to_cart(request, id):
     
     if 'email' in request.session:
@@ -374,7 +368,6 @@ def add_to_cart(request, id):
     messages.warning(request,"Not logged in ...")
     return redirect('user_login')
 
-
 def display_cart(request, id=None):
     
     if 'email' in request.session:
@@ -394,6 +387,7 @@ def remove_item(request, id):
     user = UserProfile.objects.get(email = request.session['email'])
     cart = Cart.objects.get(user=user)
     coupon = cart.applied_coupon
+    items = cart.cart_items.all()
 
     if coupon and coupon.min_spend > cart.totalprice:
         cart.applied_coupon = None
@@ -545,3 +539,56 @@ def apply_coupon(request):
                     
         return redirect('display_cart')
     return redirect('user_login')
+
+def wishlist(request):
+    
+    if 'email' in request.session:
+
+        user = UserProfile.objects.get(email = request.session['email'])
+        wishlist, created = Wishlist.objects.get_or_create(user=user)
+        variants = wishlist.wishlist_items.all()
+        
+        return render(request, 'store/wishlist.html', {'user':user, 'variants':variants, 'wishlist':wishlist})
+   
+    return render(request, 'users/login.html', {'error': "login to see your wishlist... "})
+
+def add_to_wishlist(request, id):
+    if 'email' in request.session:
+        user = UserProfile.objects.get(email=request.session['email'])
+        variant = Variants.objects.get(id=id)
+        wishlist, created = Wishlist.objects.get_or_create(user=user)
+
+        try:
+            check = wishlist.objects.get(variant=variant)
+            messages.success(request, "item already in wishlist")
+            return redirect('user_product', id=id)
+        except:
+            WishItems.objects.create(wishlist=wishlist, variant=variant)
+            messages.success(request, "Added to wishlist")
+            return redirect('user_product', id=id)
+    return redirect('user_login')
+
+def remove_from_wishlist(request, id):
+    wishlist_item = WishItems.objects.get(id=id)
+    wishlist_item.delete()
+
+    return redirect('wishlist')
+
+def add_to_cart_from_wishlist(request, id,wishlistitem_id):
+        user = UserProfile.objects.get(email=request.session['email'])
+        variant = Variants.objects.get(id=id)
+        cart, created = Cart.objects.get_or_create(user=user)
+        
+
+        try:
+            check = cart.cart_items.get(item=variant)
+            messages.success(request," already added to cart .... ")
+            remove_from_wishlist(request,wishlistitem_id)    
+            return redirect('display_cart')
+        except:
+            CartItem.objects.create(cart=cart, item=variant, quantity=1)
+            messages.success(request," added to cart .... ")
+            remove_from_wishlist(request, wishlistitem_id)
+            return redirect('display_cart')
+            
+    

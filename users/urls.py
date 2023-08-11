@@ -28,7 +28,11 @@ urlpatterns = [
     path('new_password_for_forgotten_password', views.new_password_for_forgotten_password, name='new_password_for_forgotten_password'),
     path('change_password', views.change_password, name='change_password'),
     path('apply_coupon', views.apply_coupon, name='apply_coupon'),
-
+    path('wishlist', views.wishlist, name='wishlist'),
+    path('add_to_wishlist<int:id>', views.add_to_wishlist, name='add_to_wishlist'),
+    path('remove_from_wishlist<int:id>', views.remove_from_wishlist, name='remove_from_wishlist'),
+    path('add_to_cart_from_wishlist<int:id><int:wishlistitem_id>', views.add_to_cart_from_wishlist, name='add_to_cart_from_wishlist'),
+    
     
     
     

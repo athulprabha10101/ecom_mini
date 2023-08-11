@@ -54,11 +54,9 @@ class UserAddress(models.Model):
     default = models.BooleanField(default=False)
     deleted = models.BooleanField(default=False)
 
-    
 class AdminProfile(models.Model):
     name = models.CharField(max_length=100)
     password = models.CharField(max_length=20)
-
 
 class Coupons(models.Model):
     coupon_code = models.CharField(max_length=8, unique=True)
@@ -77,7 +75,14 @@ class UsedCoupons(models.Model):
     user = models.ForeignKey(UserProfile, on_delete=models.CASCADE, related_name='coupons_used')
     coupon = models.ForeignKey(Coupons, on_delete=models.CASCADE)
 
+class Wishlist(models.Model):
+    user = models.OneToOneField(UserProfile, on_delete=models.CASCADE, related_name='wishlist_of_user')
 
+class WishItems(models.Model):
+    wishlist = models.ForeignKey(Wishlist, on_delete=models.CASCADE, related_name='wishlist_items')
+    variant = models.ForeignKey(Variants, on_delete=models.CASCADE)
+
+    
 class Cart(models.Model):
     user = models.OneToOneField(UserProfile, on_delete=models.CASCADE, related_name='cart_of_user')
     applied_coupon = models.ForeignKey(Coupons, on_delete=models.CASCADE, null=True, blank=True)
@@ -118,7 +123,6 @@ class Cart(models.Model):
             return round(savings,2)
         return Decimal('0.00')
             
-
 class CartItem(models.Model):
     cart = models.ForeignKey(Cart, on_delete=models.CASCADE, related_name='cart_items')
     item = models.ForeignKey(Variants, on_delete=models.CASCADE)
@@ -127,7 +131,6 @@ class CartItem(models.Model):
     @property
     def subtotal(self):
        return self.item.selling_price * Decimal(self.quantity)
-
 
 class Orders(models.Model):
     
