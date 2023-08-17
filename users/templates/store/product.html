@@ -119,8 +119,8 @@
                                     justify-content: center;
                                     align-content: stretch;
                                     flex-wrap: wrap;
-                                    flex-direction: column;
-                                }">
+                                    flex-direction: column;">
+
                                         <div>
                                              <button class="btn btn-lg btn-warning" display="none"      type="submit"><span>Add to cart</span></button>
                                         </div>  
@@ -522,6 +522,7 @@
         </main>
 
         <script>
+            
             document.addEventListener("DOMContentLoaded", function(event){
                 const btnPlus = document.getElementById('btnPlus');
                 const btnMinus = document.getElementById('btnMinus');
@@ -545,7 +546,21 @@
                 });
             });
         </script>
-        
+
+        <script>
+            $(document).ready(function() {
+                toastr.options = {
+                    "positionClass": "toast-bottom-right",
+                };
+                {% if toast_added %}
+                toastr.success("", "{{toast_added}}");
+                {% elif toast_already_added %}
+                toastr.info("", "{{toast_already_added}}");
+                {% endif %}
+            });
+        </script>
+    
+    <style>.toast {font-size: 22px;}</style>
         
         <script src="{% static 'user_assets/js/bootstrap.bundle.min.js' %}"></script>
         <script src="{% static 'user_assets/js/jquery.min.js' %}"></script>

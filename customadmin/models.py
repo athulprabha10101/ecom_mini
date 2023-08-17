@@ -81,8 +81,7 @@ class Wishlist(models.Model):
 class WishItems(models.Model):
     wishlist = models.ForeignKey(Wishlist, on_delete=models.CASCADE, related_name='wishlist_items')
     variant = models.ForeignKey(Variants, on_delete=models.CASCADE)
-
-    
+  
 class Cart(models.Model):
     user = models.OneToOneField(UserProfile, on_delete=models.CASCADE, related_name='cart_of_user')
     applied_coupon = models.ForeignKey(Coupons, on_delete=models.CASCADE, null=True, blank=True)
@@ -171,6 +170,7 @@ class OrderItems(models.Model):
         ('Shipped','Shipped'),
         ('Pending','Pending'),
     )
+    
     order = models.ForeignKey(Orders, on_delete=models.CASCADE, related_name='items_in_order')
     item = models.ForeignKey(Variants, on_delete=models.CASCADE)
     quantity = models.PositiveIntegerField()
@@ -183,4 +183,11 @@ class OrderItems(models.Model):
     def ordered_price(self):
         return self.item.selling_price * Decimal(self.quantity)
     
-
+class OrderAddressHistory(models.Model):
+    order = models.ForeignKey(Orders, on_delete=models.DO_NOTHING, related_name='history_order_address')
+    address_line1 = models.CharField(max_length=200)
+    address_line2 = models.CharField(max_length=200)
+    city = models.CharField(max_length=30)
+    state = models.CharField(max_length=30)
+    country = models.CharField(max_length=30)
+    pin = models.CharField(max_length=30)

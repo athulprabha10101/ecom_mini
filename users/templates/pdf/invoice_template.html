@@ -1,0 +1,80 @@
+{%load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Invoice</title>
+    <style>
+        /* Add your CSS styles here */
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .invoice-header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .invoice-header h1 {
+            color: #008CBA; /* Blue color */
+            margin-bottom: 10px;
+        }
+        .company-logo {
+            max-width: 150px; /* Adjust the size of your logo */
+            margin-bottom: 10px;
+        }
+        .company-name {
+            font-size: 24px;
+            font-weight: bold;
+            color: #333; /* Dark gray color */
+        }
+        .invoice-details {
+            margin-bottom: 20px;
+        }
+        .item-list {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .item-list th, .item-list td {
+            border: 1px solid #ccc;
+            padding: 8px;
+            text-align: left;
+        }
+        .total {
+            font-weight: bold;
+            text-align: right;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="invoice-header">
+        <img class="company-logo" src="{% static 'user_assets/images/demos/demo-3/logo1.png' %}" alt="Company Logo">
+        <h1>Invoice</h1>
+        <p class="company-name">e-Kart</p>
+    </div>
+    <div class="invoice-details">
+        <p><strong>Order ID:</strong> {{ order.order_num }}</p>
+        <p><strong>Order Date:</strong> {{ order.order_date }}</p>
+        <p><strong>User:</strong> {{ order.user.name }}</p>
+    </div>
+    <table class="item-list">
+        <thead>
+            <tr>
+                <th>Item</th>
+                <th>Quantity</th>
+                <th>Price</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in order.items_in_order.all %}
+            <tr>
+                <td>{{ item.item.variantname }}</td>
+                <td>{{ item.quantity }}</td>
+                <td>${{ item.sold_at_price }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <p class="total">Subtotal: ${{ order.order_total_price }}</p>
+    <p class="total">Discount: ${{ order.coupon_discount }}</p>
+    <p class="total">Grand Total: ${{ grand_total }}</p>
+</body>
+</html>

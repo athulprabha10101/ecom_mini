@@ -271,7 +271,7 @@ def orders(request):
     if 'name' in request.session:
         
         orders = Orders.objects.all().prefetch_related('items_in_order')
-
+        
         return render(request, 'customadmin/orders.html', {'orders': orders})
         
     return render(request, 'customadmin/login.html')
@@ -303,7 +303,10 @@ def update_item_status(request, id):
             
             
             if status == 'Cancelled':
+                orderitem.item_order_status = 'Cancelled'
                 orderitem.cancel_date = timezone.now()
+                
+                
                 print("cancel------------------>>")
                 
             

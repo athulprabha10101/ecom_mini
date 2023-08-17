@@ -10,8 +10,9 @@ from django.conf import settings
 from django.contrib.auth.models import User
 import sys
 from django.db import transaction
-print(sys.path)
-
+from django.http import HttpResponse
+from django.template.loader import get_template
+from xhtml2pdf import pisa
 
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
 def sendOtp(otp):
@@ -226,10 +227,11 @@ def user_address(request):
 def user_orders(request):
     
     if 'email' in request.session:
-        user = UserProfile.objects.get(email=request.session['email']) # orders
+        user = UserProfile.objects.get(email=request.session['email']) 
         orders = Orders.objects.filter(user=user).prefetch_related('items_in_order')
-        
-        return render(request, 'store/user_orders.html', {'user':user, 'orders':orders})
+        historical_addresses = OrderAddressHistory.objects.filter(order__in=orders)
+
+        return render(request, 'store/user_orders.html', {'user':user, 'orders':orders, 'historical_address':historical_addresses})
 
     return redirect('user_login')
 
@@ -239,7 +241,6 @@ def add_address(request):
     if 'email' in request.session:
         user = UserProfile.objects.get(email= request.session['email'])
 
-        
         if request.method=='POST':
             
             address_line1 = request.POST['address1']
@@ -248,7 +249,7 @@ def add_address(request):
             state = request.POST['state']
             country = request.POST['country']
             pin = request.POST['pin']
-            checkout = request.POST.get('checkout') == 'True'
+            checkout = request.POST['checkout'] == 'True'
             # default = request.POST.get() == 'True'
 
             UserAddress.objects.create(
@@ -260,8 +261,9 @@ def add_address(request):
                 country=country,
                 pin=pin
                 )
+            
             if checkout:
-                return redirect('checkout')
+                return redirect('checkout',cart_id=user.cart_of_user.id)
             return redirect('user_profile')
     
     return redirect('user_login')    
@@ -354,18 +356,19 @@ def add_to_cart(request, id):
         
         if request.method == 'POST':
             variant = Variants.objects.get(id=id)
+            images = variant.variation.variant_images.all()
             cart, created = Cart.objects.get_or_create(user=user)
 
             try:
                 check = cart.cart_items.get(item=variant)
-                messages.success(request," already added to cart .... ")    
-                return redirect('user_product', id=id)
+                toast_already_added = "Already added to cart"
+                return render(request, 'store/product.html',{'variant':variant,'images': images, 'user': user, 'toast_already_added':toast_already_added })
             except:
                 CartItem.objects.create(cart=cart, item=variant, quantity=1)
-                messages.success(request," added to cart .... ")
-                return redirect('user_product', id=id)
+                toast_added = "Added to cart"
+                return render(request, 'store/product.html',{'variant':variant,'images': images, 'user': user, 'toast_added':toast_added })
             
-    messages.warning(request,"Not logged in ...")
+
     return redirect('user_login')
 
 def display_cart(request, id=None):
@@ -438,7 +441,7 @@ def place_order(request):
                 order_address_id = request.POST['order_address_id']
                 order_address = UserAddress.objects.get(id=order_address_id)
                 cart = Cart.objects.get(user=user)
-
+                cart_total_price = cart.totalprice
                 
 
                 if cart.applied_coupon:
@@ -453,7 +456,7 @@ def place_order(request):
                         coupon_discount = cart.saved_amount,
                     )
                     print(current_order,"---------order object created for applied coupon-----------XXXXXXXX")
-
+                    
                     usedcoupon = UsedCoupons.objects.create(
                         user=user,
                         coupon=applied_coupon
@@ -493,10 +496,27 @@ def place_order(request):
                     purchased_quantity = cart_item.quantity
                     variant.quantity -= purchased_quantity
                     variant.save()
+                
+                address_history = OrderAddressHistory.objects.create(
+                        order = current_order,
+                        address_line1 = order_address.address_line1,
+                        address_line2 = order_address.address_line2,
+                        city = order_address.city,
+                        state = order_address.state,
+                        country = order_address.country,
+                        pin = order_address.pin,
+                    )
 
                 cart.delete()
-                order_num = current_order.order_num
-                return render(request, 'store/success.html', {'order_num':order_num})
+                order=current_order
+                curent_order_items =order.items_in_order.all()
+                
+                context = { 'order':order,
+                            'items':curent_order_items,
+                            'totalprice':cart_total_price, 
+                          }
+                
+                return render(request, 'store/success.html', context)
     return render(request, 'users/login.html', {'error': 'login to purchase'})
 
 def cancel_req(request, id):
@@ -557,15 +577,32 @@ def add_to_wishlist(request, id):
         user = UserProfile.objects.get(email=request.session['email'])
         variant = Variants.objects.get(id=id)
         wishlist, created = Wishlist.objects.get_or_create(user=user)
+        images = variant.variation.variant_images.all()
 
         try:
-            check = wishlist.objects.get(variant=variant)
-            messages.success(request, "item already in wishlist")
-            return redirect('user_product', id=id)
+            check = wishlist.wishlist_items.get(variant=variant)
+            toast_already_added = "Already added to wishlist"
+            return render(request, 'store/product.html', {
+            'variant': variant,
+            'images': images,
+            'user': user,
+            'toast_already_added': toast_already_added
+        })
         except:
             WishItems.objects.create(wishlist=wishlist, variant=variant)
-            messages.success(request, "Added to wishlist")
-            return redirect('user_product', id=id)
+            toast_added = "Added to wishlist"
+            return render(request, 'store/product.html', {
+            'variant': variant,
+            'images': images,
+            'user': user,
+            'toast_added': toast_added
+        })
+
+        # Fetch the other necessary data for rendering the product page
+        
+
+        
+
     return redirect('user_login')
 
 def remove_from_wishlist(request, id):
@@ -591,4 +628,28 @@ def add_to_cart_from_wishlist(request, id,wishlistitem_id):
             remove_from_wishlist(request, wishlistitem_id)
             return redirect('display_cart')
             
+def generate_invoice(request, order_id):
+    order = Orders.objects.get(id=order_id)
+    grand_total = order.order_total_price - order.coupon_discount
+
+    template_path = 'pdf/invoice_template.html'
+
+    context = {'order': order, 'grand_total': grand_total}
+
+    template = get_template(template_path)
+    html = template.render(context)
+
     
+
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = f'attachment; filename="incoice_{order.order_num}.pdf"'
+    pisa_status= pisa.CreatePDF(html, dest=response)
+
+    if pisa_status.err:
+        return HttpResponse("An error occured")
+    return response
+
+def test_func(request):
+    message = "toaster working"
+    message_b = False
+    return render (request, 'store/testhtm.html', {'message':message, 'message_b':message_b})

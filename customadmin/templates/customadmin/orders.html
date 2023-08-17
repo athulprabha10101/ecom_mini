@@ -24,20 +24,31 @@
           <table class="table">
             {% for order in orders %}
             
-            <thead>
-                <tr>
+            
+            <tr>
+                <span>
                   <td style="color: yellow; border-top:solid 1px white ;" colspan="5">Order id : {{ order.order_num | upper }}</td>
-                </tr>
-                <tr>
-                  <td style="color: yellow;" colspan="5">Username : {{ order.user.name | capfirst }}</td>
-                </tr>
-                <tr>
-                  <td style="color: yellow;" colspan="5">Order date : {{ order.order_date }}</td>
-                </tr>
-                <tr>                    
+                </span>
+                <span>
+                  <td style="color: yellow;border-top:solid 1px white ;" colspan="5">Username : {{ order.user.name | capfirst }}</td>
+                </span>
+                <span>
+                  <td style="color: yellow;border-top:solid 1px white ;" colspan="5">Order date : {{ order.order_date }}</td>
+                </span>
+                <span>
+                  <td style="color: yellow;border-top:solid 1px white ;" colspan="5">Order Amount : {{ order.order_total_price }}</td>
+                </span>
+                <span>                    
                     <td><a href="{% url 'order_details' order.id %}"><i class="mdi mdi-eye" style="display: inline-block;font-size: 30px; color: #88e859;"></i></a></td>           
-                </tr>                
-            </thead>
+                </span>  
+                {% for item in order.items_in_order.all %}
+                {% if item.cancel_req and not item.item_order_status == 'Cancelled' %}              
+                <span>                    
+                  <td><a href="{% url 'order_details' order.id %}"><i class="mdi mdi-alert-circle" style="display: inline-block;font-size: 30px; color: red;"></i></a></td>           
+                </span>                
+              {% endif %}
+              {% endfor %}
+              </tr>
                 
                 {% endfor %}
           </table>

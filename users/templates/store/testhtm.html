@@ -1,0 +1,24 @@
+{% extends 'store/base.html' %}
+{% load static %}
+{% block content %}
+
+    
+        
+        
+        <script>
+            $(document).ready(function() {
+                toastr.options = {
+                    "positionClass": "toast-bottom-right",
+                };
+                {% if message_b %}
+                toastr.success("", "{{message}}");
+                {% else %}
+                toastr.warning("", "sdfkafnkfa");
+                {% endif %}
+            });
+        </script>
+    
+    <style>.toast {font-size: 22px;}</style>
+    
+    {% endblock %}
+    

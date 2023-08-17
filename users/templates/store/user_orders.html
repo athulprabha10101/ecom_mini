@@ -67,51 +67,93 @@
                                         <th scope="col">Order id</th>
                                         <th scope="col">Order date</th>
                                         <th scope="col">Payment</th>
+                                        <th scope="col">Status </th>
+                                        <th scope="col">Invoice </th>                                            
+                                        <th scope="col">Order details </th>
                                         
-                                        <th scope="col">Particulars </th>
-
                                         {% comment %} <th scope="col">Action</th> {% endcomment %}
                                       </tr>
+                                      
                                     </thead>
                                     <tbody>
                                     
 
                                         {% for order in orders %}
-                                        <tr>                            
+                                        <tr>      
+                                                                  
                                             <td style="font-size: 12px;">{{forloop.counter}}</td>
                                             <td style="font-size: 12px;">{{order.order_num}}</td>
                                             <td style="font-size: 12px;">{{order.order_date}}</td>
                                             <td style="font-size: 12px;">{{ order.payment_type }}</td>
                                             <td style="font-size: 12px;">{{ order.order_status }}</td>
+                                            <td style="font-size: 12px;">
+                                                <div>
+                                                    <a style="text-decoration: none; border-bottom: none;" href="{% url 'generate_invoice' order.id %}">
+                                                        <button style="border-bottom: none;" type="button" class="btn btn-primary">Download Invoice</button>
+                                                </div>
+                                            </td>                                            
                                             <td style="font-size: 12px; ">
                                                 <div class="row">
                                                     
                                                     <table>
                                                         <tr>
-                                                            <th class="text-center"><h5>Items in this order</h5></th>
-                                                            <th class="text-center">Quantity</th>
-                                                            <th class="text-center">Price</th>
-                                                            <th class="text-center">Status</th>
-                                                            <th class="text-center">Cancel Item</th>
+                                                            <th style="border-left: 1px solid white;" class="text-left"><h5>Items in this order</h5></th>
+                                                            <th class="text-left">Quantity</th>
+                                                            <th class="text-left">Price</th>
+                                                            <th class="text-left">Status</th>
+                                                            <th class="text-left">Cancel Item</th>
                                                         </tr>
                                                         {% for item in order.items_in_order.all %}
+                                                        <tr>
+                                                            <div>
                                                             <tr>
-                                                                <td class="text-center" style="font-size: 12px; border-bottom: none;">{{ item.item.variantname }}</td>
-                                                                <td class="text-center" style="font-size: 12px; border-bottom: none;">{{ item.quantity }}</td>
-                                                                <td class="text-center" style="font-size: 12px; border-bottom: none;">{{ item.sold_at_price }}</td>
-                                                                <td class="text-center" style="font-size: 12px; border-bottom: none;">{{ order.order_status }}</td>
+                                                                <td style="border-left: 1px solid white; border-bottom: none; font-size: 12px; word-break: break-word;" class="text-center">
+                                                                    <div style= "word-wrap: break-word; max-width: 150px;">
+                                                                        {{ item.item.variantname }}
+                                                                    </div>
+                                                                </td>
+                                                                <td class="text-left" style="font-size: 12px; border-bottom: none;">{{ item.quantity }}</td>
+                                                                <td class="text-left" style="font-size: 12px; border-bottom: none;">{{ item.sold_at_price }}</td>
+                                                                <td class="text-left" style="font-size: 12px; border-bottom: none;">{{ item.item_order_status }}</td>
+                                                                
+                                                                {% if item.cancel_req %}
+                                                                <td style="border-bottom: none;" class="d-flex justify-content-end">
+                                                                <div class="badge badge-danger">Cancellation requested</div>
+                                                                </td>
+                                                                {% else %}
                                                                 <td style="border-bottom: none;" class="d-flex justify-content-end">
                                                                     <a style="text-decoration: none; border-bottom: none;" href="{% url 'cancel_req' item.id %}">
                                                                         <button style="border-bottom: none;" type="button" class="btn btn-warning">Cancel Item</button>
+                                                                    
                                                                     </a>
                                                                 </td>
+                                                                {% endif %}
+                                                                {% if item.item_order_status == "Cancelled" %}
+                                                                <td style="border-bottom: none;" class="d-flex justify-content-end">
+                                                                    <div class="badge badge-danger">Cancelled</div>
+                                                                    </td>
+                                                                    {% endif %}
+                                                                
                                                             </tr>
-                                                        {% endfor %}
+
+    
+                                                        </tr>
                                                         
+                                                        {% endfor %}
                                                     </table>
+                                                    
+                                                    <div style = "border-left: solid white; border-top: dashed gray 1px;">
+                                                        <h4>&nbsp; Order address:</h4>
+                                                        {% for historical_address in order.history_order_address.all %}
+                                                            <h5 style="margin: 10px; padding: 0;">{{ historical_address.address_line1 }} , {{ historical_address.address_line2 }}</h5>
+                                                            <h5 style="margin: 10px; padding: 0;">{{ historical_address.city }} , {{ historical_address.country }}</h5>
+                                                            <h5 style="margin: 10px; padding: 0;">{{ historical_address.pin }}</h5>
+                                                        {% endfor %}
+                                                    </div>
                                                 </div>
                                             </td>
                                         </tr>
+                                        
                                     {% endfor %}
                                     
                                      {% comment %} {% endfor %} {% endcomment %}
