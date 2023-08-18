@@ -3,6 +3,8 @@ from django.db import models
 import random
 import string
 from decimal import Decimal
+from django.utils import timezone
+
 
 # Create your models here.
 
@@ -154,7 +156,7 @@ class Orders(models.Model):
     applied_coupon = models.ForeignKey(Coupons ,on_delete=models.SET_NULL,null=True, blank=True)
     user = models.ForeignKey(UserProfile, on_delete=models.CASCADE, related_name='orders_of_user')
     order_address = models.ForeignKey(UserAddress, on_delete=models.CASCADE)
-    order_date = models.DateTimeField(auto_now_add=True)
+    order_date = models.DateTimeField(default=timezone.now)
     payment_type = models.CharField(max_length=100, choices=payment_choices, default='Cash on delivery')
     order_status = models.CharField(max_length=100, choices=order_status_choices, default='Procrssing')
     order_total_price = models.PositiveIntegerField(default=0)
@@ -170,7 +172,6 @@ class OrderItems(models.Model):
         ('Shipped','Shipped'),
         ('Pending','Pending'),
     )
-    
     order = models.ForeignKey(Orders, on_delete=models.CASCADE, related_name='items_in_order')
     item = models.ForeignKey(Variants, on_delete=models.CASCADE)
     quantity = models.PositiveIntegerField()

@@ -30,6 +30,9 @@ urlpatterns = [
     path('add_coupon', views.add_coupon, name="add_coupon"),
     path('admin_dashboard', views.admin_dashboard, name="admin_dashboard"),
     path('orders_chart_data/', views.orders_chart_data, name='orders_chart_data'),
+    path('test', views.test, name='test'),
+    path('test_func', views.test_func, name='test_func'),
+    
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

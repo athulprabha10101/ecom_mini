@@ -9,6 +9,11 @@ from django.http import JsonResponse
 from django.db.models import Sum
 from datetime import datetime, timedelta
 
+
+from datetime import datetime, timedelta
+from django.utils import timezone
+from random import choice, randint
+
 def admin_login(request): 
     if 'name' in request.session:
         return redirect('admin_home')
@@ -402,3 +407,37 @@ def add_coupon(request):
             )
         return redirect('coupons')
 
+def test(request):
+
+    return render(request, 'customadmin/testhtml.html')
+
+def test_func(request):
+    
+    users = UserProfile.objects.exclude(name='GUEST')
+    order_status_choices = ['complete']  # Order status is always 'complete'
+
+    
+    start_date = timezone.now() - timedelta(days=3 * 365)
+    end_date = timezone.now()
+
+    for _ in range(100):  # Generate 100 sample orders
+        user = choice(users)
+        order_date = start_date + timedelta(
+            seconds=randint(0, int((end_date - start_date).total_seconds()))
+        )
+        print('------------zxczxczxczcxzxxczxcxzczxcxz', order_date)
+        order_total_price = randint(10000, 100000)  # Adjust the price range as needed
+        
+
+        order = Orders.objects.create(
+            user=user,
+            order_address=user.addresses.first(),  
+            order_date=order_date,
+            order_status=choice(order_status_choices),
+            order_total_price=order_total_price
+        )
+        print("orders also generated")
+
+    print("Sample orders generated successfully!")
+
+    return redirect('test')
