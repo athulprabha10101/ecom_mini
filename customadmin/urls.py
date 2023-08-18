@@ -28,6 +28,8 @@ urlpatterns = [
     path('deactivate_coupon/<int:coupon_id>', views.deactivate_coupon, name="deactivate_coupon"),
     path('coupons', views.coupons, name="coupons"),
     path('add_coupon', views.add_coupon, name="add_coupon"),
+    path('admin_dashboard', views.admin_dashboard, name="admin_dashboard"),
+    path('orders_chart_data/', views.orders_chart_data, name='orders_chart_data'),
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

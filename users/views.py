@@ -630,7 +630,7 @@ def add_to_cart_from_wishlist(request, id,wishlistitem_id):
             
 def generate_invoice(request, order_id):
     order = Orders.objects.get(id=order_id)
-    grand_total = order.order_total_price - order.coupon_discount
+    grand_total = order.order_total_price - (order.coupon_discount or 0)
 
     template_path = 'pdf/invoice_template.html'
 
@@ -638,8 +638,6 @@ def generate_invoice(request, order_id):
 
     template = get_template(template_path)
     html = template.render(context)
-
-    
 
     response = HttpResponse(content_type='application/pdf')
     response['Content-Disposition'] = f'attachment; filename="incoice_{order.order_num}.pdf"'

@@ -5,6 +5,9 @@ from customadmin.models import *
 # Create your views here.
 from django.contrib.auth.models import User
 from django.urls import reverse
+from django.http import JsonResponse
+from django.db.models import Sum
+from datetime import datetime, timedelta
 
 def admin_login(request): 
     if 'name' in request.session:
@@ -38,6 +41,42 @@ def admin_home(request):
         user_details = UserProfile.objects.all()
         return render(request, 'customadmin/homepage.html', {'user_details':user_details})
     return render(request, 'customadmin/login.html')
+
+def admin_dashboard(request):
+    if 'name' in request.session:
+        
+        return render(request, 'customadmin/dashboard.html')
+    return render(request, 'customadmin/login.html')
+
+
+def orders_chart_data(request):
+    today = datetime.now()
+    
+    monthly_data = Orders.objects.filter(order_date__year=today.year).values('order_date__month').annotate(total=Sum('order_total_price'))
+    yearly_data = Orders.objects.filter(order_date__year=today.year).values('order_date__year').annotate(total=Sum('order_total_price'))
+    daily_data = Orders.objects.filter(order_date__date=today.date()).values('order_date__day').annotate(total=Sum('order_total_price'))
+
+    # Create data arrays for chart
+    monthly_orders = [0] * 12
+    for entry in monthly_data:
+        monthly_orders[entry['order_date__month'] - 1] = entry['total']
+
+    yearly_orders = [0] * (today.year - Orders.objects.earliest('order_date').order_date.year + 1)
+    for entry in yearly_data:
+        yearly_orders[entry['order_date__year'] - Orders.objects.earliest('order_date').order_date.year] = entry['total']
+
+    daily_orders = [0] * 31
+    for entry in daily_data:
+        daily_orders[entry['order_date__day'] - 1] = entry['total']
+
+    data = {
+        'monthly_orders': monthly_orders,
+        'yearly_orders': yearly_orders,
+        'daily_orders': daily_orders,
+    }
+
+    return JsonResponse(data)
+
 
 def block_user(request, id):
     if 'name' in request.session:
