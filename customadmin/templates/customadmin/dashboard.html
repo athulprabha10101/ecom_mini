@@ -1,25 +1,107 @@
-{% extends 'customadmin/base.html'%}
+{% extends 'customadmin/base.html' %}
 {% load static %}
-{% block d-active %}active {% endblock %}
+
+{% block d-active %}active{% endblock %}
 
 {% block dashboard %}
-<div class="card-body">
-    <h4 class="card-title">Orders Chart</h4>
-    <canvas id="orders-chart" class="chartjs-render-monitor"></canvas>
-</div>
+
+<div class="row">
+    <div class="col-lg-6 grid-margin stretch-card">
+      <div class="card">
+        <div class="card-body">
+            <h4 class="card-title">Weekly Orders Chart</h4>
+            <canvas id="weekly-orders-chart" class="chartjs-render-monitor"></canvas>
+        </div>
+      </div>
+    </div>
+    <div class="col-lg-6 grid-margin stretch-card">
+      <div class="card">
+        <div class="card-body">
+            <h4 class="card-title">Monthly Orders Chart</h4>
+            <canvas id="monthly-orders-chart" class="chartjs-render-monitor"></canvas>
+        </div>
+      </div>
+    </div>
+    <div class="col-lg-6 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title">Yearly Orders Chart</h4>
+                <canvas id="yearly-orders-chart" class="chartjs-render-monitor"></canvas>
+            </div>
+        </div>
+      </div>
+      <div class="col-lg-6 grid-margin stretch-card">
+        <div class="report-container">
+            <h2>Sales Report Generator</h2>
+            <form id="sales-report-form" method="post" action = "{% url 'generate_sales_report' %}">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="from-date">From Date:</label>
+                    <input type="date" id="from-date" name="from_date" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label for="to-date">To Date:</label>
+                    <input type="date" id="to-date" name="to_date" class="form-control">
+                </div>
+                <div class="form-group">
+                    <button type="submit" id="generate-report-btn" class="btn btn-primary">Generate Report</button>
+                </div>
+            </form>
+        </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+
+
+
+
 
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
-    // Get the canvas element
-    var canvas = document.getElementById('orders-chart');
-    var ctx = canvas.getContext('2d');
-
     // Fetch data from the backend
     fetch('{% url "orders_chart_data" %}')
         .then(response => response.json())
         .then(data => {
-            var config = {
+            // Weekly Orders Chart
+            var weeklyCanvas = document.getElementById('weekly-orders-chart');
+            var weeklyCtx = weeklyCanvas.getContext('2d');
+            var weeklyConfig = {
+                type: 'line',
+                data: {
+                    labels: Array.from({ length: 52 }, (_, i) => i + 1),
+                    datasets: [
+                        {
+                            label: 'Weekly Orders',
+                            backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                            borderColor: 'rgba(54, 162, 235, 1)',
+                            borderWidth: 1,
+                            data: data.weekly_orders,
+                        },
+                    ],
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                        },
+                        title: {
+                            display: true,
+                            text: 'Weekly Orders Chart',
+                        },
+                    },
+                },
+            };
+            new Chart(weeklyCtx, weeklyConfig);
+
+            // Monthly Orders Chart
+            var monthlyCanvas = document.getElementById('monthly-orders-chart');
+            var monthlyCtx = monthlyCanvas.getContext('2d');
+            var monthlyConfig = {
                 type: 'line',
                 data: {
                     labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
@@ -31,23 +113,8 @@
                             borderWidth: 1,
                             data: data.monthly_orders,
                         },
-                        {
-                            label: 'Yearly Orders',
-                            backgroundColor: 'rgba(255, 99, 132, 0.2)',
-                            borderColor: 'rgba(255, 99, 132, 1)',
-                            borderWidth: 1,
-                            data: data.yearly_orders,
-                        },
-                        {
-                            label: 'Daily Orders',
-                            backgroundColor: 'rgba(54, 162, 235, 0.2)',
-                            borderColor: 'rgba(54, 162, 235, 1)',
-                            borderWidth: 1,
-                            data: data.daily_orders,
-                        }
                     ],
                 },
-
                 options: {
                     responsive: true,
                     plugins: {
@@ -56,16 +123,45 @@
                         },
                         title: {
                             display: true,
-                            text: 'Orders Chart',
+                            text: 'Monthly Orders Chart',
                         },
                     },
                 },
             };
-            
-            // Create the chart using the fetched data
-            new Chart(ctx, config);
+            new Chart(monthlyCtx, monthlyConfig);
+
+            // Yearly Orders Chart
+            var yearlyCanvas = document.getElementById('yearly-orders-chart');
+            var yearlyCtx = yearlyCanvas.getContext('2d');
+            var yearlyConfig = {
+                type: 'line',
+                data: {
+                    labels: Array.from({ length: data.yearly_orders.length }, (_, i) => i + data.yearly_orders_start_year),
+                    datasets: [
+                        {
+                            label: 'Yearly Orders',
+                            backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                            borderColor: 'rgba(255, 99, 132, 1)',
+                            borderWidth: 1,
+                            data: data.yearly_orders,
+                        },
+                    ],
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                        },
+                        title: {
+                            display: true,
+                            text: 'Yearly Orders Chart',
+                        },
+                    },
+                },
+            };
+            new Chart(yearlyCtx, yearlyConfig);
         })
-        
         .catch(error => {
             console.error('Error fetching chart data:', error);
         });

@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Sales Report</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f8f9fa;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #ffffff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 5px;
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #007BFF;
+        }
+        h2 {
+            margin-top: 30px;
+            color: #343a40;
+        }
+        p {
+            margin: 10px 0;
+            color: #495057;
+        }
+        strong {
+            font-weight: bold;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #dee2e6;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        button {
+            display: block;
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #007BFF;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .pdf-link {
+            display: block;
+            margin-top: 20px;
+            color: #007BFF;
+            text-decoration: none;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Sales Report</h1>
+        <p><strong>From Date:</strong> {{ sales_data.from_date }}</p>
+        <p><strong>To Date:</strong> {{ sales_data.to_date }}</p>
+        
+        <h2>Sales Data</h2>
+        <p><strong>Number of Orders:</strong> {{ sales_data.total_orders }}</p>
+        <p><strong>Total Items:</strong> {{ sales_data.total_items }}</p>
+        <p><strong>Revenue:</strong> {{ sales_data.total_revenue }}</p>
+
+        <a class="pdf-link" href="{% url 'generate_sales_report_pdf' sales_data.from_date sales_data.to_date %}" target="_blank">Generate PDF</a>
+
+        <h2>Individual Orders</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Order Number</th>
+                    <th>Amount</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for order in sales_data.orders %}
+                <tr>
+                    <td>{{ order.order_num }}</td>
+                    <td>{{ order.order_total_price }}</td>
+                    <td>{{ order.order_status }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>

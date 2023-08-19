@@ -6,13 +6,20 @@ from customadmin.models import *
 from django.contrib.auth.models import User
 from django.urls import reverse
 from django.http import JsonResponse
-from django.db.models import Sum
+from django.db.models import Sum, F
 from datetime import datetime, timedelta
 
 
 from datetime import datetime, timedelta
 from django.utils import timezone
 from random import choice, randint
+from django import forms
+
+from django.http import HttpResponse
+from django.template.loader import get_template
+from django.conf import settings
+from xhtml2pdf import pisa
+from io import BytesIO
 
 def admin_login(request): 
     if 'name' in request.session:
@@ -56,10 +63,12 @@ def admin_dashboard(request):
 
 def orders_chart_data(request):
     today = datetime.now()
+    start_date = today - timedelta(days=3 * 365)
     
-    monthly_data = Orders.objects.filter(order_date__year=today.year).values('order_date__month').annotate(total=Sum('order_total_price'))
-    yearly_data = Orders.objects.filter(order_date__year=today.year).values('order_date__year').annotate(total=Sum('order_total_price'))
-    daily_data = Orders.objects.filter(order_date__date=today.date()).values('order_date__day').annotate(total=Sum('order_total_price'))
+    monthly_data = Orders.objects.filter(order_date__year__gte=start_date.year).values('order_date__month').annotate(total=Sum('order_total_price'))
+    yearly_data = Orders.objects.filter(order_date__year__gte=start_date.year).values('order_date__year').annotate(total=Sum('order_total_price'))
+    weekly_data = Orders.objects.filter(order_date__gte=start_date).annotate(week_number=F('order_date__week')).values('week_number').annotate(total=Sum('order_total_price'))
+
 
     # Create data arrays for chart
     monthly_orders = [0] * 12
@@ -70,14 +79,16 @@ def orders_chart_data(request):
     for entry in yearly_data:
         yearly_orders[entry['order_date__year'] - Orders.objects.earliest('order_date').order_date.year] = entry['total']
 
-    daily_orders = [0] * 31
-    for entry in daily_data:
-        daily_orders[entry['order_date__day'] - 1] = entry['total']
+    weekly_orders = [0] * 52
+    for entry in weekly_data:
+        week_number = entry['week_number'] - 1  
+        weekly_orders[week_number] = entry['total']
 
     data = {
         'monthly_orders': monthly_orders,
         'yearly_orders': yearly_orders,
-        'daily_orders': daily_orders,
+        'weekly_orders': weekly_orders,
+        'yearly_orders_start_year': Orders.objects.earliest('order_date').order_date.year,
     }
 
     return JsonResponse(data)
@@ -411,7 +422,7 @@ def test(request):
 
     return render(request, 'customadmin/testhtml.html')
 
-def test_func(request):
+def test_func_add_orders(request):
     
     users = UserProfile.objects.exclude(name='GUEST')
     order_status_choices = ['complete']  # Order status is always 'complete'
@@ -428,7 +439,6 @@ def test_func(request):
         print('------------zxczxczxczcxzxxczxcxzczxcxz', order_date)
         order_total_price = randint(10000, 100000)  # Adjust the price range as needed
         
-
         order = Orders.objects.create(
             user=user,
             order_address=user.addresses.first(),  
@@ -438,6 +448,74 @@ def test_func(request):
         )
         print("orders also generated")
 
-    print("Sample orders generated successfully!")
+        print("Sample orders generated successfully!")
 
     return redirect('test')
+
+def generate_sales_report(request):
+    
+    if request.method == 'POST':
+        from_date_str = request.POST.get('from_date')
+        to_date_str = request.POST.get('to_date')
+
+        from_date = datetime.strptime(from_date_str, '%Y-%m-%d')
+        to_date = datetime.strptime(to_date_str, '%Y-%m-%d')
+
+        orders = Orders.objects.filter(order_date__gte=from_date, order_date__lte=to_date)
+
+        total_orders = orders.count()
+        total_items = sum(order.items_in_order.aggregate(Sum('quantity'))['quantity__sum'] or 0 for order in orders)
+        total_revenue = sum(order.order_total_price for order in orders)
+
+
+        sales_data = {
+            'from_date': from_date_str,
+            'to_date': to_date_str,
+            'total_orders': total_orders,
+            'total_items': total_items,
+            'total_revenue': total_revenue,
+            'orders': orders,
+        }
+        
+        return render(request, 'customadmin/salesreport.html', {'sales_data': sales_data})
+    
+    return render(request, 'sales_report_form.html')
+
+
+def generate_sales_report_pdf(request, from_date, to_date):
+    from_date_str = from_date
+    to_date_str = to_date
+
+    from_date = datetime.strptime(from_date, '%Y-%m-%d')
+    to_date = datetime.strptime(to_date, '%Y-%m-%d')
+
+    orders = Orders.objects.filter(order_date__gte=from_date, order_date__lte=to_date)
+
+    total_orders = orders.count()
+    total_items = sum(order.items_in_order.aggregate(Sum('quantity'))['quantity__sum'] or 0 for order in orders)
+    total_revenue = sum(order.order_total_price for order in orders)
+
+    sales_data = {
+        'from_date': from_date_str,
+        'to_date': to_date_str,
+        'total_orders': total_orders,
+        'total_items': total_items,
+        'total_revenue': total_revenue,
+        'orders': orders,
+    }
+
+    template_path = 'customadmin/salesreport_pdf_template.html'  # Path to your HTML template
+    context = {'sales_data': sales_data}
+    template = get_template(template_path)
+    html = template.render(context)
+    response = BytesIO()
+
+    pdf_file = 'sales_report.pdf'  # Name of the PDF file
+    pdf = pisa.pisaDocument(BytesIO(html.encode("ISO-8859-1")), response)
+    
+    if not pdf.err:
+        response = HttpResponse(response.getvalue(), content_type='application/pdf')
+        response['Content-Disposition'] = f'attachment; filename="{pdf_file}"'
+        return response
+    
+    return HttpResponse("Error generating PDF", status=500)

@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Sales Report</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f9fa;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #ffffff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 5px;
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #007BFF;
+        }
+        h2 {
+            margin-top: 30px;
+            color: #343a40;
+        }
+        p {
+            margin: 10px 0;
+            color: #495057;
+        }
+        strong {
+            font-weight: bold;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #dee2e6;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        .sales-info {
+            margin-bottom: 10px; /* Adjust the margin as needed */
+        }
+    
+        .sales-data {
+            margin-top: 10px; /* Adjust the margin as needed */
+            padding: 10px 0; /* Adjust the padding as needed */
+            border-top: 1px solid #dee2e6; /* Add a border to separate sections */
+        }
+    
+        .data-row {
+            margin: 5px 0;
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div style="display:flex; justify-content:center; align-items:center;">
+        <img src="static/user_assets/images/demos/demo-3/logo1.png" alt="Logo" class="logo" style="width:100px; height:50px;">
+        <span>e-Kart</span>
+        </div>
+        <h1>Sales Report</h1>
+        <div class="sales-info">
+            <p><strong>From Date:</strong> {{ sales_data.from_date }}</p>
+            <p><strong>To Date:</strong> {{ sales_data.to_date }}</p>
+        </div>
+        
+        <h2>Sales Data</h2>
+        <div class="sales-data">
+            <p class="data-row"><strong>Number of Orders:</strong> {{ sales_data.total_orders }}</p>
+            <p class="data-row"><strong>Total Items:</strong> {{ sales_data.total_items }}</p>
+            <p class="data-row"><strong>Revenue:</strong> INR : &nbsp{{ sales_data.total_revenue }}</p>
+        </div>
+        
+        <h2>Individual Orders</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Order Number</th>
+                    <th>Amount</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for order in sales_data.orders %}
+                <tr>
+                    <td>{{ order.order_num }}</td>
+                    <td>{{ order.order_total_price }}</td>
+                    <td>{{ order.order_status }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>

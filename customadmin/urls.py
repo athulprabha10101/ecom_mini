@@ -31,7 +31,9 @@ urlpatterns = [
     path('admin_dashboard', views.admin_dashboard, name="admin_dashboard"),
     path('orders_chart_data/', views.orders_chart_data, name='orders_chart_data'),
     path('test', views.test, name='test'),
-    path('test_func', views.test_func, name='test_func'),
+    path('test_func_add_orders', views.test_func_add_orders, name='test_func_add_orders'),
+    path('generate_sales_report', views.generate_sales_report, name='generate_sales_report'),
+    path('generate_sales_report_pdf/<str:from_date>/<str:to_date>/', views.generate_sales_report_pdf, name='generate_sales_report_pdf'),
     
 ]
 
