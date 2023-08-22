@@ -130,7 +130,7 @@
                     </div>
 
                     <div class="header-right">
-                        <div class="dropdown compare-dropdown" >
+                        {% comment %} <div class="dropdown compare-dropdown" >
                             <a href="#" class="dropdown-toggle" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-display="static" title="Compare Products" aria-label="Compare Products">
                                 <div class="icon">
                                     <i class="icon-random"></i>
@@ -155,7 +155,7 @@
                                     <a href="#" class="btn btn-outline-primary-2"><span>Compare</span><i class="icon-long-arrow-right"></i></a>
                                 </div>
                             </div><!-- End .dropdown-menu -->
-                        </div><!-- End .compare-dropdown -->
+                        </div><!-- End .compare-dropdown --> {% endcomment %}
 
                         <div class="wishlist" >
                             <a href="{% url 'wishlist' %}" title="Wishlist">
@@ -236,7 +236,7 @@
             </div><!-- End .header-middle -->
 
             <div class="header-bottom sticky-header">
-                <div class="container">
+                {% comment %} <div class="container">
                     <div class="header-left">
                         <div class="dropdown category-dropdown">
                             <a href="#" class="dropdown-toggle" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-display="static" title="Browse Categories">
@@ -637,7 +637,7 @@
                     <div class="header-right">
                         <i class="la la-lightbulb-o"></i><p>Clearance<span class="highlight">&nbsp;Up to 30% Off</span></p>
                     </div>
-                </div><!-- End .container -->
+                </div><!-- End .container --> {% endcomment %}
             </div><!-- End .header-bottom -->
         </header><!-- End .header -->
 

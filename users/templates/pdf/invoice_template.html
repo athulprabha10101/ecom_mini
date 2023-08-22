@@ -46,7 +46,8 @@
 </head>
 <body>
     <div class="invoice-header">
-        <img class="company-logo" src="{% static 'user_assets/images/demos/demo-3/logo1.png' %}" alt="Company Logo">
+        <img src="static/user_assets/images/demos/demo-3/logo1.png" alt="Logo" class="logo" style="width:100px; height:50px;">
+        
         <h1>Invoice</h1>
         <p class="company-name">e-Kart</p>
     </div>
@@ -54,6 +55,14 @@
         <p><strong>Order ID:</strong> {{ order.order_num }}</p>
         <p><strong>Order Date:</strong> {{ order.order_date }}</p>
         <p><strong>User:</strong> {{ order.user.name }}</p>
+        <p><strong>Shipping Address :</p>
+            <ul class="no-list-style" style="list-style: none !important; margin: 0; list-style-type: none; padding: 0; font-weight: normal;">
+                <li>{{address.address_line1}}</li>
+                <li>{{address.address_line2}}</li>
+                <li>{{address.city}}</li>
+                <li>{{address.state}}</li>
+                <li>{{address.pin}}</li>
+            </ul>
     </div>
     <table class="item-list">
         <thead>
@@ -73,8 +82,8 @@
             {% endfor %}
         </tbody>
     </table>
-    <p class="total">Subtotal: ${{ order.order_total_price }}</p>
-    <p class="total">Discount: ${{ order.coupon_discount }}</p>
-    <p class="total">Grand Total: ${{ grand_total }}</p>
+    <p class="total">Subtotal: $ &nbsp{{ order.order_total_price }}</p>
+    <p class="total">Discount: $ &nbsp{{ order.coupon_discount }}</p>
+    <p class="total">Grand Total: $ &nbsp{{ grand_total }}</p>
 </body>
 </html>

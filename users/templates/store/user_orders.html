@@ -78,7 +78,7 @@
                                     <tbody>
                                     
 
-                                        {% for order in orders %}
+                                        {% for order in orders reversed %}
                                         <tr>      
                                                                   
                                             <td style="font-size: 12px;">{{forloop.counter}}</td>
@@ -101,7 +101,7 @@
                                                             <th class="text-left">Quantity</th>
                                                             <th class="text-left">Price</th>
                                                             <th class="text-left">Status</th>
-                                                            <th class="text-left">Cancel Item</th>
+                                                            <th class="text-left">Cancellation</th>
                                                         </tr>
                                                         {% for item in order.items_in_order.all %}
                                                         <tr>
@@ -116,11 +116,11 @@
                                                                 <td class="text-left" style="font-size: 12px; border-bottom: none;">{{ item.sold_at_price }}</td>
                                                                 <td class="text-left" style="font-size: 12px; border-bottom: none;">{{ item.item_order_status }}</td>
                                                                 
-                                                                {% if item.cancel_req %}
+                                                                {% if item.cancel_req and not item.item_order_status == "Cancelled" %}
                                                                 <td style="border-bottom: none;" class="d-flex justify-content-end">
                                                                 <div class="badge badge-danger">Cancellation requested</div>
                                                                 </td>
-                                                                {% else %}
+                                                                {% elif not item.cancel_req %}
                                                                 <td style="border-bottom: none;" class="d-flex justify-content-end">
                                                                     <a style="text-decoration: none; border-bottom: none;" href="{% url 'cancel_req' item.id %}">
                                                                         <button style="border-bottom: none;" type="button" class="btn btn-warning">Cancel Item</button>
@@ -128,7 +128,7 @@
                                                                     </a>
                                                                 </td>
                                                                 {% endif %}
-                                                                {% if item.item_order_status == "Cancelled" %}
+                                                                {% if item.cancel_req and item.item_order_status == "Cancelled" %}
                                                                 <td style="border-bottom: none;" class="d-flex justify-content-end">
                                                                     <div class="badge badge-danger">Cancelled</div>
                                                                     </td>

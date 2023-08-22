@@ -415,7 +415,12 @@ def less_qty(request, id):
     return redirect('display_cart')
 
 def checkout(request, cart_id):
-    cart = Cart.objects.get(id=cart_id)
+    
+    try:
+        cart = Cart.objects.get(id=cart_id)
+    except Cart.DoesNotExist:
+        return redirect('user_home')
+    
     addresses = UserAddress.objects.filter(user = cart.user)
     cart_items = cart.cart_items.all()
     coupon = cart.applied_coupon
@@ -631,16 +636,19 @@ def add_to_cart_from_wishlist(request, id,wishlistitem_id):
 def generate_invoice(request, order_id):
     order = Orders.objects.get(id=order_id)
     grand_total = order.order_total_price - (order.coupon_discount or 0)
+    discount = order.coupon_discount or 0
+    address = OrderAddressHistory.objects.get(order=order)
+    print(order.id,address,"====================xxxxx==x=x=x=x=x=x==x")
 
     template_path = 'pdf/invoice_template.html'
 
-    context = {'order': order, 'grand_total': grand_total}
+    context = {'order': order, 'grand_total': grand_total, 'discount':discount, 'address':address}
 
     template = get_template(template_path)
     html = template.render(context)
 
     response = HttpResponse(content_type='application/pdf')
-    response['Content-Disposition'] = f'attachment; filename="incoice_{order.order_num}.pdf"'
+    response['Content-Disposition'] = f'attachment; filename="invoice_{order.order_num}.pdf"'
     pisa_status= pisa.CreatePDF(html, dest=response)
 
     if pisa_status.err:

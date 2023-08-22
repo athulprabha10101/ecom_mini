@@ -124,12 +124,12 @@
                                     <td style="color:blue">{{cart.saved_amount}}</td>
                                 </tr><!-- End .summary-subtotal -->
                                 {% endif %}
-                                <tr class="summary-shipping">
+                                {% comment %} <tr class="summary-shipping">
                                     <td>Shipping:</td>
                                     <td>&nbsp;</td>
-                                </tr>
+                                </tr> {% endcomment %}
 
-                                <tr class="summary-shipping-row">
+                                {% comment %} <tr class="summary-shipping-row">
                                     <td>
                                         <div class="custom-control custom-radio">
                                             <input type="radio" id="free-shipping" name="shipping" class="custom-control-input">
@@ -162,7 +162,7 @@
                                 <tr class="summary-shipping-estimate">
                                     <td>Estimate for Your Country<br> <a href="{% static 'dashboard.html' %}">Change address</a></td>
                                     <td>&nbsp;</td>
-                                </tr><!-- End .summary-shipping-estimate -->
+                                </tr><!-- End .summary-shipping-estimate --> {% endcomment %}
 
                                 <tr class="summary-total">
                                     <td>Total:</td>

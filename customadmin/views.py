@@ -436,7 +436,7 @@ def test_func_add_orders(request):
         order_date = start_date + timedelta(
             seconds=randint(0, int((end_date - start_date).total_seconds()))
         )
-        print('------------zxczxczxczcxzxxczxcxzczxcxz', order_date)
+        
         order_total_price = randint(10000, 100000)  # Adjust the price range as needed
         
         order = Orders.objects.create(
