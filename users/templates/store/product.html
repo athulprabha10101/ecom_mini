@@ -147,15 +147,15 @@
                                             <a href="#">Yellow</a>
                                         </div><!-- End .product-cat --> {% endcomment %}
 
-                                        <div class="social-icons social-icons-sm">
+                                        {% comment %} <div class="social-icons social-icons-sm">
                                             <span class="social-label">Share:</span>
                                             <a href="#" class="social-icon" title="Facebook" target="_blank"><i class="icon-facebook-f"></i></a>
                                             <a href="#" class="social-icon" title="Twitter" target="_blank"><i class="icon-twitter"></i></a>
                                             <a href="#" class="social-icon" title="Instagram" target="_blank"><i class="icon-instagram"></i></a>
                                             <a href="#" class="social-icon" title="Pinterest" target="_blank"><i class="icon-pinterest"></i></a>
-                                        </div>
+                                        </div> {% endcomment %}
                                     </div><!-- End .product-details-footer -->
-                                    {% if messages%}
+                                    {% comment %} {% if messages%}
                                         <ul class="messages">
                                             {% for message in messages %}
                                                 <li{% if message %} class="{{message.tags}}" {% endif %}>
@@ -168,14 +168,14 @@
                                                 </li>
                                             {% endfor %}
                                         </ul>
-                                    {% endif%}
+                                    {% endif%} {% endcomment %}
 
                                 </form><!-- End .product-details -->
                             </div><!-- End .col-md-6 -->
                         </div><!-- End .row -->
                     </div><!-- End .product-details-top -->
                 
-                    <div class="product-details-tab">
+                    {% comment %} <div class="product-details-tab">
                         <ul class="nav nav-pills justify-content-center" role="tablist">
                             <li class="nav-item">
                                 <a class="nav-link active" id="product-desc-link" data-toggle="tab" href="#product-desc-tab" role="tab" aria-controls="product-desc-tab" aria-selected="true">Description</a>
@@ -287,9 +287,9 @@
                                 </div><!-- End .reviews -->
                             </div><!-- .End .tab-pane -->
                         </div><!-- End .tab-content -->
-                    </div><!-- End .product-details-tab -->
+                    </div><!-- End .product-details-tab --> {% endcomment %}
 
-                    <h2 class="title text-center mb-4">You May Also Like</h2><!-- End .title text-center -->
+                    {% comment %} <h2 class="title text-center mb-4">You May Also Like</h2><!-- End .title text-center -->
 
                     <div class="owl-carousel owl-simple carousel-equal-height carousel-with-shadow owl-loaded owl-drag" data-toggle="owl" data-owl-options="{
                             &quot;nav&quot;: false, 
@@ -517,7 +517,7 @@
                                 </div><!-- End .rating-container -->
                             </div><!-- End .product-body -->
                         </div></div></div></div><div class="owl-nav"><button type="button" role="presentation" class="owl-prev disabled"><i class="icon-angle-left"></i></button><button type="button" role="presentation" class="owl-next"><i class="icon-angle-right"></i></button></div><div class="owl-dots disabled"></div></div><!-- End .owl-carousel -->
-                </div><!-- End .container -->
+                </div><!-- End .container --> {% endcomment %}
             </div><!-- End .page-content -->
         </main>
 

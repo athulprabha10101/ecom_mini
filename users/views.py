@@ -197,13 +197,30 @@ def user_product(request, id):
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
 def cat_product(request, id):
     cat = Category.objects.get(id=id)
+    baseproducts = BaseProducts.objects.filter(category = cat)
     variants = Variants.objects.filter(product__category=cat)
     
     if 'email' in request.session:
         user = UserProfile.objects.get(email=request.session['email'])
-        return render(request, 'store/cat_products.html', {'products': variants, 'user': user})
+        return render(request, 'store/cat_products.html', {'products': variants, 'baseproducts':baseproducts, 'user': user})
     
-    return render(request, 'store/cat_products.html', {'products': variants, 'user':'none'})
+    return render(request, 'store/cat_products.html', {'products': variants, 'baseproducts':baseproducts, 'user':'none'})
+
+def filter_products(request, product_id):
+        
+    if 'user' in request.session:
+        user = UserProfile.objects.get(email = request.session['email'])
+    else:
+        user = None
+        
+    selected_product_id = product_id
+    product = BaseProducts.objects.get(id = product_id)
+    cat_id = product.category.id
+    category = Category.objects.get(id= cat_id)
+    variants = Variants.objects.filter(product = product)
+    baseproducts = BaseProducts.objects.filter(category=category)
+    
+    return render(request, 'store/cat_products.html', {'products': variants, 'user':user, 'selected_product_id':selected_product_id, 'baseproducts':baseproducts})
 
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
 def user_profile(request):
@@ -659,3 +676,4 @@ def test_func(request):
     message = "toaster working"
     message_b = False
     return render (request, 'store/testhtm.html', {'message':message, 'message_b':message_b})
+

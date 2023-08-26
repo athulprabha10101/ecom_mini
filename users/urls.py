@@ -33,6 +33,7 @@ urlpatterns = [
     path('remove_from_wishlist<int:id>', views.remove_from_wishlist, name='remove_from_wishlist'),
     path('add_to_cart_from_wishlist<int:id>/<int:wishlistitem_id>', views.add_to_cart_from_wishlist, name='add_to_cart_from_wishlist'),
     path('generate_invoice<int:order_id>', views.generate_invoice, name='generate_invoice'),
+    path('filter_products/<int:product_id>', views.filter_products, name='filter_products'),
     
     
     
