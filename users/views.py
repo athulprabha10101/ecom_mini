@@ -13,6 +13,8 @@ from django.db import transaction
 from django.http import HttpResponse
 from django.template.loader import get_template
 from xhtml2pdf import pisa
+# Pagination
+from django.core.paginator import Paginator
 
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
 def sendOtp(otp):
@@ -198,7 +200,12 @@ def user_product(request, id):
 def cat_product(request, id):
     cat = Category.objects.get(id=id)
     baseproducts = BaseProducts.objects.filter(category = cat)
-    variants = Variants.objects.filter(product__category=cat)
+    variants_objects = Variants.objects.filter(product__category=cat)
+
+    #for pagination
+    variants_paginator = Paginator(Variants.objects.filter(product__category=cat),8)
+    page = request.GET.get('page')
+    variants = variants_paginator.get_page(page)
     
     if 'email' in request.session:
         user = UserProfile.objects.get(email=request.session['email'])

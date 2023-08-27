@@ -3,6 +3,8 @@
 {% block content %}
 
 <div class="page-content ">
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.min.js" integrity="sha384-Rx+T1VzGupg4BHQYs2gCW9It+akI2MM/mndMCy36UVfodzcJcF0GGLxZIzObiEfa" crossorigin="anonymous"></script>
     <div class="container mb-2 p-5">
         <div class="row">
             <div class="col-lg-9 col-md-9 col-sm-2">
@@ -120,24 +122,30 @@
                     </div><!-- End .row -->
                 </div><!-- End .products -->
 
-                <nav aria-label="Page navigation">
+                {% comment %} XXXXXX----------------PAGINATOR --------------XXXXXX {% endcomment %}
+                <hr>
+                <nav aria-label="Page navigation example">
                     <ul class="pagination justify-content-center">
-                        <li class="page-item disabled">
-                            <a class="page-link page-link-prev" href="#" aria-label="Previous" tabindex="-1" aria-disabled="true">
-                                <span aria-hidden="true"><i class="icon-long-arrow-left"></i></span>Prev
-                            </a>
-                        </li>
-                        <li class="page-item active" aria-current="page"><a class="page-link" href="#">1</a></li>
-                        <li class="page-item"><a class="page-link" href="#">2</a></li>
-                        <li class="page-item"><a class="page-link" href="#">3</a></li>
-                        <li class="page-item-total">of 6</li>
+                        {% if products.has_previous %}
+                            <li class="page-item"><a class="page-link" href="?page=1">&laquo First</a></li>
+                            <li class="page-item"><a class="page-link" href="?page={{products.previous_page_number}}">Previous</a></li>
+                        {% endif %}
+                        
                         <li class="page-item">
-                            <a class="page-link page-link-next" href="#" aria-label="Next">
-                                Next <span aria-hidden="true"><i class="icon-long-arrow-right"></i></span>
+                            <a class="page-link disabled" href="#" style="display: flex; align-items: center; justify-content: center;">
+                                Page &nbsp;{{products.number}} of {{products.paginator.num_pages}}
                             </a>
                         </li>
+                        
+                        {% if products.has_next %}
+                            <li class="page-item"><a class="page-link" href="?page={{products.next_page_number}}">Next</a></li>
+                            <li class="page-item"><a class="page-link" href="?page={{products.paginator.num_pages}}">&raquo Last</a></li>
+                        {% endif %}
                     </ul>
                 </nav>
+                
+
+                
             </div><!-- End .col-lg-9 -->
             <aside class="col-lg-3 order-lg-first">
                 <div class="sidebar sidebar-shop">
