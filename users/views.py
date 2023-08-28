@@ -29,7 +29,6 @@ def sendOtp(otp):
      )
     print(message.sid)
 
-
 def otpValidator(request):
     phone = request.session['userdetails']['phone']
     
@@ -53,7 +52,6 @@ def otpValidator(request):
         return render(request, 'users/register.html', {'error': "OTP Wrong"})
     
     return render(request, 'store/otp_validator.html', {'phone':phone})
-
 
 def user_register(request):
     if request.method == 'POST':
@@ -204,7 +202,7 @@ def cat_product(request, id):
     variants_objects = Variants.objects.filter(product__category=cat)
 
     #for pagination
-    variants_paginator = Paginator(Variants.objects.filter(product__category=cat),8)
+    variants_paginator = Paginator(Variants.objects.filter(product__category=cat, is_deleted=False),8)
     page = request.GET.get('page')
     variants = variants_paginator.get_page(page)
     
