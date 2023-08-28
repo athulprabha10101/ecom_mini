@@ -16,10 +16,10 @@ from xhtml2pdf import pisa
 # Pagination
 from django.core.paginator import Paginator
 
-@cache_control(no_cache=True, must_revalidate=True, no_store=True)
+
 def sendOtp(otp):
     account_sid = 'ACcf98c3b4a60a5236362474c850a6477d'
-    auth_token = '301e25d5ddc49a99ce541375832a38ae'
+    auth_token = '48b2a9fc07647164015bc4fba9829d27'
     client = Client(account_sid, auth_token)
 
     message = client.messages.create(
@@ -29,7 +29,7 @@ def sendOtp(otp):
      )
     print(message.sid)
 
-@cache_control(no_cache=True, must_revalidate=True, no_store=True)
+
 def otpValidator(request):
     phone = request.session['userdetails']['phone']
     
@@ -54,7 +54,7 @@ def otpValidator(request):
     
     return render(request, 'store/otp_validator.html', {'phone':phone})
 
-@cache_control(no_cache=True, must_revalidate=True, no_store=True)
+
 def user_register(request):
     if request.method == 'POST':
         name = request.POST['name']
@@ -67,6 +67,7 @@ def user_register(request):
 
         if user:
             return render(request, 'users/register.html', {'error': "Email already exists"})
+        
         user = UserProfile.objects.filter(phone=phone).exists()
 
         if user:
@@ -76,7 +77,7 @@ def user_register(request):
 
             otp = str(random.randint(1000, 9999))
 
-            #sendOtp(otp)
+            sendOtp(otp)
 
             print("-----------------------")
             print(otp)
